@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const HttpError = require("../backend/models/http-error");
-const forumRoutes = require("./routes/forum-routes");
+const forumsRoutes = require("./routes/forums-routes");
 const messagesRoutes = require("./routes/messages-routes");
 const patientsRoutes = require("./routes/patients-routes");
 
@@ -12,7 +12,7 @@ const app = express();
 // Parse req body, extract json/convert to JS before using route
 app.use(bodyParser.json());
 
-app.use("/api/forum", forumRoutes);
+app.use("/api/forums", forumsRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/patients", patientsRoutes);
 
@@ -34,7 +34,7 @@ app.use((error, req, res, next) => {
 // Connect to Database
 mongoose
   .connect(
-    "mongodb+srv://cs178:fries@fries.d7odjp0.mongodb.net/MedShare/Patient?retryWrites=true&w=majority" // Connect to database with connection string
+    "mongodb+srv://cs178:fries@fries.d7odjp0.mongodb.net/MedShare?retryWrites=true&w=majority" // Connect to database with connection string
   )
   .then(() => {
     app.listen(5000); // If connection to DB succeeds, start backend server
