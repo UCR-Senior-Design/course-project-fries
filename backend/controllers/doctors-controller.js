@@ -1,25 +1,25 @@
 const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
-const { v4: uuidv4 } = require("uuid");
+const Doctor = require("../models/doctor");
 const Patient = require("../models/patient");
 
 // GET user by uid
-const get_patient_by_uid = async (req, res, next) => {
-  const patient_id = req.params.uid;
+const get_doctor_by_id = async (req, res, next) => {
+  const doctor_id = req.params.uid;
 
-  let patient;
+  let doctor;
   try {
-    patient = await Patient.findById(patient_id);
+    doctor = await Doctor.findById(doctor_id);
   } catch (err) {
     const error = new HttpError("Something went wrong with the request.", 500);
     return next(error); // stop code execution if error is detected
   }
 
-  if (!patient) {
-    const error = new HttpError("Could not find patient by provided id.", 404);
+  if (!doctor) {
+    const error = new HttpError("Could not find doctor by provided id.", 404);
     return next(error);
   }
-  res.json({ patient: patient.toObject({ getters: true }) });
+  res.json({ doctor: doctor.toObject({ getters: true }) });
 };
 
 // GET list of patients by doctor uid
@@ -49,49 +49,47 @@ const get_patientlist_by_dr_id = async (req, res, next) => {
   });
 };
 
-// POST Patient
-const create_patient = async (req, res, next) => {
+// POST User
+const create_doctor = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new HttpError("Invalid inputs passed, check your data.", 422);
   }
 
-  const { firstname, lastname, username, password, email, doctor_ids } =
-    req.body;
-  const created_patient = new Patient({
+  const { firstname, lastname, username, password, email } = req.body;
+  const created_doctor = new Doctor({
     firstname,
     lastname,
     username,
     password,
     email,
-    doctor_ids,
   });
 
   try {
-    await created_patient.save(); // Mongoose method to store document in DB, create unique userid
+    await created_doctor.save(); // Mongoose method to store document in DB, create unique userid
   } catch (err) {
     const error = new HttpError("Creating User failed, please try again", 500);
     return next(error);
   }
 
-  res.status(201).json({ created_patient });
+  res.status(201).json({ created_doctor });
 };
 
 // PATCH User
-const patch_patient = async (req, res, next) => {
+const patch_doctor = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new HttpError("Invalid inputs passed, please check your data", 422);
   }
 
   const { firstname, lastname, username, password } = req.body;
-  const patient_id = req.params.uid;
+  const doctor_id = req.params.uid;
 
-  let patient;
+  let doctor;
   try {
-    patient = await Patient.findById(patient_id);
-    if (!patient) {
-      const error = new HttpError("Patient not found", 404);
+    doctor = await Doctor.findById(doctor_id);
+    if (!doctor) {
+      const error = new HttpError("Doctor not found", 404);
       return next(error);
     }
   } catch (err) {
@@ -99,30 +97,30 @@ const patch_patient = async (req, res, next) => {
     return next(error);
   }
 
-  patient.firstname = firstname;
-  patient.lastname = lastname;
-  patient.username = username;
-  patient.password = password;
+  doctor.firstname = firstname;
+  doctor.lastname = lastname;
+  doctor.username = username;
+  doctor.password = password;
 
   try {
-    await patient.save();
+    await doctor.save();
   } catch (err) {
     const error = new HttpError("Updating User failed, please try again", 500);
     return next(error);
   }
 
-  res.status(200).json({ patient: patient.toObject({ getters: true }) });
+  res.status(200).json({ doctor: doctor.toObject({ getters: true }) });
 };
 
 // DELETE User
-const delete_patient = async (req, res, next) => {
-  const patient_id = req.params.uid;
+const delete_doctor = async (req, res, next) => {
+  const doctor_id = req.params.uid;
 
-  let patient;
+  let doctor;
   try {
-    patient = await Patient.findById(patient_id);
-    if (!patient) {
-      const error = new HttpError("Patient not found", 404);
+    doctor = await Doctor.findById(doctor_id);
+    if (!doctor) {
+      const error = new HttpError("Doctor not found", 404);
       return next(error);
     }
   } catch (err) {
@@ -131,7 +129,7 @@ const delete_patient = async (req, res, next) => {
   }
 
   try {
-    await patient.deleteOne();
+    await doctor.deleteOne();
   } catch (err) {
     console.log();
     const error = new HttpError(
@@ -145,8 +143,8 @@ const delete_patient = async (req, res, next) => {
 };
 
 // Export pointer to functions for router
-exports.get_patient_by_uid = get_patient_by_uid;
+exports.get_doctor_by_id = get_doctor_by_id;
 exports.get_patientlist_by_dr_id = get_patientlist_by_dr_id;
-exports.create_patient = create_patient;
-exports.patch_patient = patch_patient;
-exports.delete_patient = delete_patient;
+exports.create_doctor = create_doctor;
+exports.patch_doctor = patch_doctor;
+exports.delete_doctor = delete_doctor;

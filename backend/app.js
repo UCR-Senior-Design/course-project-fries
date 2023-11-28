@@ -6,6 +6,7 @@ const HttpError = require("../backend/models/http-error");
 const forumRoutes = require("./routes/forum-routes");
 const messagesRoutes = require("./routes/messages-routes");
 const patientsRoutes = require("./routes/patients-routes");
+const doctorsRoutes = require("./routes/doctors-routes");
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 app.use("/api/forum", forumRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/patients", patientsRoutes);
+app.use("/api/doctors", doctorsRoutes);
 
 // Handle Unsupported Route error
 app.use((req, res, next) => {
@@ -34,7 +36,7 @@ app.use((error, req, res, next) => {
 // Connect to Database
 mongoose
   .connect(
-    "mongodb+srv://cs178:fries@fries.d7odjp0.mongodb.net/MedShare/Patient?retryWrites=true&w=majority" // Connect to database with connection string
+    "mongodb+srv://cs178:fries@fries.d7odjp0.mongodb.net/MedShare?retryWrites=true&w=majority" // Connect to database with connection string
   )
   .then(() => {
     app.listen(5000); // If connection to DB succeeds, start backend server
