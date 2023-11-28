@@ -5,7 +5,7 @@ const HttpError = require("../models/http-error");
 const doctorsController = require("../controllers/doctors-controller");
 
 // GET patient by uid
-router.get("/:ujid", doctorsController.get_doctor_by_id);
+router.get("/:uid", doctorsController.get_doctor_by_id);
 // GET list of patients by doctor uid
 router.get(
   "/patientlist/:doctor_id",
