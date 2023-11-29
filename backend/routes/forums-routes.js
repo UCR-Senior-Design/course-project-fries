@@ -4,7 +4,44 @@ const router = express.Router();
 const HttpError = require("../models/http-error");
 const forumController = require("../controllers/forum-controller");
 
-// Post forums
+
+// GET forum by Creator
+router.get(
+    "/forumCreator/:username",
+    forumController.getForumByCreator
+);
+
+// GET forum by Headline
+router.get(
+    "/forumHeadline",
+    forumController.getForumByHeadline
+);
+
+// GET forum by Topic
+router.get(
+    "/forumTopic",
+    forumController.getForumByTopic
+)
+
+// GET forum by Id
+router.get(
+  "/:fid",
+  forumController.getForumById
+);
+
+// Patch forum
+router.patch(
+    "/editForum/:fid",
+    forumController.updateForum
+);
+
+// Delete forum
+router.delete(
+    "/deleteForum/:fid",
+    forumController.deleteForum
+);
+
+// POST forum
 router.post(
   "/",
   [(check("creator").not().isEmpty(), check("headline").not().isEmpty(), check("topic").not().isEmpty())],
