@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const HttpError = require("../backend/models/http-error");
-const forumRoutes = require("./routes/forum-routes");
+const forumsRoutes = require("./routes/forums-routes");
 const messagesRoutes = require("./routes/messages-routes");
 const patientsRoutes = require("./routes/patients-routes");
 const doctorsRoutes = require("./routes/doctors-routes");
@@ -13,7 +13,7 @@ const app = express();
 // Parse req body, extract json/convert to JS before using route
 app.use(bodyParser.json());
 
-app.use("/api/forum", forumRoutes);
+app.use("/api/forums", forumsRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/patients", patientsRoutes);
 app.use("/api/doctors", doctorsRoutes);
