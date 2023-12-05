@@ -2,7 +2,6 @@ const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
 const { v4: uuidv4 } = require("uuid");
 const Forum = require("../models/forum");
-const { default: Forumlist } = require("../../frontend/src/forum/components/ForumList/forumlist");
 const forum = require("../models/forum");
 
 // Create forum
@@ -39,7 +38,7 @@ const createForum = async (req, res, next) => {
 const getForumList = async (req, res, next) => {
   let forumList;
   try {
-    forumList = await Forum.find({}, '-_id');
+    forumList = await Forum.find({});
   } catch (err) {
     const error = new HttpError(
       'Could not find any forums',
