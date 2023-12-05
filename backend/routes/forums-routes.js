@@ -8,6 +8,11 @@ const forumController = require("../controllers/forum-controller");
 // GET forum by Creator
 router.get(
     "/forumCreator/:username",
+    [
+        check('username')
+            .not()
+            .isEmpty()
+    ],
     forumController.getForumByCreator
 );
 
@@ -23,28 +28,59 @@ router.get(
     forumController.getForumByTopic
 )
 
+// GET forum list
+router.get(
+    "/forumList",
+    forumController.getForumList
+);
+
 // GET forum by Id
 router.get(
   "/:fid",
+  [
+    check('fid')
+        .not()
+        .isEmpty()
+  ],
   forumController.getForumById
 );
 
 // Patch forum
 router.patch(
     "/editForum/:fid",
+    [
+      check('fid')
+        .not()
+        .isEmpty()
+    ],
     forumController.updateForum
 );
 
 // Delete forum
 router.delete(
     "/deleteForum/:fid",
+    [
+      check('fid')
+        .not()
+        .isEmpty()
+    ],
     forumController.deleteForum
 );
 
 // POST forum
 router.post(
   "/",
-  [(check("creator").not().isEmpty(), check("headline").not().isEmpty(), check("topic").not().isEmpty())],
+  [
+    check("creator")
+      .not()
+      .isEmpty(), 
+    check("headline")
+      .not()
+      .isEmpty(), 
+    check("topic")
+      .not()
+      .isEmpty()
+  ],
   forumController.createForum
 );
 
