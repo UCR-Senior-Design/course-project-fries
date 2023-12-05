@@ -2,6 +2,8 @@ const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
 const { v4: uuidv4 } = require("uuid");
 const Forum = require("../models/forum");
+const { default: Forumlist } = require("../../frontend/src/forum/components/ForumList/forumlist");
+const forum = require("../models/forum");
 
 // Create forum
 const createForum = async (req, res, next) => {
@@ -33,6 +35,22 @@ const createForum = async (req, res, next) => {
   res.status(201).json({ forum: createForum });
 };
 
+// GET list of forums
+const getForumList = async (req, res, next) => {
+  let forumList;
+  try {
+    forumList = await Forum.find({}, '-_id');
+  } catch (err) {
+    const error = new HttpError(
+      'Could not find any forums',
+      500
+    );
+    return next(error);
+  }
+  
+  res.json({ forumList: forumList.map(forum => forum.toObject({ getters: true })) });
+};
+
 // Get forum by ID
 const getForumById = async (req, res, next) => {
   const forumID = req.params.fid;
@@ -42,7 +60,7 @@ const getForumById = async (req, res, next) => {
     forum = await Forum.findById(forumID);
   } catch (err) {
     const error = new HttpError( 
-      'Something went wrong, could not find a forum.', 
+      'ID - Something went wrong, could not find a forum.', 
       500
     ); // Something wrong with get request
     return next(error);
@@ -68,7 +86,7 @@ const getForumByCreator = async (req, res, next) => {
     forum = await Forum.findOne({ creator: forumCreator });
   } catch (err) {
     const error = new HttpError( 
-      'Something went wrong, could not find a forum.', 
+      'Creator - Something went wrong, could not find a forum.', 
       500
     ); // Something wrong with get request
     return next(error);
@@ -94,7 +112,7 @@ const getForumByHeadline = async (req, res, next) => {
     forum = await Forum.findOne({ headline: reqheadline });
   } catch (err) {
     const error = new HttpError( 
-      'Something went wrong, could not find a forum.', 
+      'Headline - Something went wrong, could not find a forum.', 
       500
     ); // Something wrong with get request
     return next(error);
@@ -120,7 +138,7 @@ const getForumByTopic = async (req, res, next) => {
     forum = await Forum.findOne({ topic: reqTopic });
   } catch (err) {
     const error = new HttpError( 
-      'Something went wrong, could not find a forum.', 
+      'Topic - Something went wrong, could not find a forum.', 
       500
     ); // Something wrong with get request
     return next(error);
@@ -187,7 +205,7 @@ const deleteForum = async (req, res, next) => {
     forum = await Forum.findById(forumId);
   } catch (err) {
     const error = new HttpError(
-      'Something went wrong, could not find forum',
+      'Delete - Something went wrong, could not find a forum',
       500
     );
     return next(error);
@@ -213,3 +231,4 @@ exports.getForumByHeadline = getForumByHeadline;
 exports.getForumByTopic = getForumByTopic;
 exports.updateForum = updateForum;
 exports.deleteForum = deleteForum;
+exports.getForumList = getForumList;

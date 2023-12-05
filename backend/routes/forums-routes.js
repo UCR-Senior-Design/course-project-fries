@@ -23,6 +23,12 @@ router.get(
     forumController.getForumByTopic
 )
 
+// GET forum list
+router.get(
+    "/forumList",
+    forumController.getForumList
+);
+
 // GET forum by Id
 router.get(
   "/:fid",
