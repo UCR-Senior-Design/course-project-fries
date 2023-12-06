@@ -7,6 +7,7 @@ const forumsRoutes = require("./routes/forums-routes");
 const messagesRoutes = require("./routes/messages-routes");
 const patientsRoutes = require("./routes/patients-routes");
 const doctorsRoutes = require("./routes/doctors-routes");
+const usersRoutes = require("./routes/users-routes")
 
 const app = express();
 
@@ -23,7 +24,7 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
   next();
 })
-
+app.use("/api/users", usersRoutes);
 app.use("/api/forums", forumsRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/patients", patientsRoutes);
