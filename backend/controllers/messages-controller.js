@@ -3,6 +3,22 @@ const { validationResult } = require("express-validator");
 const http = require("http");
 // const WebSocketServer = require("ws");
 const ws = require("ws");
+// All active connections
+const clients = {};
+// All active users
+const users = {};
+// Message history
+const msg_history = [];
+
+const send_msg = (JSON_msg, uid, recv_id) => {
+  // TEST: Print all connected clients
+  for (const [client_id, connection] of Object.entries(clients)) {
+    console.log(`Connected client: ${client_id}`);
+  }
+
+  // Sender sends recipient message
+  clients[recv_id].send(JSON.stringify(JSON_msg));
+};
 
 const start_server = () => {
   // Attach WebSocket Server instance to HTTP server instance
@@ -13,16 +29,27 @@ const start_server = () => {
     console.log(`WebSocket server is running on port ${port}`);
   });
 
-  // New client connection request received
+  // Receive new client connection request & handle events
   wss.on("connection", function (connection) {
     console.log("Server received a new connection.");
-    connection.send("Connected to WebSocket server!"); // TODO: doesnt do anything
+    connection.send("Connected to WebSocket server!");
+
     // Event listener for messages
     connection.on("message", (message) => {
+      JSON_msg = JSON.parse(message);
+      // Store new connection if message type is "uid"
+      if (JSON_msg.type == "uid") {
+        console.log(`Client's uid: ${JSON_msg.content}`);
+        clients[JSON.stringify(JSON_msg.content)] = connection;
+      } else if (JSON_msg.type == "client_msg") {
+        send_msg(JSON_msg.content, JSON_msg.uid, JSON_msg.recv_id);
+      }
+
+      // Handle messages
       // Echoes message back to client
-      // connection.send(`Message from server: ${message}`);
-      connection.send(message.content);
-      console.log("Server received message from client: %s", message);
+      // var echo_statement =
+      //   "Echo from server: " + JSON.stringify(JSON_msg.content);
+      // connection.send(echo_statement);
     });
   });
 };
