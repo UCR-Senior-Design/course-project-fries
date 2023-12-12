@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 
 const HttpError = require("../backend/models/http-error");
 const forumsRoutes = require("./routes/forums-routes");
+const commentsRoutes = require("./routes/comments-routes");
 const messagesRoutes = require("./routes/messages-routes");
 const patientsRoutes = require("./routes/patients-routes");
 const doctorsRoutes = require("./routes/doctors-routes");
@@ -26,6 +27,7 @@ app.use((req, res, next) => {
 })
 app.use("/api/users", usersRoutes);
 app.use("/api/forums", forumsRoutes);
+app.use("/api/comments", commentsRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/patients", patientsRoutes);
 app.use("/api/doctors", doctorsRoutes);

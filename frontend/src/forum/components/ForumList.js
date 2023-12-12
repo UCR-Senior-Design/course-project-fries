@@ -1,5 +1,6 @@
 import React from "react";
 import ForumItem from "./ForumItem";
+import './ForumList.css';
 
 const ForumList = (props) => {
   if (props.items.length < 1) {
@@ -7,7 +8,7 @@ const ForumList = (props) => {
   }
 
   return (
-    <ul>
+    <ul className='forumList__container'>
       {props.items.map(forum => (
         <ForumItem
           key={forum._id}

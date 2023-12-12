@@ -1,8 +1,19 @@
 import React, { useEffect, useState } from "react";
 import ForumList from "../components/ForumList";
+import ForumCreateButton from "../components/ForumCreate__button";
+import ForumForm from "../components/ForumForm";
 
 const Forum = () => {
   const [forumList, setForumList] = useState([]); // Initialize as an empty array
+  const [displayForumForm, setDisplayForumForm] = useState(false);
+
+  const displayForumFormHandler = () => {
+    setDisplayForumForm(true);
+  };
+
+  const closeForumFormHandler = () => {
+    setDisplayForumForm(false);
+  };
 
   useEffect(() => {
     fetch('http://localhost:5000/api/forums/forumList')
@@ -19,7 +30,17 @@ const Forum = () => {
       });
   }, []);
 
-  return <ForumList items={forumList} />;
+  return <div>
+    <ForumList items={forumList} />
+    <button 
+      onClick={displayForumFormHandler}
+    >New Forum</button>
+    {displayForumForm === true && (
+      <div>
+        <ForumForm />
+      </div>
+    )}
+  </div>
 };
 
 export default Forum;
