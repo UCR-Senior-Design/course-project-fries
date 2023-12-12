@@ -2,7 +2,6 @@ const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
 const { v4: uuidv4 } = require("uuid");
 const Forum = require("../models/forum");
-const forum = require("../models/forum");
 
 // Create forum
 const createForum = async (req, res, next) => {
