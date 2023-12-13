@@ -159,7 +159,29 @@ const deleteComment = async (req, res, next) => {
   res.status(200).json({ message: 'Deleted comment' });
 };
 
+const getInitComment = async (req, res, next) => {
+  let response;
+  try {
+    response = await Comment.findOne().sort({ time_stamp: 1});
+
+    if (!response) {
+      return next(new HttpError(
+        'Could not find a comment', 
+        404
+      ));
+    }
+  } catch (err) {
+    const error = new HttpError(
+      'Could not find any comments',
+      500
+    );
+    return next(error)
+  }
+  res.status(200).json(response);
+};
+
 exports.createComment = createComment;
+exports.getInitComment = getInitComment;
 exports.getCommentById = getCommentById;
 exports.getCommentListByForumId = getCommentListByForumId;
 exports.getCommentListByCreator = getCommentListByCreator;
