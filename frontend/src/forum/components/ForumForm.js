@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Modal from "./common/Modal";
-import ForumCreateButton from "./ForumCreate__button";
-
+import ForumContext from "./common/ForumContext";
 
 const ForumForm = (props) => {
     //const [newForum_creator, setNewForum_creator] = useState("");
@@ -14,6 +13,10 @@ const ForumForm = (props) => {
 
     const topicChangeHandler = (event) => {
       setNewForum_topic(event.target.value);
+    }
+
+    const closeFormHandler = (event) => {
+      props.onCancel();
     }
 
     const formSubmitHandler = async (event) => {
@@ -90,6 +93,11 @@ const ForumForm = (props) => {
             value={newForum_topic}
             onChange={topicChangeHandler}
           />
+        </div>
+        <div>
+          <button
+            onClick={closeFormHandler}
+          >Close</button>
         </div>
       </form>
     </Modal>
