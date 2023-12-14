@@ -1,4 +1,4 @@
-# WebShare Web App
+# MedShare Web App
 
 ## Team Fries
 - [Megan Chan](https://github/mgnChn)
