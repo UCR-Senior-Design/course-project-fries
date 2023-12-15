@@ -3,7 +3,7 @@
 ## Team Fries
 - [Megan Chan](https://github.com/mgnChn)
 - [Dave Quichocho](https://github.com/quichochodd)
-- [Jenny Quan](https://github/jquan026)
+- [Jenny Quan](https://github.com/jquan026)
 - [Jingbo Su](https://github.com/sujingbo0217)
 
 ## Instructions for running on your computer
