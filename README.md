@@ -1,7 +1,7 @@
 # MedShare Web App
 
 ## Team Fries
-- [Megan Chan](https://github/mgnChn)
+- [Megan Chan](https://github.com/mgnChn)
 - [Dave Quichocho](https://github/quichochodd)
 - [Jenny Quan](https://github/jquan026)
 - [Jingbo Su](https://github/sujingbo0217)
