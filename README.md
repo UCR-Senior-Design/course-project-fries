@@ -2,9 +2,9 @@
 
 ## Team Fries
 - [Megan Chan](https://github.com/mgnChn)
-- [Dave Quichocho](https://github/quichochodd)
+- [Dave Quichocho](https://github.com/quichochodd)
 - [Jenny Quan](https://github/jquan026)
-- [Jingbo Su](https://github/sujingbo0217)
+- [Jingbo Su](https://github.com/sujingbo0217)
 
 ## Instructions for running on your computer
 
