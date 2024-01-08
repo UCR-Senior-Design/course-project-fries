@@ -12,12 +12,13 @@ const createForum = async (req, res, next) => {
     );
   }
 
-  const { creator, headline, topic } = req.body;
+  const { creator, headline, topic, initComment } = req.body;
 
   const createdForum = new Forum({
     creator,
     headline,
     topic,
+    initComment,
   });
 
   try {
@@ -164,7 +165,7 @@ const updateForum = async (req, res, next) => {
     );
   }
 
-  const { headline, topic } = req.body;
+  const { headline, topic, initComment } = req.body;
   const forumId = req.params.fid;
 
   let forum;
@@ -180,6 +181,7 @@ const updateForum = async (req, res, next) => {
 
   forum.headline = headline;
   forum.topic =  topic;
+  forum.initComment = initComment;
 
   try {
     await forum.save();

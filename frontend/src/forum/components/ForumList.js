@@ -16,6 +16,7 @@ const ForumList = (props) => {
           creator={forum.creator}
           headline={forum.headline}
           topic={forum.topic}
+          initComment={forum.initComment}
         />
       ))}
     </ul>
