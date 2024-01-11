@@ -38,6 +38,17 @@ router.get(
   commentController.getCommentById
 );
 
+// Get initial comment by forum ID
+router.get(
+    "/initComment/:fid",
+    [
+        check('fid')
+            .not()
+            .isEmpty()
+    ],
+    commentController.getInitComment
+);
+
 // Patch comment
 router.patch(
     "/editComment/:cid",

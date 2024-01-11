@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ForumList from "../components/ForumList";
-import ForumCreateButton from "../components/ForumCreate__button";
 import ForumForm from "../components/ForumForm";
+import ForumContext from "../components/common/ForumContext";
 
 const Forum = () => {
   const [forumList, setForumList] = useState([]); // Initialize as an empty array
@@ -37,7 +37,9 @@ const Forum = () => {
     >New Forum</button>
     {displayForumForm === true && (
       <div>
-        <ForumForm />
+        <ForumForm 
+          onCancel={closeForumFormHandler}
+        />
       </div>
     )}
   </div>
