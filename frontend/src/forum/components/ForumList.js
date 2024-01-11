@@ -2,7 +2,7 @@ import React from "react";
 import ForumItem from "./ForumItem";
 import './ForumList.css';
 
-const ForumList = (props) => {
+const ForumList = (props, onClick) => {
   if (props.items.length < 1) {
     return <h2>No forums posted yet... Why not add one</h2>
   }
