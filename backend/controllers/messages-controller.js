@@ -1,6 +1,7 @@
 const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
 const http = require("http");
+const { start } = require("repl");
 // const WebSocketServer = require("ws");
 const ws = require("ws");
 // All active connections
@@ -10,25 +11,41 @@ const users = {};
 // Message history
 const msg_history = [];
 
+// Attach WebSocket Server instance to HTTP server instance
+
+const server = http.createServer();
+const wss = new ws.WebSocketServer({ server });
+const port = 8080;
+server.listen(port, () => {
+  console.log(`WebSocket server is running on port ${port}`);
+});
+
 const send_msg = (JSON_msg, uid, recv_id) => {
   // TEST: Print all connected clients
   for (const [client_id, connection] of Object.entries(clients)) {
     console.log(`Connected client: ${client_id}`);
   }
-
+  // If recipient is not connectected, save messages to DB
+  console.log(recv_id);
+  if (!clients.hasOwnProperty(recv_id)) {
+    console.log("recipient does not exist");
+  }
   // Sender sends recipient message
-  clients[recv_id].send(JSON.stringify(JSON_msg));
+  else {
+    clients[recv_id].send(JSON.stringify(JSON_msg));
+  }
 };
 
-const start_server = () => {
-  // Attach WebSocket Server instance to HTTP server instance
-  const server = http.createServer();
-  const wss = new ws.WebSocketServer({ server });
-  const port = 8080;
-  server.listen(port, () => {
-    console.log(`WebSocket server is running on port ${port}`);
-  });
+const disconnect_client = (uid) => {
+  delete clients[uid];
+  console.log(`Disconnected client: ${uid}`);
+  // TEST: Print all connected clients
+  for (const [client_id, connection] of Object.entries(clients)) {
+    console.log(`Connected client: ${client_id}`);
+  }
+};
 
+const handle_client_activity = () => {
   // Receive new client connection request & handle events
   wss.on("connection", function (connection) {
     console.log("Server received a new connection.");
@@ -41,17 +58,19 @@ const start_server = () => {
       if (JSON_msg.type == "uid") {
         console.log(`Client's uid: ${JSON_msg.content}`);
         clients[JSON.stringify(JSON_msg.content)] = connection;
-      } else if (JSON_msg.type == "client_msg") {
-        send_msg(JSON_msg.content, JSON_msg.uid, JSON_msg.recv_id);
       }
-
-      // Handle messages
-      // Echoes message back to client
-      // var echo_statement =
-      //   "Echo from server: " + JSON.stringify(JSON_msg.content);
-      // connection.send(echo_statement);
+      // Send messages between clients if message type is "client_msg"
+      else if (JSON_msg.type == "client_msg") {
+        send_msg(
+          JSON_msg.content,
+          JSON_msg.uid,
+          JSON.stringify(JSON_msg.recv_id)
+        );
+      } else if (JSON_msg.type == "disconnect") {
+        disconnect_client(JSON_msg.uid);
+      }
     });
   });
 };
 
-exports.start_server = start_server;
+exports.handle_client_activity = handle_client_activity;

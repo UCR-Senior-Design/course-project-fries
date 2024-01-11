@@ -13,7 +13,7 @@ import Forum from "./forum/pages/Forum";
 import Messages from "./messages/pages/Messages";
 import Patient from "./patient/pages/Patient";
 import Chatbot from "./chatbot/pages/Chatbot";
-import Users from "./common/pages/users"
+import Users from "./common/pages/users";
 
 const App = () => {
   return (
@@ -21,24 +21,24 @@ const App = () => {
       <Router>
         <Switch>
           <Route path="/" exact={true}>
-            <Users/>
+            <Users />
           </Route>
           <Route path="/appointments" exact={true}>
-            <Appointments/>
+            <Appointments />
           </Route>
           <Route path="/chatbot" exact={true}>
-            <Chatbot/>
+            <Chatbot />
           </Route>
           <Route path="/forum" exact={true}>
-            <Forum/>
+            <Forum />
           </Route>
           <Route path="/messages" exact={true}>
-            <Messages/>
+            <Messages />
           </Route>
           <Route path="/patient" exact={true}>
-            <Patient/>
+            <Patient />
           </Route>
-          <Redirect to="/"/>
+          <Redirect to="/" />
         </Switch>
       </Router>
     </AuthProvider>
