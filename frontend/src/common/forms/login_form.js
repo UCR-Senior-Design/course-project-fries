@@ -7,7 +7,7 @@ const LoginForm = () => {
   const {login} = useContext(AuthContext);
   const handleLogin = async (values) => {
     try {
-      const response = await axios.post('http://localhost:3000/api/users/login', values);
+      const response = await axios.post('http://localhost:5001/api/users/login', values);
 
       if (response.data.success) {
         notification.success({message: 'Logged in successfully!'});
@@ -22,8 +22,8 @@ const LoginForm = () => {
 
   return (
     <>
-      <h1>Login</h1>
-      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
+      <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+        <h1 style={{marginBottom: '20px'}}>Login</h1>
         <Form onFinish={handleLogin}>
           <Form.Item
             name="email"

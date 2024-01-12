@@ -3,8 +3,9 @@ const bcrypt = require('bcrypt');
 
 exports.login = async (req, res) => {
   try {
-    const {email, password} = req.body;
-    const user = await UsersController.findOne({email});
+    const {email, password} = req.headers;
+
+    const user = await UsersController.findOne({email: email});
 
     if (!user) {
       return res.status(401).json({message: 'Authentication failed'});
@@ -33,16 +34,16 @@ exports.logout = (req, res) => {
 
 exports.register = async (req, res) => {
   try {
-    const {username, password} = req.body;
+    const {email, username, password} = req.body;
 
     // Check if user already exists
-    const existingUser = await UsersController.findOne({username});
+    const existingUser = await UsersController.findOne({email: email});
     if (existingUser) {
       return res.status(400).json({message: 'Users already exists'});
     }
 
     // Create a new user
-    const user = new UsersController({username, password});
+    const user = new UsersController({email, username, password});
     await user.save();
 
     res.status(201).json({message: 'Users created successfully'});
