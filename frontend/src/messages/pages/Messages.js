@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import styles from "./Messages.module.css";
 import Compose from "../components/Compose";
-import { Layout, Typography, Button } from "antd";
+import { Layout, Typography, Button, message } from "antd";
 import useWebSocket from "react-use-websocket";
 import { useState, useEffect } from "react";
 import NavigationBar from "../../common/components/NavBar";
@@ -16,11 +16,12 @@ const Messages = () => {
   const { login } = useContext(AuthContext);
   login();
   //
-  const [enteredMessage, setEnteredMessage] = useState("");
+  const [outgoingMessage, setOutgoingMessage] = useState("");
   const [recipient, setRecipient] = useState("");
   const [uid, setUid] = useState(""); // TODO: replace with what you get from login
   const [compose, setCompose] = useState(false);
-
+  const [incomingMsg, setIncomingMsg] = useState("");
+  const [messageHistory, setMessageHistory] = useState([]);
   useEffect(() => {
     fetch("http://localhost:5000/api/messages/").then((response) =>
       response.json()
@@ -38,7 +39,12 @@ const Messages = () => {
   // Listen for messages from the server
   useEffect(() => {
     if (lastMessage !== null && lastMessage.data) {
-      console.log("lastMessage: ", lastMessage);
+      console.log("lastMessage: ", lastMessage.data);
+      setIncomingMsg(lastMessage.data);
+      setMessageHistory((messageHistory) => [
+        ...messageHistory,
+        lastMessage.data,
+      ]);
     }
   }, [lastMessage]);
 
@@ -65,17 +71,17 @@ const Messages = () => {
 
   // Send messages to server
   const send_message = (data) => {
-    setEnteredMessage(data);
+    setOutgoingMessage(data);
 
-    console.log(recipient);
-    console.log(data);
     sendJsonMessage({
       type: "client_msg",
       content: data,
       uid: uid,
       recv_id: recip,
-      // recv_id: recipient,
     });
+
+    setMessageHistory((messageHistory) => [...messageHistory, data]);
+    console.log(messageHistory);
   };
 
   // TEMP: Disable client from receiving messages
@@ -152,34 +158,13 @@ const Messages = () => {
               <Compose
                 onSentMessage={send_message}
                 onSetRecipient={addRecipient}
-              />
+                messages={messageHistory}
+              ></Compose>
             )}
             {compose === false && <h1>hi</h1>}
           </div>
         </div>
       </Content>
-      {/* <Footer style={{ textAlign: "center", padding: "20px 50px" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <input
-            type="text"
-            placeholder="Type your message here..."
-            style={{
-              flex: 1,
-              padding: "10px",
-              border: "1px solid #d9d9d9",
-              borderRadius: "4px",
-              marginRight: "10px",
-            }}
-          />
-          <Button type="primary">Send</Button>
-        </div>
-      </Footer> */}
     </Layout>
   );
 };

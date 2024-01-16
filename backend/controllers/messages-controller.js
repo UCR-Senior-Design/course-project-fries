@@ -49,7 +49,7 @@ const handle_client_activity = () => {
   // Receive new client connection request & handle events
   wss.on("connection", function (connection) {
     console.log("Server received a new connection.");
-    connection.send("Connected to WebSocket server!");
+    // connection.send("Connected to WebSocket server!");
 
     // Event listener for messages
     connection.on("message", (message) => {
@@ -67,7 +67,7 @@ const handle_client_activity = () => {
           JSON.stringify(JSON_msg.recv_id)
         );
       } else if (JSON_msg.type == "disconnect") {
-        disconnect_client(JSON_msg.uid);
+        disconnect_client(JSON.stringify(JSON_msg.uid));
       }
     });
   });

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { Layout, Button } from "antd";
 import styles from "./Compose.module.css";
 import { CloseOutlined } from "@ant-design/icons";
 
-const Compose = ({ onSetRecipient, onSentMessage }) => {
+const Compose = ({ onSetRecipient, onSentMessage, messages }) => {
   const [recipient, setRecipient] = useState("");
   const [enteredMessage, setEnteredMessage] = useState("");
 
@@ -19,6 +20,7 @@ const Compose = ({ onSetRecipient, onSentMessage }) => {
     event.preventDefault();
     await onSetRecipient(recipient);
     onSentMessage(enteredMessage);
+    setEnteredMessage("");
   };
 
   return (
@@ -38,7 +40,32 @@ const Compose = ({ onSetRecipient, onSentMessage }) => {
             ></input>
           </form>
         </div>
-        <div>
+        <div id="compose_message_history" className={styles.messages}>
+          {messages.map((element, index) => (
+            <div key={index}>{element}</div>
+          ))}
+
+          {/* <div id="message_history">
+            {messages.map((element, index) => (
+              <div key={index}>{element}</div>
+            ))}
+          </div> */}
+        </div>
+        <div style={{ textAlign: "center", padding: "20px 50px" }}>
+          <form className={styles.input_msg_form} onSubmit={msg_submit_handler}>
+            <input
+              type="text"
+              placeholder="Type your message here..."
+              className={styles.input_msg}
+              value={enteredMessage}
+              onChange={entered_message_handler}
+            />
+            <Button type="primary" onClick={msg_submit_handler}>
+              Send
+            </Button>
+          </form>
+        </div>
+        {/* <div>
           <form onSubmit={msg_submit_handler}>
             {" "}
             <input
@@ -49,7 +76,7 @@ const Compose = ({ onSetRecipient, onSentMessage }) => {
             ></input>
             <button>Send</button>
           </form>
-        </div>
+        </div> */}
       </div>
     </div>
   );

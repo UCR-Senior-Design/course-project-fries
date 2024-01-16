@@ -8,3 +8,16 @@
     justify-content: space-between;
     padding: 0px 6px 0px 6px;
 }
+
+.input_msg_form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.input_msg {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #d9d9d9; 
+    border-radius: 4px;
+    margin-right: 10px;
+}
