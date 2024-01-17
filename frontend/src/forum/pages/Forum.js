@@ -1,9 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import ForumList from "../components/ForumList";
 import ForumForm from "../components/ForumForm";
 import ForumContext from "../components/common/ForumContext";
+import './Forum.css';
+import NavigationBar from "../../common/components/NavBar";
+import { Layout, Typography, Button } from "antd";
+import { AuthContext } from "../../common/utils/auth";
+const { Content } = Layout;
+const { Text } = Typography;
+
 
 const Forum = () => {
+  const { isLoggedIn } = useContext(AuthContext);
+  const { login, logout } = useContext(AuthContext);
+  login();
+
   const [forumList, setForumList] = useState([]); // Initialize as an empty array
   const [displayForumForm, setDisplayForumForm] = useState(false);
 
@@ -30,19 +41,43 @@ const Forum = () => {
       });
   }, []);
 
-  return <div>
-    <ForumList items={forumList} />
-    <button 
-      onClick={displayForumFormHandler}
-    >New Forum</button>
-    {displayForumForm === true && (
-      <div>
-        <ForumForm 
-          onCancel={closeForumFormHandler}
-        />
-      </div>
-    )}
-  </div>
+  if (!isLoggedIn) {
+    return (
+      <Layout className="layout" style={{ height: "100vh" }}>
+        <NavigationBar isLoggedIn={isLoggedIn} />
+        <Content
+          style={{
+            padding: "0 50px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text>Please login first.</Text>
+        </Content>
+      </Layout>
+    );
+  }
+
+  return (
+    <Layout className="layout" style={{ height: "100vh" }}>
+      <NavigationBar isLoggedIn={isLoggedIn}/>
+      <Content style ={{padding: "0 40px"}}>
+        <ForumList items={forumList} />
+        <button 
+          className="NewForumButton"
+          onClick={displayForumFormHandler}
+        >New Forum</button>
+        {displayForumForm === true && (
+          <div>
+            <ForumForm 
+              onCancel={closeForumFormHandler}
+            />
+          </div>
+        )}
+      </Content>
+    </Layout>
+  )
 };
 
 export default Forum;
