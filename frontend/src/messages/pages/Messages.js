@@ -22,10 +22,32 @@ const Messages = () => {
   const [compose, setCompose] = useState(false);
   const [incomingMsg, setIncomingMsg] = useState("");
   const [messageHistory, setMessageHistory] = useState([]);
+
   useEffect(() => {
+    // Connect to WS Server when Messages page is mounted
     fetch("http://localhost:5000/api/messages/").then((response) =>
       response.json()
     );
+    // Disconnect client from WS Server when page is unloaded (refreshed)
+    // const unload_handler = (event) => {
+    //   console.log(`Client disconnected: ${uid}`);
+    //   sendJsonMessage({
+    //     type: "disconnect",
+    //     uid: uid,
+    //   });
+    // };
+
+    // window.addEventListener("beforeunload", unload_handler);
+
+    // return () => {
+    //   window.removeEventListener("beforeunload", unload_handler);
+    //   // Disconnect client from WS Server when page is unmounted
+    //   console.log(`Client disconnected: ${uid}`);
+    //   sendJsonMessage({
+    //     type: "disconnect",
+    //     uid: uid,
+    //   });
+    // };
   }, []);
 
   // Connect to server
@@ -43,7 +65,7 @@ const Messages = () => {
       setIncomingMsg(lastMessage.data);
       setMessageHistory((messageHistory) => [
         ...messageHistory,
-        lastMessage.data,
+        { text: lastMessage.data, sent: false },
       ]);
     }
   }, [lastMessage]);
@@ -80,7 +102,10 @@ const Messages = () => {
       recv_id: recip,
     });
 
-    setMessageHistory((messageHistory) => [...messageHistory, data]);
+    setMessageHistory((messageHistory) => [
+      ...messageHistory,
+      { text: data, sent: true },
+    ]);
     console.log(messageHistory);
   };
 

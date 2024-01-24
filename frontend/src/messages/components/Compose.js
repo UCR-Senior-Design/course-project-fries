@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Layout, Button } from "antd";
+import cn from "classnames";
 import styles from "./Compose.module.css";
 import { CloseOutlined } from "@ant-design/icons";
 
@@ -20,7 +21,7 @@ const Compose = ({ onSetRecipient, onSentMessage, messages }) => {
     event.preventDefault();
     await onSetRecipient(recipient);
     onSentMessage(enteredMessage);
-    setEnteredMessage("");
+    setEnteredMessage(" ");
   };
 
   return (
@@ -40,16 +41,18 @@ const Compose = ({ onSetRecipient, onSentMessage, messages }) => {
             ></input>
           </form>
         </div>
-        <div id="compose_message_history" className={styles.messages}>
-          {messages.map((element, index) => (
-            <div key={index}>{element}</div>
+        <div id="compose_message_history" className={styles.list}>
+          {messages.map(({ text, sent }) => (
+            <div
+              key={text}
+              className={cn(
+                styles.shared,
+                sent ? styles.sent : styles.received
+              )}
+            >
+              {text}
+            </div>
           ))}
-
-          {/* <div id="message_history">
-            {messages.map((element, index) => (
-              <div key={index}>{element}</div>
-            ))}
-          </div> */}
         </div>
         <div style={{ textAlign: "center", padding: "20px 50px" }}>
           <form className={styles.input_msg_form} onSubmit={msg_submit_handler}>
@@ -65,18 +68,6 @@ const Compose = ({ onSetRecipient, onSentMessage, messages }) => {
             </Button>
           </form>
         </div>
-        {/* <div>
-          <form onSubmit={msg_submit_handler}>
-            {" "}
-            <input
-              type="text"
-              placeholder="Your Message"
-              value={enteredMessage}
-              onChange={entered_message_handler}
-            ></input>
-            <button>Send</button>
-          </form>
-        </div> */}
       </div>
     </div>
   );

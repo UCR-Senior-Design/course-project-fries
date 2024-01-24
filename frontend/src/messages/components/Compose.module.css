@@ -21,3 +21,38 @@
     border-radius: 4px;
     margin-right: 10px;
 }
+
+.list {
+  --sentColor: #bae0ff;
+  --receiveColor: #e5e5ea;
+  --bg: #fff;
+
+  display: flex;
+  flex-direction: column;
+  max-width: 95%;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+.shared {
+  position: relative; /* Setup a relative container for our psuedo elements */
+  max-width: 50%;
+  margin-bottom: 15px;
+  padding: 10px 20px;
+  line-height: 24px;
+  word-wrap: break-word; /* Make sure the text wraps to multiple lines if long */
+  border-radius: 25px;
+
+}
+
+.sent {
+  align-self: flex-end;
+  color: black;
+  background: var(--sentColor);
+}
+
+.received {
+  align-self: flex-start;
+  color: black;
+  background: var(--receiveColor);
+}
