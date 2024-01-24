@@ -17,6 +17,7 @@ const Forum = () => {
 
   const [forumList, setForumList] = useState([]); // Initialize as an empty array
   const [displayForumForm, setDisplayForumForm] = useState(false);
+  const [changeInForums, setChangeInForums] = useState(false);
 
   const displayForumFormHandler = () => {
     setDisplayForumForm(true);
@@ -25,6 +26,14 @@ const Forum = () => {
   const closeForumFormHandler = () => {
     setDisplayForumForm(false);
   };
+
+  const handleDeleteForum = (deletedForumId) => {
+    setChangeInForums(true);
+  }
+
+  const handleUpdateForumList = () => {
+    setChangeInForums(true);
+  }
 
   useEffect(() => {
     fetch('http://localhost:5000/api/forums/forumList')
@@ -39,7 +48,8 @@ const Forum = () => {
       .catch((error) => {
         console.error("Error fetching forum list:", error);
       });
-  }, []);
+      setChangeInForums(false);
+  }, [changeInForums]);
 
   if (!isLoggedIn) {
     return (
@@ -63,7 +73,10 @@ const Forum = () => {
     <Layout className="layout" style={{ height: "100vh" }}>
       <NavigationBar isLoggedIn={isLoggedIn}/>
       <Content style ={{padding: "0 40px"}}>
-        <ForumList items={forumList} />
+        <ForumList 
+          items={forumList} 
+          onDeleteForum={handleDeleteForum}
+        />
         <button 
           className="NewForumButton"
           onClick={displayForumFormHandler}
@@ -72,6 +85,7 @@ const Forum = () => {
           <div>
             <ForumForm 
               onCancel={closeForumFormHandler}
+              onCreateForum={handleUpdateForumList}
             />
           </div>
         )}

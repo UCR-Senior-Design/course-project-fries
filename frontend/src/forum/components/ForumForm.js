@@ -53,17 +53,7 @@ const ForumForm = (props) => {
             throw new Error("Unable to create new forum");
           }
           console.log(response);
-
-          // let newForum_ID;
-          // const newForum = await fetch('http://localhost:5000/api/forums/forumHeadline', {
-          //   method: 'Get',
-          //   body: {
-          //     headline: {newForum_headline}
-          //   }
-          // });
-
-          // newForum_ID = newForum._id
-          // console.log(newForum_ID);
+          props.onCreateForum();
         } catch (err) {
           console.error(err);
         }
