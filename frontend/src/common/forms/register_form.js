@@ -1,14 +1,17 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { Form, Input, Button, notification } from 'antd';
 import axios from 'axios';
 
 const RegisterForm = () => {
+  const history = useHistory();
   const handleRegister = async (values) => {
     try {
       const response = await axios.post('http://localhost:5001/api/users/register', values);
-
-      if (response.data.success) {
+      
+      if (response.status === 201) {
         notification.success({ message: 'Registration successful!' });
+        history.push('/login');
       } else {
         notification.error({ message: 'Registration failed. Please try again.' });
       }

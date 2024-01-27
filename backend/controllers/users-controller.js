@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 exports.login = async (req, res) => {
   try {
-    const {email, password} = req.headers;
+    const {email, password} = req.body;
 
     const user = await UsersController.findOne({email: email});
 
@@ -11,17 +11,21 @@ exports.login = async (req, res) => {
       return res.status(401).json({message: 'Authentication failed'});
     }
 
-    bcrypt.compare(password, user.select('password'), (err, isMatch) => {
-      if (err) {
-        throw err;
-      }
+    try {
+      bcrypt.compare(password, user.password, (err, isMatch) => {
+        if (err) {
+          throw err;
+        }
 
-      if (isMatch) {
-        res.json({message: 'Login successful', token: 'your_token_here'});
-      } else {
-        res.status(401).json({message: 'Authentication failed'});
-      }
-    });
+        if (isMatch) {
+          res.json({message: 'Login successful', token: 'your_token_here'});
+        } else {
+          res.status(401).json({message: 'Authentication failed'});
+        }
+      });
+    } catch (error) {
+      console.log("bcrypt error");
+    }
   } catch (error) {
     res.status(500).json({message: 'Internal server error'});
   }
