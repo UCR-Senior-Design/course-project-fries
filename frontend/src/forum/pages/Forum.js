@@ -2,13 +2,12 @@ import React, { useEffect, useState, useContext } from "react";
 import ForumList from "../components/ForumList";
 import ForumForm from "../components/ForumForm";
 import ForumContext from "../components/common/ForumContext";
-import './Forum.css';
+import "./Forum.css";
 import NavigationBar from "../../common/components/NavBar";
 import { Layout, Typography, Button } from "antd";
 import { AuthContext } from "../../common/utils/auth";
 const { Content } = Layout;
 const { Text } = Typography;
-
 
 const Forum = () => {
   const { isLoggedIn } = useContext(AuthContext);
@@ -29,14 +28,14 @@ const Forum = () => {
 
   const handleDeleteForum = (deletedForumId) => {
     setChangeInForums(true);
-  }
+  };
 
   const handleUpdateForumList = () => {
     setChangeInForums(true);
-  }
+  };
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/forums/forumList')
+    fetch("http://localhost:5001/api/forums/forumList")
       .then((response) => response.json())
       .then((responseJson) => {
         if (Array.isArray(responseJson.forumList)) {
@@ -48,7 +47,7 @@ const Forum = () => {
       .catch((error) => {
         console.error("Error fetching forum list:", error);
       });
-      setChangeInForums(false);
+    setChangeInForums(false);
   }, [changeInForums]);
 
   if (!isLoggedIn) {
@@ -71,19 +70,15 @@ const Forum = () => {
 
   return (
     <Layout className="layout" style={{ height: "100vh" }}>
-      <NavigationBar isLoggedIn={isLoggedIn}/>
-      <Content style ={{padding: "0 40px"}}>
-        <ForumList 
-          items={forumList} 
-          onDeleteForum={handleDeleteForum}
-        />
-        <button 
-          className="NewForumButton"
-          onClick={displayForumFormHandler}
-        >New Forum</button>
+      <NavigationBar isLoggedIn={isLoggedIn} />
+      <Content style={{ padding: "0 40px" }}>
+        <ForumList items={forumList} onDeleteForum={handleDeleteForum} />
+        <button className="NewForumButton" onClick={displayForumFormHandler}>
+          New Forum
+        </button>
         {displayForumForm === true && (
           <div>
-            <ForumForm 
+            <ForumForm
               onCancel={closeForumFormHandler}
               onCreateForum={handleUpdateForumList}
             />
@@ -91,7 +86,7 @@ const Forum = () => {
         )}
       </Content>
     </Layout>
-  )
+  );
 };
 
 export default Forum;
