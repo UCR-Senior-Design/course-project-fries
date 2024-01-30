@@ -5,6 +5,11 @@ import CommentItem from "./CommentItem";
 const IndiForum = (props) => {
   const [commentList, setCommentList] = useState([]);
 
+  const deleteIndiForumHandler = (indiForumIdP) => {
+    props.onDelete(indiForumIdP);
+    props.onCancel();
+  };
+
   const closeIndiForumhandler = (event) => {
     props.onCancel();
   };
@@ -38,7 +43,9 @@ const IndiForum = (props) => {
           <div className="indiForum__initComment">
             InitComment: {props.indiForumInitComment}
           </div>
-          <button>Delete Forum</button>
+          <button
+            onClick={() => deleteIndiForumHandler(props.indiForumIdP)}
+          >Delete Forum</button>
         </div>
 
         <div>
