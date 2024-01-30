@@ -1,11 +1,26 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const appointmentSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  date: Date,
-});
+const Schema = mongoose.Schema;
 
-const Appointment = mongoose.model("Appointment", appointmentSchema);
+const appointmentSchema = new Schema({
+  email: { 
+    type: String, 
+    require: true 
+  },
+  firstName: { 
+    type: String, 
+    require: true 
+  },
+  lastName: { 
+    type: String, 
+    require: true 
+  },
+  slot: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'slot'
+  }
+}, { versionKey: false })
 
-module.exports = Appointment;
+const appointments = mongoose.model('appointment', appointmentSchema);
+
+module.exports = appointments;

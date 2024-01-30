@@ -27,6 +27,7 @@ const NavigationBar = ({ isLoggedIn }) => {
       label: <Link to="/messages">Message</Link>,
     },
     { key: "chatbot", label: <Link to="/chatbot">Chatbot</Link> },
+    { key: "appointments", label: <Link to="/appointments">Appointment</Link>},
     { key: "spacer", label: "", style: { flexGrow: 1 } },
     ...(isLoggedIn
       ? [{ key: "logout", label: "Logout", onClick: handleLogout }]

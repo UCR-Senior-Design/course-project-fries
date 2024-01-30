@@ -54,16 +54,8 @@ const ForumForm = (props) => {
         }
         console.log(response);
 
-        // let newForum_ID;
-        // const newForum = await fetch('http://localhost:5001/api/forums/forumHeadline', {
-        //   method: 'Get',
-        //   body: {
-        //     headline: {newForum_headline}
-        //   }
-        // });
+        props.onCreateForum();
 
-        // newForum_ID = newForum._id
-        // console.log(newForum_ID);
       } catch (err) {
         console.error(err);
       }

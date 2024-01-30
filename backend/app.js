@@ -15,6 +15,10 @@ const usersRoutes = require("./routes/users-routes");
 
 const app = express();
 
+// Solve CORS
+const cors = require('cors')
+app.use(cors())
+
 // Parse req body, extract json/convert to JS before using route
 app.use(bodyParser.json());
 
