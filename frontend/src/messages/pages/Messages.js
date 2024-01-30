@@ -23,7 +23,7 @@ const Messages = () => {
   const [incomingMsg, setIncomingMsg] = useState("");
   const [messageHistory, setMessageHistory] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:5000/api/messages/").then((response) =>
+    fetch("http://localhost:5001/api/messages/").then((response) =>
       response.json()
     );
   }, []);
