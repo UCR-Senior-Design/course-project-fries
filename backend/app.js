@@ -15,6 +15,10 @@ const usersRoutes = require("./routes/users-routes");
 
 const app = express();
 
+// Solve CORS
+const cors = require('cors')
+app.use(cors())
+
 // Parse req body, extract json/convert to JS before using route
 app.use(bodyParser.json());
 
@@ -55,7 +59,7 @@ mongoose
     "mongodb+srv://cs178:fries@fries.d7odjp0.mongodb.net/MedShare?retryWrites=true&w=majority" // Connect to database with connection string
   )
   .then(() => {
-    app.listen(5000); // If connection to DB succeeds, start backend server
+    app.listen(5001); // If connection to DB succeeds, start backend server
   })
   .catch((err) => {
     console.log(err);
