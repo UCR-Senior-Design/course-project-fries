@@ -2,7 +2,7 @@ const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
 const http = require("http");
 const { start } = require("repl");
-// const WebSocketServer = require("ws");
+const { DateTime } = require("luxon");
 const ws = require("ws");
 // All active connections
 const clients = {};
@@ -32,7 +32,12 @@ const send_msg = (JSON_msg, uid, recv_id) => {
   }
   // Sender sends recipient message
   else {
-    clients[recv_id].send(JSON.stringify(JSON_msg));
+    const combined_data = JSON.stringify({
+      msg: JSON_msg,
+      timestamp: DateTime.now().toISO(),
+    });
+
+    clients[recv_id].send(combined_data);
   }
 };
 

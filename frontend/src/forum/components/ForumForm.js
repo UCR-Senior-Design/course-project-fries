@@ -53,7 +53,9 @@ const ForumForm = (props) => {
           throw new Error("Unable to create new forum");
         }
         console.log(response);
+
         props.onCreateForum();
+
       } catch (err) {
         console.error(err);
       }
