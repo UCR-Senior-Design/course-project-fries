@@ -1,81 +1,105 @@
-// Import necessary modules
-const express = require('express');
-const router = express.Router();
+const moment = require('moment');
 
-// Sample data - You would typically interact with a database here
-let appointments = [
-  { id: 1, title: "Meeting 1", date: "2023-01-01" },
-  { id: 2, title: "Meeting 2", date: "2023-02-01" },
-];
+const appointmentModel = require('../models/appointmentModel');
+const slotModel = require('../models/slotModel');
 
-// Route to get all appointments
-router.get("/", (req, res) => {
-  res.json(appointments);
-});
+module.exports = {
+  findAllAppointments,
+  addAppointment,
+  editAppointment,
+  deleteAppointment
+}
 
-// Route to get a specific appointment by ID
-router.get("/:id", (req, res) => {
-  const appointmentId = parseInt(req.params.id);
-  const appointment = appointments.find(app => app.id === appointmentId);
+function findAllAppointments(req, res) {
+  appointmentModel.find((error, data) => {
+    if (error) {
+      res.status(500).json({ 
+        message: 'error fetching appointments',
+        error: error
+      });
+    } else {
+      res.status(200).json(data);   
+    }
+  })
+}
 
-  if (!appointment) {
-    res.status(404).json({ error: "Appointment not found" });
-  } else {
-    res.json(appointment);
-  }
-});
+function addAppointment (req, res) {
+  const input = req.body;
 
-// Route to create a new appointment
-router.post("/", (req, res) => {
-  const { title, date } = req.body;
+  const newSlot = new slotModel({
+    slotTime: input.slotTime,
+    slotDate: moment(input.slotDate).format('MM-DD-YYYY')
+  })
 
-  // Validate input
-  if (!title || !date) {
-    res.status(400).json({ error: "Title and date are required" });
-    return;
-  }
+  newSlot.save();
 
-  // Create a new appointment
-  const newAppointment = {
-    id: appointments.length + 1,
-    title,
-    date,
-  };
+  const newAppointment = new appointmentModel({
+    email: input.email,
+    firstName: input.firstName,
+    lastName: input.lastName,
+    slots: newSlot._id
+  })
 
-  appointments.push(newAppointment);
+  newAppointment.save((error, data) => {
+    if (error) {
+      res.status(500).json({ 
+        message: 'error creating appointment',
+        error: error
+      });
+    } else {
+      res.status(201).json(data);
+    }
+  })
+}
 
-  res.status(201).json(newAppointment);
-});
+function editAppointment(req, res) {
+  const id = req.params.id;
+  const input = req.body;
 
-// Route to update an existing appointment
-router.put("/:id", (req, res) => {
-  const appointmentId = parseInt(req.params.id);
-  const { title, date } = req.body;
+  appointmentModel.findOne({ _id: id}, (error, data) => {
+    if (error) {
+      res.status(500).json({ 
+        message: 'error fetching appointment',
+        error: error
+      });
+    } else if (!data) {
+      res.status(404).json({ 
+        message: 'no appointment of such id exists',
+      });
+    }
 
-  // Find the appointment to update
-  const appointment = appointments.find(app => app.id === appointmentId);
+    const updatedAppointment = data;
+    updatedAppointment.email = input.email;
+    updatedAppointment.firstName = input.firstName;
+    updatedAppointment.lastName = input.lastName;
+    updatedAppointment.slots = input.slots;
 
-  if (!appointment) {
-    res.status(404).json({ error: "Appointment not found" });
-    return;
-  }
+    updatedAppointment.save((error1, data1) => {
+      if (error1) {
+        res.status(500).json({ 
+          message: 'error updating appointment',
+          error: error1
+        });
+      } else {
+        res.status(201).json(data1);
+      }
+    })
+  })
+}
 
-  // Update appointment details
-  appointment.title = title || appointment.title;
-  appointment.date = date || appointment.date;
+function deleteAppointment(req, res) {
+  const id = req.params.id;
 
-  res.json(appointment);
-});
-
-// Route to delete an appointment
-router.delete("/:id", (req, res) => {
-  const appointmentId = parseInt(req.params.id);
-
-  // Filter out the appointment to delete
-  appointments = appointments.filter(app => app.id !== appointmentId);
-
-  res.json({ message: "Appointment deleted successfully" });
-});
-
-// Export the router
-module.exports = router;
+  appointmentModel.findOneAndRemove({ _id: id }, (error, data) => {
+    if (error) {
+      res.status(500).json({ 
+        message: 'error deleting appointment',
+        error: error
+      });
+    } else if (!data) {
+      res.status(404).json('no appointment of such id exists')
+    } else {
+      res.status(200).json({ removed: data });    
+    }
+  })
+}
