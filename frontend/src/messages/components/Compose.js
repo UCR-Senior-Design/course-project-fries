@@ -42,7 +42,7 @@ const Compose = ({ onSetRecipient, onSentMessage, messages }) => {
           </form>
         </div>
         <div id="compose_message_history" className={styles.list}>
-          {messages.map(({ text, sent }) => (
+          {messages.map(({ text, sent, timestamp }) => (
             <div
               key={text}
               className={cn(
@@ -50,7 +50,9 @@ const Compose = ({ onSetRecipient, onSentMessage, messages }) => {
                 sent ? styles.sent : styles.received
               )}
             >
-              {text}
+              <div className={styles.timestamp}>{timestamp}</div>
+              <div>{text}</div>
+              {/* {text} */}
             </div>
           ))}
         </div>

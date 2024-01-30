@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import NavigationBar from "../../common/components/NavBar";
 import { AuthContext } from "../../common/utils/auth";
 import { EditOutlined, InboxOutlined, SendOutlined } from "@ant-design/icons";
+import { DateTime } from "luxon";
 const { Content, Sider, Footer } = Layout;
 const { Text } = Typography;
 
@@ -20,12 +21,11 @@ const Messages = () => {
   const [recipient, setRecipient] = useState("");
   const [uid, setUid] = useState(""); // TODO: replace with what you get from login
   const [compose, setCompose] = useState(false);
-  const [incomingMsg, setIncomingMsg] = useState("");
   const [messageHistory, setMessageHistory] = useState([]);
 
   useEffect(() => {
     // Connect to WS Server when Messages page is mounted
-    fetch("http://localhost:5000/api/messages/").then((response) =>
+    fetch("http://localhost:5001/api/messages/").then((response) =>
       response.json()
     );
     // Disconnect client from WS Server when page is unloaded (refreshed)
@@ -62,10 +62,14 @@ const Messages = () => {
   useEffect(() => {
     if (lastMessage !== null && lastMessage.data) {
       console.log("lastMessage: ", lastMessage.data);
-      setIncomingMsg(lastMessage.data);
+      const parsed_data = JSON.parse(lastMessage.data);
       setMessageHistory((messageHistory) => [
         ...messageHistory,
-        { text: lastMessage.data, sent: false },
+        {
+          text: parsed_data.msg,
+          sent: false,
+          timestamp: parsed_data.timestamp,
+        },
       ]);
     }
   }, [lastMessage]);
@@ -104,7 +108,7 @@ const Messages = () => {
 
     setMessageHistory((messageHistory) => [
       ...messageHistory,
-      { text: data, sent: true },
+      { text: data, sent: true, timestamp: DateTime.now().toISO() },
     ]);
     console.log(messageHistory);
   };
