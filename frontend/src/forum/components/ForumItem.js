@@ -46,11 +46,13 @@ const ForumItem = (props) => {
               <IndiForum
                 className="chosenIndiForum"
                 indiForumId={chosenIndiForum}
+                indiForumIdP={props.fid}
                 indiForumCreator={props.creator}
                 indiForumHeadline={props.headline}
                 indiForumTopic={props.topic}
                 indiForumInitComment={props.initComment}
                 onCancel={closeIndiForumHandler}
+                onDelete={deleteForumHandler}
               />
             </div>
           )}
