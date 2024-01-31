@@ -29,6 +29,10 @@ const IndiForum = (props) => {
     setDisplayCommentForum(false);
   };
 
+  const handleDeleteComment = () => {
+    setChangeInIndiForum(true);
+  }
+
   useEffect(() => {
     fetch(`http://localhost:5001/api/comments/forumID/${props.indiForumId}`)
       .then((response) => response.json())
@@ -75,6 +79,7 @@ const IndiForum = (props) => {
                 time_stamp={comment.time_stamp}
                 onCancel={closeCommentFormHandler}
                 onCreateComment={handleUpdateIndiForumList}
+                onDeleteComment={handleDeleteComment}
               />
             ))}
           </ul>

@@ -1,6 +1,17 @@
 import React , { useState, useEffect } from "react";
 
 const CommentItem = (props) => {
+    const deleteCommentHandler = (commentId) => {
+        fetch(`http://localhost:5001/api/comments/deleteComment/${commentId}`, {
+            method: "DELETE",
+        }).then((response) => {
+            if (!response.ok) {
+                console.log("error with deleteCommentHandler");
+            }
+            console.log(response);
+            props.onDeleteComment(commentId)
+        })
+    }
 
     return (
         <li className='comment-item'>
@@ -16,7 +27,9 @@ const CommentItem = (props) => {
                     User can only delete their own comments
                     */
                     }
-                    <button>
+                    <button
+                        onClick={() => deleteCommentHandler(props.cid)}
+                    >
                         Delete Comment
                     </button>
                 </div>
