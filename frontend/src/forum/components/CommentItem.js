@@ -28,9 +28,15 @@ const CommentItem = (props) => {
                     */
                     }
                     <button
+                        className="commentForm_button"
                         onClick={() => deleteCommentHandler(props.cid)}
                     >
                         Delete Comment
+                    </button>
+                    <button
+                        className="commentForm_button"
+                    >
+                        Reply to {props.creator}
                     </button>
                 </div>
             </div>
