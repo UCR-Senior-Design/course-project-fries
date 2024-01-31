@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Modal from "./common/Modal";
 import CommentItem from "./CommentItem";
+import CommentForm from "./CommentForm";
 
 const IndiForum = (props) => {
   const [commentList, setCommentList] = useState([]);
+  const [changeInIndiForum, setChangeInIndiForum] = useState(false);
+  const [displayCommentForm, setDisplayCommentForum] = useState(false);
+
+  const handleUpdateIndiForumList = () => {
+    setChangeInIndiForum(true);
+  }
 
   const deleteIndiForumHandler = (indiForumIdP) => {
     props.onDelete(indiForumIdP);
@@ -12,6 +19,14 @@ const IndiForum = (props) => {
 
   const closeIndiForumhandler = (event) => {
     props.onCancel();
+  };
+
+  const displayCommentFormHandler = () => {
+    setDisplayCommentForum(true);
+  };
+
+  const closeCommentFormHandler = () => {
+    setDisplayCommentForum(false);
   };
 
   useEffect(() => {
@@ -27,7 +42,8 @@ const IndiForum = (props) => {
       .catch((error) => {
         console.error("Error fetching comment list:", error);
       });
-  }, []);
+      setChangeInIndiForum(false);
+  }, [changeInIndiForum]);
 
   return (
     <div>
@@ -57,9 +73,26 @@ const IndiForum = (props) => {
                 creator={comment.creator}
                 text={comment.comment_text}
                 time_stamp={comment.time_stamp}
+                onCancel={closeCommentFormHandler}
+                onCreateComment={handleUpdateIndiForumList}
               />
             ))}
           </ul>
+          <button 
+            className="NewCommentButton"
+            onClick={displayCommentFormHandler}
+          >
+            New Comment
+          </button>
+          {displayCommentForm === true && (
+            <div>
+              <CommentForm
+                onCancel={closeCommentFormHandler}
+                onCreateComment={handleUpdateIndiForumList}
+                fid={props.indiForumIdP}
+              />
+            </div>
+          )}
         </div>
 
         <button onClick={closeIndiForumhandler}>Close</button>

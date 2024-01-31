@@ -73,7 +73,10 @@ const Forum = () => {
       <NavigationBar isLoggedIn={isLoggedIn} />
       <Content style={{ padding: "0 40px" }}>
         <ForumList items={forumList} onDeleteForum={handleDeleteForum} />
-        <button className="NewForumButton" onClick={displayForumFormHandler}>
+        <button 
+          className="NewForumButton" 
+          onClick={displayForumFormHandler}
+        >
           New Forum
         </button>
         {displayForumForm === true && (
