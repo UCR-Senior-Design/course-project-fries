@@ -8,6 +8,8 @@ const forum_schema = new Schema({
   headline: { type: String, required: true },
   initComment: { type: String, required: true},
   topic: { type: String, required: true },
+  thumbsUp: {type: Number, default: 0,},
+  thumbsDown: {type: Number, default: 0}
 });
 
 module.exports = mongoose.model("Forum", forum_schema);

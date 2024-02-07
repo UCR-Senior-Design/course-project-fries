@@ -102,7 +102,7 @@ const updateComment = async (req, res, next) => {
     );
   }
   // TODO make edits update the time stamp as well
-  const { comment_text } = req.body;
+  const { comment_text, up_votes, down_votes } = req.body;
   const commentId = req.params.cid;
 
   let comment;
@@ -117,6 +117,8 @@ const updateComment = async (req, res, next) => {
   }
 
   comment.comment_text = comment_text;
+  comment.up_votes = up_votes;
+  comment.down_votes = down_votes;
 
   try {
     await comment.save();

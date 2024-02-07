@@ -72,7 +72,11 @@ const Forum = () => {
     <Layout className="layout" style={{ height: "100vh" }}>
       <NavigationBar isLoggedIn={isLoggedIn} />
       <Content style={{ padding: "0 40px" }}>
-        <ForumList items={forumList} onDeleteForum={handleDeleteForum} />
+        <ForumList 
+          items={forumList} 
+          onDeleteForum={handleDeleteForum} 
+          onUpdateForum={handleUpdateForumList}
+        />
         <button 
           className="NewForumButton" 
           onClick={displayForumFormHandler}

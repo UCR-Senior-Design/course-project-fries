@@ -7,6 +7,8 @@ const IndiForum = (props) => {
   const [commentList, setCommentList] = useState([]);
   const [changeInIndiForum, setChangeInIndiForum] = useState(false);
   const [displayCommentForm, setDisplayCommentForum] = useState(false);
+  const [likedForum, setLikedForum] = useState(false);
+  const [dislikedForum, setDislikedForum] = useState(false);
 
   const handleUpdateIndiForumList = () => {
     setChangeInIndiForum(true);
@@ -14,10 +16,6 @@ const IndiForum = (props) => {
 
   const deleteIndiForumHandler = (indiForumIdP) => {
     props.onDelete(indiForumIdP);
-    props.onCancel();
-  };
-
-  const closeIndiForumhandler = (event) => {
     props.onCancel();
   };
 
@@ -31,7 +29,69 @@ const IndiForum = (props) => {
 
   const handleDeleteComment = () => {
     setChangeInIndiForum(true);
+  };
+
+  const handleUpdateForum = () => {
+    props.onUpdateForum();
+  };
+
+  const closeIndiForumhandler = async (event) => {
+    if (likedForum || dislikedForum) {
+      let forumData;
+      if (dislikedForum) {
+        forumData = {
+          creator: props.indiForumCreator,
+          headline: props.indiForumHeadline,
+          initComment: props.indiForumInitComment,
+          topic: props.indiForumTopic,
+          thumbsUp: props.indiForumThumbsUp,
+          thumbsDown: props.indiForumThumbsDown + 1,
+        }
+      } else if (likedForum) {
+        forumData = {
+          creator: props.indiForumCreator,
+          headline: props.indiForumHeadline,
+          initComment: props.indiForumInitComment,
+          topic: props.indiForumTopic,
+          thumbsUp: props.indiForumThumbsUp + 1,
+          thumbsDown: props.indiForumThumbsDown,
+        }
+      }
+      try {
+        const response = await fetch(`http://localhost:5001/api/forums/editForum/${props.indiForumId}`, {
+        method: "PATCH",
+        body: JSON.stringify(forumData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("unable to patch forum");
+      }
+      console.log(response);
+    } catch (err) {
+      console.error(err);
+    }
+    handleUpdateForum();
+    }
+    props.onCancel();
   }
+
+  const handleDislikeButton = () => {
+    if (dislikedForum) {
+      setDislikedForum(false);
+    } else {
+      setDislikedForum(true);
+    }
+  };
+
+  const handleLikeButton = () => {
+    if (likedForum) {
+      setLikedForum(false);
+    } else {
+      setLikedForum(true);
+    }
+  };
 
   useEffect(() => {
     fetch(`http://localhost:5001/api/comments/forumID/${props.indiForumId}`)
@@ -60,12 +120,35 @@ const IndiForum = (props) => {
             Headline: {props.indiForumHeadline}
           </div>
           <div className="indiForum__topic">Topic: {props.indiForumTopic}</div>
-          <div className="indiForum__initComment">
-            InitComment: {props.indiForumInitComment}
-          </div>
+          <div className="indiForum__initComment">InitComment: {props.indiForumInitComment}</div>
+          <div className="indiForumLikes">Upvotes {props.indiForumThumbsUp}</div>
+          <div className="indiForumDislikes">Downvotes {props.indiForumThumbsDown}</div>
           <button
             onClick={() => deleteIndiForumHandler(props.indiForumIdP)}
-          >Delete Forum</button>
+          >
+            Delete Forum
+          </button>
+          {dislikedForum === false && (
+            <div>
+              <button
+                className="IndiForum__thumbsUp"
+                onClick={handleLikeButton}
+              >
+                Upvote
+              </button>
+            </div>
+          )}
+          {likedForum === false && (
+            <div>
+              <button
+                className="IndiForum__thumbsDown"
+                onClick={handleDislikeButton}
+              >
+                Downvote
+              </button>
+            </div>
+          )}
+          
         </div>
 
         <div>
@@ -77,6 +160,8 @@ const IndiForum = (props) => {
                 creator={comment.creator}
                 text={comment.comment_text}
                 time_stamp={comment.time_stamp}
+                up_votes={comment.up_votes}
+                down_votes={comment.down_votes}
                 onCancel={closeCommentFormHandler}
                 onCreateComment={handleUpdateIndiForumList}
                 onDeleteComment={handleDeleteComment}

@@ -35,6 +35,8 @@ const ForumItem = (props) => {
           <h2 className="forum-item__headline">{props.headline}</h2>
           <h2 className="forum-item__topic">{props.topic}</h2>
           <h2 className="forum-item__initComment">{props.initComment}</h2>
+          <h2 className="forum-item__likes">Upvotes: {props.thumbsUp}</h2>
+          <h2 className="forum-item__likes">Downvotes: {props.thumbsDown}</h2>
           <button
             className="forum-item__button"
             onClick={() => displayIndiForumHandler(props.fid)}
@@ -51,8 +53,11 @@ const ForumItem = (props) => {
                 indiForumHeadline={props.headline}
                 indiForumTopic={props.topic}
                 indiForumInitComment={props.initComment}
+                indiForumThumbsUp={props.thumbsUp}
+                indiForumThumbsDown={props.thumbsDown}
                 onCancel={closeIndiForumHandler}
                 onDelete={deleteForumHandler}
+                onUpdateForum={props.onUpdateForum}
               />
             </div>
           )}
