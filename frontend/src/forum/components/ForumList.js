@@ -17,7 +17,10 @@ const ForumList = (props, onClick) => {
           headline={forum.headline}
           topic={forum.topic}
           initComment={forum.initComment}
+          rating={forum.rating}
+          anon={forum.anon}
           onDeleteForum={props.onDeleteForum}
+          onUpdateForum={props.onUpdateForum}
         />
       ))}
     </ul>

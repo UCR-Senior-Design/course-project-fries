@@ -6,6 +6,7 @@ import "./Forum.css";
 import NavigationBar from "../../common/components/NavBar";
 import { Layout, Typography, Button } from "antd";
 import { AuthContext } from "../../common/utils/auth";
+import SearchBar from "../components/SearchBar";
 const { Content } = Layout;
 const { Text } = Typography;
 
@@ -72,7 +73,12 @@ const Forum = () => {
     <Layout className="layout" style={{ height: "100vh" }}>
       <NavigationBar isLoggedIn={isLoggedIn} />
       <Content style={{ padding: "0 40px" }}>
-        <ForumList items={forumList} onDeleteForum={handleDeleteForum} />
+        {/* <SearchBar/> */}
+        <ForumList 
+          items={forumList} 
+          onDeleteForum={handleDeleteForum} 
+          onUpdateForum={handleUpdateForumList}
+        />
         <button 
           className="NewForumButton" 
           onClick={displayForumFormHandler}

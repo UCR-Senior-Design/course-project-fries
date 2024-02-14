@@ -31,10 +31,17 @@ const ForumItem = (props) => {
     <li className="forum-item">
       <div className="forum-item__content">
         <div className="forum-item__info">
-          <h2 className="forum-item__creator">{props.creator}</h2>
+          {props.anon === true && (
+            <h2 className="forum-item__creator">anonymous</h2>
+          )}
+          {props.anon === false && (
+            <h2 className="forum-item__creator">{props.creator}</h2>
+          )}
           <h2 className="forum-item__headline">{props.headline}</h2>
           <h2 className="forum-item__topic">{props.topic}</h2>
           <h2 className="forum-item__initComment">{props.initComment}</h2>
+          <h2 className="forum-item__rating">Rating: {props.rating}</h2>
+          <h2 className="forum-item__anon">Anonymous?: {JSON.stringify(props.anon)}</h2>
           <button
             className="forum-item__button"
             onClick={() => displayIndiForumHandler(props.fid)}
@@ -51,8 +58,14 @@ const ForumItem = (props) => {
                 indiForumHeadline={props.headline}
                 indiForumTopic={props.topic}
                 indiForumInitComment={props.initComment}
+                indiForumThumbsUp={props.thumbsUp}
+                indiForumThumbsDown={props.thumbsDown}
                 onCancel={closeIndiForumHandler}
                 onDelete={deleteForumHandler}
+                onUpdateForum={props.onUpdateForum}
+                indiForum={props.indiForum}
+                rating={props.rating}
+                anon={props.anon}
               />
             </div>
           )}

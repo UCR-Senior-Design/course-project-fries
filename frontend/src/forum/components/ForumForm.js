@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import Modal from "./common/Modal";
 import ForumContext from "./common/ForumContext";
+import { Switch } from 'antd';
 
 const ForumForm = (props) => {
   const [newForum_creator, setNewForum_creator] = useState(""); // Change later for login
   const [newForum_headline, setNewForum_headline] = useState("");
   const [newForum_topic, setNewForum_topic] = useState("");
   const [newForum_initComment, setNewForum_initComment] = useState("");
+  const [newForum_anon, setNewForum_anon] = useState(false);
 
   const creatorChangeHandler = (event) => {
     setNewForum_creator(event.target.value);
@@ -28,19 +30,24 @@ const ForumForm = (props) => {
     props.onCancel();
   };
 
+  const changeAnonHandler = (checked) => {
+    setNewForum_anon((prevAnon) => !prevAnon);
+  };
+
   const formSubmitHandler = async (event) => {
     event.preventDefault();
     props.onCancel();
     // Add if for if not editting?
     let forumData;
+    console.log("newForum_anon", newForum_anon);
     try {
       forumData = {
         creator: newForum_creator,
         headline: newForum_headline,
         initComment: newForum_initComment,
         topic: newForum_topic,
+        anon: newForum_anon
       };
-      console.log(`forumData: ${JSON.stringify(forumData)}`);
       try {
         const response = await fetch("http://localhost:5001/api/forums", {
           method: "POST",
@@ -62,6 +69,7 @@ const ForumForm = (props) => {
     } catch (err) {
       console.error(err);
     }
+    console.log(`forumData: ${JSON.stringify(forumData)}`);
   };
 
   return (
@@ -101,6 +109,8 @@ const ForumForm = (props) => {
               onChange={initCommentChangeHandler}
             />
           </div>
+          <label>Post anonymously?</label>
+          <Switch onChange={changeAnonHandler}/>
           <div>
             <button onSubmit={formSubmitHandler}>Post</button>
             <button onClick={closeFormHandler}>Cancel</button>

@@ -24,7 +24,7 @@ router.get(
 
 // GET forum by Topic
 router.get(
-    "/forumTopic",
+    "/forumTopic/:topic",
     forumController.getForumByTopic
 )
 
