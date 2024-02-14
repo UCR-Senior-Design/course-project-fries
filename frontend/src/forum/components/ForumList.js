@@ -21,6 +21,7 @@ const ForumList = (props, onClick) => {
           thumbsDown={forum.thumbsDown}
           onDeleteForum={props.onDeleteForum}
           onUpdateForum={props.onUpdateForum}
+          indiForum={forum}
         />
       ))}
     </ul>

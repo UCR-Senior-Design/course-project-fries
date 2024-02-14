@@ -2,6 +2,7 @@ const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
 const { v4: uuidv4 } = require("uuid");
 const Comment = require("../models/comment");
+const Forum = require("../models/forum");
 
 
 // Create comment
@@ -13,13 +14,12 @@ const createComment = async (req, res, next) => {
     );
   }
 
-  const { creator, forum_id, comment_text, time_stamp } = req.body;
+  const { creator, forumId, comment_text } = req.body;
 
   const createdComment = new Comment({
     creator,
-    forum_id,
+    forum: forumId,
     comment_text,
-    time_stamp,
   });
 
   try {
@@ -52,18 +52,19 @@ const getCommentListByCreator = async (req, res, next) => {
 
 // GET list of comments by forum
 const getCommentListByForumId = async (req, res, next) => {
-  let commentList;
   try {
-    commentList = await Comment.find({forum_id: req.params.fid});
+    const commentList = await Comment.find({ forum: req.params.fid }).populate('forum');
+    res.json({ commentList: commentList.map(comment => comment.toObject({ getters: true })) });
   } catch (err) {
+    console.error("Error fetching comments:", err);
     const error = new HttpError(
       'Could not find any comments',
       500
     );
     return next(error);
   }
-  res.json({ commentList: commentList.map(comment => comment.toObject({ getters: true })) });
 };
+  
 
 // Get comment by ID
 const getCommentById = async (req, res, next) => {

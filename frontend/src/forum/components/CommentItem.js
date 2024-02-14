@@ -3,6 +3,15 @@ import React , { useState, useEffect } from "react";
 const CommentItem = (props) => {
     const [commentsVotedOnList, setCommentsList] = useState([]);
 
+    const upVoteHandler = (cid) => {
+        if (commentsVotedOnList.includes([cid, true]) || commentsVotedOnList.includes([cid, false])) {
+            alert("Already voted on this comment");
+            return;
+        }
+        setCommentsList(prevList => [...prevList, [cid, true]]);
+        props.onUpdateComment();
+    };
+
     const deleteCommentHandler = (commentId) => {
         fetch(`http://localhost:5001/api/comments/deleteComment/${commentId}`, {
             method: "DELETE",
@@ -13,7 +22,7 @@ const CommentItem = (props) => {
             console.log(response);
             props.onDeleteComment(commentId)
         })
-    }
+    };
 
     return (
         <li className='comment-item'>
@@ -29,21 +38,25 @@ const CommentItem = (props) => {
                     /*
                     Change once login is completed
                     User can only delete their own comments
+                    User can only upvote/downvote once per comment
                     */
                     }
+                    {!commentsVotedOnList.includes([props.cid, true]) && (
+                        <div>
+                            <button
+                                className="commentUpvoteButton"
+                                onClick={() => upVoteHandler(props.cid)}
+                            >
+                                Upvote
+                            </button>
+                            <button
+                                className="commentDownvoteButton"
 
-                    <button
-                        className="commentUpvoteButton"
-                        
-                    >
-                        Upvote
-                    </button>
-                    <button
-                        className="commentDownvoteButton"
-                        
-                    >
-                        Downvote
-                    </button>
+                            >
+                                Downvote
+                            </button>
+                        </div>
+                    )}
                     <button
                         className="commentForm_button"
                         onClick={() => deleteCommentHandler(props.cid)}

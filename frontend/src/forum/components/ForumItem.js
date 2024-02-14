@@ -58,6 +58,7 @@ const ForumItem = (props) => {
                 onCancel={closeIndiForumHandler}
                 onDelete={deleteForumHandler}
                 onUpdateForum={props.onUpdateForum}
+                indiForum={props.indiForum}
               />
             </div>
           )}

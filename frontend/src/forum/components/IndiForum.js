@@ -165,6 +165,7 @@ const IndiForum = (props) => {
                 onCancel={closeCommentFormHandler}
                 onCreateComment={handleUpdateIndiForumList}
                 onDeleteComment={handleDeleteComment}
+                onUpdateComment={handleUpdateForum}
               />
             ))}
           </ul>
@@ -180,6 +181,7 @@ const IndiForum = (props) => {
                 onCancel={closeCommentFormHandler}
                 onCreateComment={handleUpdateIndiForumList}
                 fid={props.indiForumIdP}
+                indiForum={props.indiForum}
               />
             </div>
           )}

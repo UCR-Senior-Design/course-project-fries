@@ -21,32 +21,28 @@ const CommentForm = (props) => {
     event.preventDefault();
     props.onCancel();
     // Add if for if not editting?
-    let commentData;
+    let fid;
+    fid = props.fid;
     try {
-      commentData = {
-        creator: newComment_creator,
-        forum_id: props.fid,
-        comment_text: newComment_text,
-      };
-      console.log(`forumData: ${JSON.stringify(commentData)}`);
-      try {
-        const response = await fetch("http://localhost:5001/api/comments", {
-          method: "POST",
-          body: JSON.stringify(commentData),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        if (!response.ok) {
-          throw new Error("Unable to create new forum");
-        }
-        console.log(response);
-
-        props.onCreateComment();
-
-      } catch (err) {
-        console.error(err);
+      const response = await fetch("http://localhost:5001/api/comments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          creator: newComment_creator,
+          forumId: fid,
+          comment_text: newComment_text,
+        }),
+        
+      });
+      if (!response.ok) {
+        throw new Error("Unable to create new forum");
       }
+      console.log(response);
+
+      props.onCreateComment();
+
     } catch (err) {
       console.error(err);
     }
