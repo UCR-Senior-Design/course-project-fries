@@ -83,6 +83,7 @@ const create_conversation = async (req, res, next) => {
     throw new HttpError("Invalid inputs passed, check your data.", 422);
   }
   const { sender, recipient, title } = req.body;
+  console.log("create_conversation fxn line 86:");
   console.log(req.body);
   const created_conversation = new Conversation({
     sender: sender,
@@ -100,43 +101,32 @@ const create_conversation = async (req, res, next) => {
   }
   res.status(201).json({ created_conversation });
 };
+
 const save_message = async (req, res, next) => {
-  // const errors = validationResult(req);
-  // if (!errors.isEmpty()) {
-  //   throw new HttpError("Invalid inputs passed, check your data.", 422);
-  // }
-  // const () = req.body;
-  // const message = new Message ({
-  // });
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new HttpError("Invalid inputs passed, check your data.", 422);
+  }
+  const { conversation_id, sender, text, timestamp } = req.body;
+  console.log("save_message fxn line 111:");
+  console.log(req.body);
+  const created_message = new Message({
+    conversation_id: conversation_id,
+    sender: sender,
+    text: text,
+    timestamp: timestamp,
+  });
+  try {
+    await created_message.save();
+  } catch (err) {
+    const error = new HttpError(
+      "Creating Message failed, please try again",
+      500
+    );
+    return next(error);
+  }
+  res.status(201).json({ created_message });
 };
-
-// POST Patient
-// const create_patient = async (req, res, next) => {
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     throw new HttpError("Invalid inputs passed, check your data.", 422);
-//   }
-
-//   const { firstname, lastname, username, password, email, doctor_ids } =
-//     req.body;
-//   const created_patient = new Patient({
-//     firstname,
-//     lastname,
-//     username,
-//     password,
-//     email,
-//     doctor_ids,
-//   });
-
-//   try {
-//     await created_patient.save(); // Mongoose method to store document in DB, create unique userid
-//   } catch (err) {
-//     const error = new HttpError("Creating User failed, please try again", 500);
-//     return next(error);
-//   }
-
-//   res.status(201).json({ created_patient });
-// };
 
 exports.handle_client_activity = handle_client_activity;
 exports.create_conversation = create_conversation;

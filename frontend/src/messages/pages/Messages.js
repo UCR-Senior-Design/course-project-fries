@@ -17,10 +17,10 @@ const Messages = () => {
   const { login } = useContext(AuthContext);
   login();
   //
-  const [outgoingMessage, setOutgoingMessage] = useState("");
   const [recipient, setRecipient] = useState("");
   const [uid, setUid] = useState(""); // TODO: replace with what you get from login
   const [compose, setCompose] = useState(false);
+  const [viewthread, setViewThread] = useState(false);
   const [messageHistory, setMessageHistory] = useState([]);
 
   useEffect(() => {
@@ -93,23 +93,42 @@ const Messages = () => {
 
   // Send messages to server
   const send_message = (enteredMessage, conversation_id, recipient) => {
-    setOutgoingMessage(enteredMessage);
+    // Send message to recipient in WS
     sendJsonMessage({
       type: "client_msg",
       content: enteredMessage,
       uid: uid,
       recv_id: recipient,
     });
-    console.log(enteredMessage);
-    console.log(conversation_id);
+
+    const timestamp_ = DateTime.now().toISO();
+    // Add message to frontend message thread
     setMessageHistory((messageHistory) => [
       ...messageHistory,
-      { text: enteredMessage, sent: true, timestamp: DateTime.now().toISO() },
+      { text: enteredMessage, sent: true, timestamp: timestamp_ },
     ]);
-    // Post message to DB
-    // fetch("http://localhost:5001/api/messages/savemessage").then((response) =>
-    //   response.json()
-    // );
+    console.log(`send_message fxn Messages.js : ${conversation_id}`);
+    // Post first message to DB
+    fetch("http://localhost:5001/api/messages/savemessage", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        conversation_id: conversation_id,
+        sender: uid,
+        text: enteredMessage,
+        timestamp: timestamp_,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => console.error(error));
+
+    // Render Thread component
+    setViewThread(true);
   };
 
   // TEMP: Disable client from receiving messages
