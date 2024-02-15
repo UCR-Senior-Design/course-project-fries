@@ -4,23 +4,44 @@ import cn from "classnames";
 import styles from "./Compose.module.css";
 import { CloseOutlined } from "@ant-design/icons";
 
-const Compose = ({ onSetRecipient, onSentMessage, messages }) => {
+const Compose = ({ onSentMessage, messages, uid }) => {
   const [recipient, setRecipient] = useState("");
+  const [title, setTitle] = useState("");
   const [enteredMessage, setEnteredMessage] = useState("");
+  const [conversation_id, setConversationId] = useState("");
 
-  // Set recipient into a variable
   const entered_recipient_handler = (event) => {
     setRecipient(event.target.value);
   };
-  // Set entered message into a variable
+  const entered_title_handler = (event) => {
+    setTitle(event.target.value);
+  };
   const entered_message_handler = (event) => {
     setEnteredMessage(event.target.value);
   };
   // Submit message
   const msg_submit_handler = async (event) => {
     event.preventDefault();
-    await onSetRecipient(recipient);
-    onSentMessage(enteredMessage);
+    onSentMessage(enteredMessage, conversation_id, recipient);
+    // Save conversation to DB
+    fetch("http://localhost:5001/api/messages/createconversation", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        sender: uid,
+        recipient: recipient,
+        title: title,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setConversationId(data._id);
+      })
+      .catch((error) => console.error(error));
+
     setEnteredMessage(" ");
   };
 
@@ -41,7 +62,17 @@ const Compose = ({ onSetRecipient, onSentMessage, messages }) => {
             ></input>
           </form>
         </div>
-        <div id="compose_message_history" className={styles.list}>
+        <div>
+          <form>
+            <input
+              type="text"
+              placeholder="Enter Title"
+              value={title}
+              onChange={entered_title_handler}
+            ></input>
+          </form>
+        </div>
+        {/* <div id="compose_message_history" className={styles.list}>
           {messages.map(({ text, sent, timestamp }) => (
             <div
               key={text}
@@ -52,10 +83,10 @@ const Compose = ({ onSetRecipient, onSentMessage, messages }) => {
             >
               <div className={styles.timestamp}>{timestamp}</div>
               <div>{text}</div>
-              {/* {text} */}
             </div>
           ))}
-        </div>
+        </div> */}
+
         <div style={{ textAlign: "center", padding: "20px 50px" }}>
           <form className={styles.input_msg_form} onSubmit={msg_submit_handler}>
             <input

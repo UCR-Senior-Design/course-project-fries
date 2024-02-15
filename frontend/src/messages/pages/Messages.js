@@ -71,6 +71,10 @@ const Messages = () => {
           timestamp: parsed_data.timestamp,
         },
       ]);
+      // Post message to DB
+      fetch("http://localhost:5001/api/messages/savemessage").then((response) =>
+        response.json()
+      );
     }
   }, [lastMessage]);
 
@@ -87,30 +91,25 @@ const Messages = () => {
     });
   };
 
-  let recip;
-  const addRecipient = (data) => {
-    recip = data;
-    // console.log(data);
-    // setRecipient(data);
-    // console.log(recipient);
-  };
-
   // Send messages to server
-  const send_message = (data) => {
-    setOutgoingMessage(data);
-
+  const send_message = (enteredMessage, conversation_id, recipient) => {
+    setOutgoingMessage(enteredMessage);
     sendJsonMessage({
       type: "client_msg",
-      content: data,
+      content: enteredMessage,
       uid: uid,
-      recv_id: recip,
+      recv_id: recipient,
     });
-
+    console.log(enteredMessage);
+    console.log(conversation_id);
     setMessageHistory((messageHistory) => [
       ...messageHistory,
-      { text: data, sent: true, timestamp: DateTime.now().toISO() },
+      { text: enteredMessage, sent: true, timestamp: DateTime.now().toISO() },
     ]);
-    console.log(messageHistory);
+    // Post message to DB
+    // fetch("http://localhost:5001/api/messages/savemessage").then((response) =>
+    //   response.json()
+    // );
   };
 
   // TEMP: Disable client from receiving messages
@@ -186,11 +185,11 @@ const Messages = () => {
             {compose === true && (
               <Compose
                 onSentMessage={send_message}
-                onSetRecipient={addRecipient}
-                messages={messageHistory}
+                messages={messageHistory} // TODO: connect to WS, send/receive messages in another file
+                uid={uid} // TODO: replace with login uid -- temporarily passing in user id
               ></Compose>
             )}
-            {compose === false && <h1>hi</h1>}
+            {compose === false && <h1>Inbox Body</h1>}
           </div>
         </div>
       </Content>
