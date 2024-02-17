@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
 import styles from "./Messages.module.css";
 import Compose from "../components/Compose";
+import Thread from "../components/Thread";
 import { Layout, Typography, Button, message } from "antd";
-import useWebSocket from "react-use-websocket";
 import { useState, useEffect } from "react";
 import NavigationBar from "../../common/components/NavBar";
 import { AuthContext } from "../../common/utils/auth";
@@ -17,97 +17,78 @@ const Messages = () => {
   const { login } = useContext(AuthContext);
   login();
   //
-  const [recipient, setRecipient] = useState("");
   const [uid, setUid] = useState(""); // TODO: replace with what you get from login
   const [compose, setCompose] = useState(false);
   const [viewthread, setViewThread] = useState(false);
-  const [messageHistory, setMessageHistory] = useState([]);
+  const [conversationId, setConversationId] = useState("");
+  const [recipient, setRecipient] = useState("");
+  const [title, setTitle] = useState("");
 
-  useEffect(() => {
-    // Connect to WS Server when Messages page is mounted
-    fetch("http://localhost:5001/api/messages/").then((response) =>
-      response.json()
-    );
-    // Disconnect client from WS Server when page is unloaded (refreshed)
-    // const unload_handler = (event) => {
-    //   console.log(`Client disconnected: ${uid}`);
-    //   sendJsonMessage({
-    //     type: "disconnect",
-    //     uid: uid,
-    //   });
-    // };
+  // const [messageHistory, setMessageHistory] = useState([]);
 
-    // window.addEventListener("beforeunload", unload_handler);
+  // useEffect(() => {
+  //   // Connect to WS Server when Messages page is mounted
+  //   fetch("http://localhost:5001/api/messages/").then((response) =>
+  //     response.json()
+  //   );
+  //   // Disconnect client from WS Server when page is unloaded (refreshed)
+  //   // const unload_handler = (event) => {
+  //   //   console.log(`Client disconnected: ${uid}`);
+  //   //   sendJsonMessage({
+  //   //     type: "disconnect",
+  //   //     uid: uid,
+  //   //   });
+  //   // };
 
-    // return () => {
-    //   window.removeEventListener("beforeunload", unload_handler);
-    //   // Disconnect client from WS Server when page is unmounted
-    //   console.log(`Client disconnected: ${uid}`);
-    //   sendJsonMessage({
-    //     type: "disconnect",
-    //     uid: uid,
-    //   });
-    // };
-  }, []);
+  //   // window.addEventListener("beforeunload", unload_handler);
+
+  //   // return () => {
+  //   //   window.removeEventListener("beforeunload", unload_handler);
+  //   //   // Disconnect client from WS Server when page is unmounted
+  //   //   console.log(`Client disconnected: ${uid}`);
+  //   //   sendJsonMessage({
+  //   //     type: "disconnect",
+  //   //     uid: uid,
+  //   //   });
+  //   // };
+  // }, []);
 
   // Connect to server
-  const ws_URL = "ws://localhost:8080";
-  const { sendJsonMessage, lastMessage } = useWebSocket(ws_URL, {
-    onOpen: () => {
-      console.log("WebSocket connection established.");
-    },
-  });
+  // const ws_URL = "ws://localhost:8080";
+  // const { sendJsonMessage, lastMessage } = useWebSocket(ws_URL, {
+  //   onOpen: () => {
+  //     console.log("WebSocket connection established.");
+  //   },
+  // });
 
   // Listen for messages from the server
-  useEffect(() => {
-    if (lastMessage !== null && lastMessage.data) {
-      console.log("lastMessage: ", lastMessage.data);
-      const parsed_data = JSON.parse(lastMessage.data);
-      setMessageHistory((messageHistory) => [
-        ...messageHistory,
-        {
-          text: parsed_data.msg,
-          sent: false,
-          timestamp: parsed_data.timestamp,
-        },
-      ]);
-      // Post message to DB
-      fetch("http://localhost:5001/api/messages/savemessage").then((response) =>
-        response.json()
-      );
-    }
-  }, [lastMessage]);
+  // useEffect(() => {
+  //   if (lastMessage !== null && lastMessage.data) {
+  //     console.log("lastMessage: ", lastMessage.data);
+  //     const parsed_data = JSON.parse(lastMessage.data);
+  //     setMessageHistory((messageHistory) => [
+  //       ...messageHistory,
+  //       {
+  //         text: parsed_data.msg,
+  //         sent: false,
+  //         timestamp: parsed_data.timestamp,
+  //       },
+  //     ]);
+  //     // Post message to DB
+  //     fetch("http://localhost:5001/api/messages/savemessage").then((response) =>
+  //       response.json()
+  //     );
+  //   }
+  // }, [lastMessage]);
 
   // Set uid into a variable
   const entered_uid_handler = (event) => {
     setUid(event.target.value);
   };
-  // Submit uid to WS server
-  const submit_uid_handler = (event) => {
-    event.preventDefault();
-    sendJsonMessage({
-      type: "uid",
-      content: uid, // TODO: make api to get DBuid
-    });
-  };
 
   // Send messages to server
-  const send_message = (enteredMessage, conversation_id, recipient) => {
-    // Send message to recipient in WS
-    sendJsonMessage({
-      type: "client_msg",
-      content: enteredMessage,
-      uid: uid,
-      recv_id: recipient,
-    });
-
+  const send_message = (enteredMessage, conversation_id, recipient, title) => {
     const timestamp_ = DateTime.now().toISO();
-    // Add message to frontend message thread
-    setMessageHistory((messageHistory) => [
-      ...messageHistory,
-      { text: enteredMessage, sent: true, timestamp: timestamp_ },
-    ]);
-    console.log(`send_message fxn Messages.js : ${conversation_id}`);
     // Post first message to DB
     fetch("http://localhost:5001/api/messages/savemessage", {
       method: "POST",
@@ -128,16 +109,11 @@ const Messages = () => {
       .catch((error) => console.error(error));
 
     // Render Thread component
+    setConversationId(conversation_id);
+    setRecipient(recipient);
+    setTitle(title);
+    setCompose(false);
     setViewThread(true);
-  };
-
-  // TEMP: Disable client from receiving messages
-  const logout_handler = () => {
-    console.log(`Client disconnected: ${uid}`);
-    sendJsonMessage({
-      type: "disconnect",
-      uid: uid,
-    });
   };
 
   // Compose new message
@@ -170,16 +146,14 @@ const Messages = () => {
         <h1>Messages Inbox</h1>
         {/* TO DO: Manually entered UID should replace with login info */}
         <div>
-          <form onSubmit={submit_uid_handler}>
+          <form>
             <input
               type="text"
               placeholder="Enter UID"
               value={uid}
               onChange={entered_uid_handler}
             ></input>
-            <button>Submit</button>
           </form>
-          <button onClick={logout_handler}>Logout</button>
         </div>
         <div className={styles.main}>
           <ul className={styles.side_menu}>
@@ -204,11 +178,19 @@ const Messages = () => {
             {compose === true && (
               <Compose
                 onSentMessage={send_message}
-                messages={messageHistory} // TODO: connect to WS, send/receive messages in another file
+                // messages={messageHistory} // TODO: connect to WS, send/receive messages in another file
                 uid={uid} // TODO: replace with login uid -- temporarily passing in user id
               ></Compose>
             )}
             {compose === false && <h1>Inbox Body</h1>}
+            {viewthread === true && (
+              <Thread
+                conversation_id={conversationId}
+                recipient={recipient}
+                title={title}
+                uid={uid} // TODO: replace with login uid -- temporarily passing in user id
+              ></Thread>
+            )}
           </div>
         </div>
       </Content>

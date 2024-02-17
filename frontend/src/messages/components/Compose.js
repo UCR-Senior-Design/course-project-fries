@@ -8,7 +8,6 @@ const Compose = ({ onSentMessage, messages, uid }) => {
   const [recipient, setRecipient] = useState("");
   const [title, setTitle] = useState("");
   const [enteredMessage, setEnteredMessage] = useState("");
-  // const [conversation_id, setConversationId] = useState("");
 
   const entered_recipient_handler = (event) => {
     setRecipient(event.target.value);
@@ -21,6 +20,7 @@ const Compose = ({ onSentMessage, messages, uid }) => {
   };
   // Submit message
   const msg_submit_handler = async (event) => {
+    console.log(uid);
     event.preventDefault();
     // Save conversation to DB
     fetch("http://localhost:5001/api/messages/createconversation", {
@@ -37,10 +37,13 @@ const Compose = ({ onSentMessage, messages, uid }) => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        // console.log;
-        // setConversationId(data.created_conversation._id);
         // Pass conversation info to Messages.js
-        onSentMessage(enteredMessage, data.created_conversation._id, recipient);
+        onSentMessage(
+          enteredMessage,
+          data.created_conversation._id,
+          recipient,
+          title
+        );
       })
       .catch((error) => console.error(error));
 
@@ -74,7 +77,7 @@ const Compose = ({ onSentMessage, messages, uid }) => {
             ></input>
           </form>
         </div>
-        <div id="compose_message_history" className={styles.list}>
+        {/* <div id="compose_message_history" className={styles.list}>
           {messages.map(({ text, sent, timestamp }) => (
             <div
               key={text}
@@ -87,7 +90,7 @@ const Compose = ({ onSentMessage, messages, uid }) => {
               <div>{text}</div>
             </div>
           ))}
-        </div>
+        </div> */}
 
         <div style={{ textAlign: "center", padding: "20px 50px" }}>
           <form className={styles.input_msg_form} onSubmit={msg_submit_handler}>

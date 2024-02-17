@@ -1,41 +1,120 @@
-import React, { useState } from "react";
-import { Layout, Button } from "antd";
+import React, { useState, useEffect } from "react";
 import cn from "classnames";
 import styles from "./Compose.module.css";
 import { CloseOutlined } from "@ant-design/icons";
+import { Layout, Typography, Button, message } from "antd";
+import useWebSocket from "react-use-websocket";
+import { DateTime } from "luxon";
+// const { Content, Sider, Footer } = Layout;
+const { Text } = Typography;
 
-const Thread = ({ conversation_id, recipient }) => {
+const Thread = ({ conversation_id, recipient, uid, title }) => {
+  // TODO: replace uid with login uid
+
+  const [messageHistory, setMessageHistory] = useState([]);
+  const [enteredMessage, setEnteredMessage] = useState("");
+
+  const entered_message_handler = (event) => {
+    event.preventDefault();
+    setEnteredMessage(event.target.value);
+  };
+
+  useEffect(() => {
+    // Connect to WS Server when Messages page is mounted
+    fetch("http://localhost:5001/api/messages/").then((response) =>
+      response.json()
+    );
+  }, []);
+
+  // Connect user to WS server
+  const ws_URL = "ws://localhost:8080";
+  const { sendJsonMessage, lastMessage } = useWebSocket(ws_URL, {
+    onOpen: () => {
+      console.log("WebSocket connection established.");
+      sendJsonMessage({
+        type: "uid",
+        content: uid, // TODO: make api to get DBuid
+      });
+    },
+  });
+
+  // Listen for messages from the server
+  useEffect(() => {
+    if (lastMessage !== null && lastMessage.data) {
+      console.log("lastMessage: ", lastMessage.data);
+      const parsed_data = JSON.parse(lastMessage.data);
+      setMessageHistory((messageHistory) => [
+        ...messageHistory,
+        {
+          text: parsed_data.msg,
+          sent: false,
+          timestamp: parsed_data.timestamp,
+        },
+      ]);
+    }
+  }, [lastMessage]);
+
+  // Send messages to server
+  const msg_submit_handler = async (event) => {
+    event.preventDefault();
+    // Send message to recipient in WS
+    sendJsonMessage({
+      type: "client_msg",
+      content: enteredMessage,
+      uid: uid,
+      recv_id: recipient,
+    });
+
+    const timestamp_ = DateTime.now().toISO();
+    // Add message to frontend message thread
+    setMessageHistory((messageHistory) => [
+      ...messageHistory,
+      { text: enteredMessage, sent: true, timestamp: timestamp_ },
+    ]);
+    // Post Message to DB
+    fetch("http://localhost:5001/api/messages/savemessage", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        conversation_id: conversation_id,
+        sender: uid,
+        text: enteredMessage,
+        timestamp: timestamp_,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const logout_handler = () => {
+    console.log(`Client disconnected: ${uid}`);
+    sendJsonMessage({
+      type: "disconnect",
+      uid: uid,
+    });
+  };
+
   return (
     <div>
       <div className={styles.header}>
-        <h3>New Message</h3>
+        <h3>Message Thread</h3>
+        <h2>{title}</h2>
         <CloseOutlined />
       </div>
+      <button onClick={logout_handler}>Logout</button>
       <div className={styles.main}>
-        <div>
-          <form>
-            <input
-              type="text"
-              placeholder="Enter Recipient"
-              value={recipient}
-              onChange={entered_recipient_handler}
-            ></input>
-          </form>
-        </div>
-        <div>
-          <form>
-            <input
-              type="text"
-              placeholder="Enter Title"
-              value={title}
-              onChange={entered_title_handler}
-            ></input>
-          </form>
-        </div>
-        {/* <div id="compose_message_history" className={styles.list}>
-          {messages.map(({ text, sent, timestamp }) => (
+        <div>{recipient}</div>
+        <div>{title}</div>
+
+        <div id="compose_message_history" className={styles.list}>
+          {messageHistory.map(({ text, sent, timestamp }) => (
             <div
-              key={text}
+              key={timestamp}
               className={cn(
                 styles.shared,
                 sent ? styles.sent : styles.received
@@ -45,7 +124,7 @@ const Thread = ({ conversation_id, recipient }) => {
               <div>{text}</div>
             </div>
           ))}
-        </div> */}
+        </div>
 
         <div style={{ textAlign: "center", padding: "20px 50px" }}>
           <form className={styles.input_msg_form} onSubmit={msg_submit_handler}>
