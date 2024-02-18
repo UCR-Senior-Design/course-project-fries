@@ -44,8 +44,8 @@ const IndiForum = (props) => {
           headline: props.indiForumHeadline,
           initComment: props.indiForumInitComment,
           topic: props.indiForumTopic,
-          thumbsUp: props.indiForumThumbsUp,
-          thumbsDown: props.indiForumThumbsDown + 1,
+          rating: props.rating - 1,
+          anon: props.anon
         }
       } else if (likedForum) {
         forumData = {
@@ -53,12 +53,14 @@ const IndiForum = (props) => {
           headline: props.indiForumHeadline,
           initComment: props.indiForumInitComment,
           topic: props.indiForumTopic,
-          thumbsUp: props.indiForumThumbsUp + 1,
-          thumbsDown: props.indiForumThumbsDown,
+          rating: props.rating + 1,
+          anon: props.anon,
         }
       }
+      console.log("fid: ", props.indiForumIdP);
+      console.log(forumData);
       try {
-        const response = await fetch(`http://localhost:5001/api/forums/editForum/${props.indiForumId}`, {
+        const response = await fetch(`http://localhost:5001/api/forums/editForum/${props.indiForumIdP}`, {
         method: "PATCH",
         body: JSON.stringify(forumData),
         headers: {
@@ -113,12 +115,10 @@ const IndiForum = (props) => {
     <div>
       <Modal>
         <div className="indiForum__BaseContent">
-          {props.anon === true && (
+          {props.anon === true ? 
             <div className="forum-item__creator">anonymous</div>
-          )}
-          {props.anon === false && (
-            <h2 className="forum-item__creator">{props.indiForumCreator}</h2>
-          )}
+            : <h2 className="forum-item__creator">{props.indiForumCreator}</h2>
+          }
           <div className="indiForum__headline">
             Headline: {props.indiForumHeadline}
           </div>

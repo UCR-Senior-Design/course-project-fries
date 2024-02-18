@@ -1,5 +1,12 @@
 import React, { useState } from "react";
 import Modal from "./common/Modal";
+import {
+  Switch,
+  Button,
+  Form,
+  Input,
+} from 'antd';
+const { TextArea } = Input;
 
 const CommentForm = (props) => {
   const [newComment_creator, setNewComment_creator] = useState(""); // Change later for login
@@ -49,33 +56,45 @@ const CommentForm = (props) => {
   };
 
   return (
-    <div>
+    <>
       <Modal>
-        <h2>Add Comment</h2>
-        <form onSubmit={formSubmitHandler}>
-          <div>
-            <label>Creator</label>
-            <input
+        <Form
+          labelCol={{
+            span: 4,
+          }}
+          wrapperCol={{
+            span:14,
+          }}
+          layout="horizontal"
+          style={{
+            maxWidth:600,
+          }}
+        >
+          <h2>Add Comment</h2>
+          <Form.Item label={"Creator"}>
+            <Input
               type="text"
               value={newComment_creator}
               onChange={commentCreatorChangeHandler}
             />
-          </div>
-          <div>
-            <label>Comment Text</label>
-            <input
+          </Form.Item>
+          <Form.Item label={"Comment Text"}>
+            <TextArea
+            rows={4}
               type="text"
               value={newComment_text}
               onChange={commentTextChangeHandler}
             />
-          </div>
-          <div>
-            <button onSubmit={formSubmitHandler}>Post</button>
-            <button onClick={closeCommentFormHandler}>Cancel</button>
-          </div>
-        </form>
+          </Form.Item>
+          <Form.Item>
+            <Button onSubmit={formSubmitHandler}>Post</Button>
+          </Form.Item>
+          <Form.Item>
+            <Button onClick={closeCommentFormHandler}>Cancel</Button>
+          </Form.Item>
+        </Form>
       </Modal>
-    </div>
+    </>
   );
 };
 

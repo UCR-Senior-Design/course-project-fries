@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import Modal from "./common/Modal";
 import ForumContext from "./common/ForumContext";
-import { Switch } from 'antd';
+import {
+  Switch,
+  Button,
+  Form,
+  Input,
+ } from 'antd';
+ const { TextArea } = Input;
 
 const ForumForm = (props) => {
   const [newForum_creator, setNewForum_creator] = useState(""); // Change later for login
@@ -73,51 +79,62 @@ const ForumForm = (props) => {
   };
 
   return (
-    <div>
-      <Modal>
-        <h2>Add Forum</h2>
-        <form onSubmit={formSubmitHandler}>
-          <div>
-            <label>Creator</label>
-            <input
+    <>
+      <Modal className="ForumFormModal">
+        <Form
+          labelCol={{
+            span: 4,
+          }}
+          wrapperCol={{
+            span:14,
+          }}
+          layout="horizontal"
+          style={{
+            maxWidth:600,
+          }}
+        >
+          <h2>Create a new forum</h2>
+          <Form.Item label="Creator">
+            <Input
               type="text"
               value={newForum_creator}
               onChange={creatorChangeHandler}
             />
-          </div>
-          <div>
-            <label>Headline</label>
-            <input
+          </Form.Item>
+          <Form.Item label="Headline">
+            <Input
               type="text"
               value={newForum_headline}
               onChange={headlineChangeHandler}
             />
-          </div>
-          <div>
-            <label>Topic</label>
-            <input
+          </Form.Item>
+          <Form.Item label="Topic">
+            <Input
               type="text"
               value={newForum_topic}
               onChange={topicChangeHandler}
             />
-          </div>
-          <div>
-            <label>Initial Comment</label>
-            <input
+          </Form.Item>
+          <Form.Item label="Initial Comment">
+            <TextArea 
+              rows={4}
               type="text"
               value={newForum_initComment}
               onChange={initCommentChangeHandler}
             />
-          </div>
-          <label>Post anonymously?</label>
-          <Switch onChange={changeAnonHandler}/>
-          <div>
-            <button onSubmit={formSubmitHandler}>Post</button>
-            <button onClick={closeFormHandler}>Cancel</button>
-          </div>
-        </form>
+          </Form.Item>
+          <Form.Item label="anonymous" valuePropName="checked">
+            <Switch onChange={changeAnonHandler}/>
+          </Form.Item>
+          <Form.Item>
+            <Button onClick={formSubmitHandler}>Submit</Button>
+          </Form.Item>
+          <Form.Item>
+            <Button onClick={closeFormHandler}>Cancel</Button>
+          </Form.Item>
+        </Form>
       </Modal>
-    </div>
+    </>
   );
 };
 
