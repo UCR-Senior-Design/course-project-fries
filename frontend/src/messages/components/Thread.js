@@ -150,12 +150,12 @@ const Thread = ({ conversation_id, recipient, uid, title }) => {
         <div>{title}</div>
 
         <div id="compose_message_history" className={styles.list}>
-          {messageHistory.map(({ text, sent, timestamp }) => (
+          {messageHistory.map(({ sender, text, sent, timestamp }) => (
             <div
               key={timestamp}
               className={cn(
                 styles.shared,
-                sent ? styles.sent : styles.received
+                sent || sender === uid ? styles.sent : styles.received
               )}
             >
               <div className={styles.timestamp}>{timestamp}</div>
