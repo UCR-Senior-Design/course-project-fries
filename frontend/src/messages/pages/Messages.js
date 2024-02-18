@@ -147,10 +147,10 @@ const Messages = () => {
               <InboxOutlined style={{ paddingRight: "4px" }} />
               Inbox
             </li>
-            <li className={styles.side_menu_button} onClick={sent_btn_handler}>
+            {/* <li className={styles.side_menu_button} onClick={sent_btn_handler}>
               <SendOutlined style={{ paddingRight: "4px" }} />
               Sent
-            </li>
+            </li> */}
           </ul>
           <div className={styles.inbox_body}>
             {inbox === true && (

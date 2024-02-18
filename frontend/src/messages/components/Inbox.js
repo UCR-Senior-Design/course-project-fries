@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-// import { Layout, Button } from "antd";
+import { Typography } from "antd";
 import styles from "./Inbox.module.css";
+const { Text } = Typography;
 // import { CloseOutlined } from "@ant-design/icons";
 
 const Inbox = ({ uid, onSetConvoId }) => {
@@ -37,10 +38,14 @@ const Inbox = ({ uid, onSetConvoId }) => {
             select_conversation_handler(_id, recipient, sender, title)
           }
         >
-          <h4>{title}</h4>
-          <h5>Sender: {sender}</h5>
-          <ul>Recipient: {recipient}</ul>
-          <ul>Conversation id: {_id}</ul>
+          <h3>{title}</h3>
+          <div>
+            <Text>From: {sender}</Text>
+          </div>
+          <div>
+            <Text>To: {recipient}</Text>
+          </div>
+          {/* <ul>Conversation id: {_id}</ul> */}
         </ul>
       ))}
     </div>

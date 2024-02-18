@@ -1,8 +1,8 @@
 .conversation_item {
-  margin-left: 0;
-  padding: 6px;
+  margin-top: 10px;
+  padding: 20px;
 }
-.sconversation_item:hover {
+.conversation_item:hover {
   background-color: #bae0ff;
   border-radius: 4px;
 }
