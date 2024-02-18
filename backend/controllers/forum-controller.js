@@ -14,7 +14,7 @@ const createForum = async (req, res, next) => {
     headline,
     topic,
     initComment,
-    anon
+    anon,
   });
 
   try {
@@ -154,7 +154,7 @@ const updateForum = async (req, res, next) => {
     throw new HttpError("Invalid inputs passed", 422);
   }
 
-  const { headline, topic, initComment, rating, anon } = req.body;
+  const { headline, topic, initComment, rating, anon} = req.body;
   const forumId = req.params.fid;
 
   let forum;
