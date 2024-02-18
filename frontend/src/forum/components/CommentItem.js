@@ -32,8 +32,7 @@ const CommentItem = (props) => {
                     <div className='comment-item__text'>{props.text}</div>
                     <div className='comment-item__timeStamp'>{props.time_stamp}</div>
                     <div className="comment-item__creator">By {props.creator}</div>
-                    <div className="comment-item__upVotes">Upvotes {props.up_votes}</div>
-                    <div className="comment-item__downVotes">Downvotes {props.down_votes}</div>
+                    <div className="comment-item__rating">Rating {props.rating}</div>
                     {
                     /*
                     Change once login is completed
@@ -47,13 +46,7 @@ const CommentItem = (props) => {
                                 className="commentUpvoteButton"
                                 onClick={() => upVoteHandler(props.cid)}
                             >
-                                Upvote
-                            </button>
-                            <button
-                                className="commentDownvoteButton"
-
-                            >
-                                Downvote
+                                Helpful
                             </button>
                         </div>
                     )}

@@ -87,7 +87,7 @@ const CommentForm = (props) => {
             />
           </Form.Item>
           <Form.Item>
-            <Button onSubmit={formSubmitHandler}>Post</Button>
+            <Button onClick={formSubmitHandler}>Post</Button>
           </Form.Item>
           <Form.Item>
             <Button onClick={closeCommentFormHandler}>Cancel</Button>
