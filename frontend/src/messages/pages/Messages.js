@@ -2,8 +2,9 @@ import React, { useContext } from "react";
 import styles from "./Messages.module.css";
 import Compose from "../components/Compose";
 import Thread from "../components/Thread";
-import { Layout, Typography, Button, message } from "antd";
-import { useState, useEffect } from "react";
+import Inbox from "../components/Inbox";
+import { Layout, Typography, Button } from "antd";
+import { useState } from "react";
 import NavigationBar from "../../common/components/NavBar";
 import { AuthContext } from "../../common/utils/auth";
 import { EditOutlined, InboxOutlined, SendOutlined } from "@ant-design/icons";
@@ -19,74 +20,18 @@ const Messages = () => {
   //
   const [uid, setUid] = useState(""); // TODO: replace with what you get from login
   const [compose, setCompose] = useState(false);
+  const [inbox, setInbox] = useState(false);
   const [viewthread, setViewThread] = useState(false);
   const [conversationId, setConversationId] = useState("");
   const [recipient, setRecipient] = useState("");
   const [title, setTitle] = useState("");
-
-  // const [messageHistory, setMessageHistory] = useState([]);
-
-  // useEffect(() => {
-  //   // Connect to WS Server when Messages page is mounted
-  //   fetch("http://localhost:5001/api/messages/").then((response) =>
-  //     response.json()
-  //   );
-  //   // Disconnect client from WS Server when page is unloaded (refreshed)
-  //   // const unload_handler = (event) => {
-  //   //   console.log(`Client disconnected: ${uid}`);
-  //   //   sendJsonMessage({
-  //   //     type: "disconnect",
-  //   //     uid: uid,
-  //   //   });
-  //   // };
-
-  //   // window.addEventListener("beforeunload", unload_handler);
-
-  //   // return () => {
-  //   //   window.removeEventListener("beforeunload", unload_handler);
-  //   //   // Disconnect client from WS Server when page is unmounted
-  //   //   console.log(`Client disconnected: ${uid}`);
-  //   //   sendJsonMessage({
-  //   //     type: "disconnect",
-  //   //     uid: uid,
-  //   //   });
-  //   // };
-  // }, []);
-
-  // Connect to server
-  // const ws_URL = "ws://localhost:8080";
-  // const { sendJsonMessage, lastMessage } = useWebSocket(ws_URL, {
-  //   onOpen: () => {
-  //     console.log("WebSocket connection established.");
-  //   },
-  // });
-
-  // Listen for messages from the server
-  // useEffect(() => {
-  //   if (lastMessage !== null && lastMessage.data) {
-  //     console.log("lastMessage: ", lastMessage.data);
-  //     const parsed_data = JSON.parse(lastMessage.data);
-  //     setMessageHistory((messageHistory) => [
-  //       ...messageHistory,
-  //       {
-  //         text: parsed_data.msg,
-  //         sent: false,
-  //         timestamp: parsed_data.timestamp,
-  //       },
-  //     ]);
-  //     // Post message to DB
-  //     fetch("http://localhost:5001/api/messages/savemessage").then((response) =>
-  //       response.json()
-  //     );
-  //   }
-  // }, [lastMessage]);
 
   // Set uid into a variable
   const entered_uid_handler = (event) => {
     setUid(event.target.value);
   };
 
-  // Send messages to server
+  // Save conversation and first message, display Thread
   const send_message = (enteredMessage, conversation_id, recipient, title) => {
     const timestamp_ = DateTime.now().toISO();
     // Post first message to DB
@@ -108,7 +53,7 @@ const Messages = () => {
       })
       .catch((error) => console.error(error));
 
-    // Render Thread component
+    // Display Thread
     setConversationId(conversation_id);
     setRecipient(recipient);
     setTitle(title);
@@ -118,7 +63,40 @@ const Messages = () => {
 
   // Compose new message
   const compose_handler = (event) => {
+    setInbox(false);
+    setViewThread(false);
     setCompose(true);
+  };
+
+  // Display Inbox
+  const inbox_btn_handler = (event) => {
+    setCompose(false);
+    setViewThread(false);
+    setInbox(true);
+  };
+
+  // Display Sent (All conversations where user sent the last message)
+  const sent_btn_handler = (event) => {
+    setCompose(false);
+    setInbox(false);
+  };
+
+  // Display Thread selected from Inbox
+  const select_convo_handler = (conversation_id, recipient, sender, title) => {
+    console.log("here");
+    console.log(conversation_id);
+    console.log(recipient);
+    console.log(sender);
+    console.log(title);
+    setConversationId(conversation_id);
+    if (recipient !== uid) {
+      setRecipient(recipient);
+    } else {
+      setRecipient(sender);
+    }
+    setTitle(title);
+    setInbox(false);
+    setViewThread(true);
   };
 
   if (!isLoggedIn) {
@@ -165,24 +143,25 @@ const Messages = () => {
               <EditOutlined />
               Compose
             </Button>
-            <li className={styles.side_menu_button}>
+            <li className={styles.side_menu_button} onClick={inbox_btn_handler}>
               <InboxOutlined style={{ paddingRight: "4px" }} />
               Inbox
             </li>
-            <li className={styles.side_menu_button}>
+            <li className={styles.side_menu_button} onClick={sent_btn_handler}>
               <SendOutlined style={{ paddingRight: "4px" }} />
               Sent
             </li>
           </ul>
           <div className={styles.inbox_body}>
+            {inbox === true && (
+              <Inbox uid={uid} onSetConvoId={select_convo_handler}></Inbox>
+            )}
             {compose === true && (
               <Compose
                 onSentMessage={send_message}
-                // messages={messageHistory} // TODO: connect to WS, send/receive messages in another file
                 uid={uid} // TODO: replace with login uid -- temporarily passing in user id
               ></Compose>
             )}
-            {compose === false && <h1>Inbox Body</h1>}
             {viewthread === true && (
               <Thread
                 conversation_id={conversationId}

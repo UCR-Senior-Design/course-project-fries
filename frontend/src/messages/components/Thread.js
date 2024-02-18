@@ -20,10 +20,42 @@ const Thread = ({ conversation_id, recipient, uid, title }) => {
   };
 
   useEffect(() => {
+    // Load messages from DB by conversation id
+    fetch(
+      `http://localhost:5001/api/messages/listmessagehistory/${conversation_id}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setMessageHistory(data.message_history);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
     // Connect to WS Server when Messages page is mounted
     fetch("http://localhost:5001/api/messages/").then((response) =>
       response.json()
     );
+    // Disconnect client from WS Server when page is unloaded (refreshed)
+    const unload_handler = (event) => {
+      console.log(`Client disconnected: ${uid}`);
+      sendJsonMessage({
+        type: "disconnect",
+        uid: uid,
+      });
+    };
+
+    window.addEventListener("beforeunload", unload_handler);
+
+    return () => {
+      window.removeEventListener("beforeunload", unload_handler);
+      // Disconnect client from WS Server when page is unmounted
+      console.log(`Client disconnected: ${uid}`);
+      sendJsonMessage({
+        type: "disconnect",
+        uid: uid,
+      });
+    };
   }, []);
 
   // Connect user to WS server
@@ -43,14 +75,17 @@ const Thread = ({ conversation_id, recipient, uid, title }) => {
     if (lastMessage !== null && lastMessage.data) {
       console.log("lastMessage: ", lastMessage.data);
       const parsed_data = JSON.parse(lastMessage.data);
-      setMessageHistory((messageHistory) => [
-        ...messageHistory,
-        {
-          text: parsed_data.msg,
-          sent: false,
-          timestamp: parsed_data.timestamp,
-        },
-      ]);
+      // Display incoming message if message conversation id matches Thread conversation id
+      if (parsed_data.cid === conversation_id) {
+        setMessageHistory((messageHistory) => [
+          ...messageHistory,
+          {
+            text: parsed_data.msg,
+            sent: false,
+            timestamp: parsed_data.timestamp,
+          },
+        ]);
+      }
     }
   }, [lastMessage]);
 
@@ -63,6 +98,7 @@ const Thread = ({ conversation_id, recipient, uid, title }) => {
       content: enteredMessage,
       uid: uid,
       recv_id: recipient,
+      cid: conversation_id,
     });
 
     const timestamp_ = DateTime.now().toISO();
@@ -89,6 +125,8 @@ const Thread = ({ conversation_id, recipient, uid, title }) => {
         console.log(data);
       })
       .catch((error) => console.error(error));
+
+    setEnteredMessage("");
   };
 
   const logout_handler = () => {

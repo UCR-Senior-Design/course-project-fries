@@ -47,7 +47,7 @@ const Compose = ({ onSentMessage, messages, uid }) => {
       })
       .catch((error) => console.error(error));
 
-    setEnteredMessage(" ");
+    setEnteredMessage("");
   };
 
   return (
