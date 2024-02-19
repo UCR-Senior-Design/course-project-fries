@@ -1,20 +1,24 @@
-import React, { useContext } from "react";
-import { Link, useHistory } from "react-router-dom";
-import { Layout, Menu, Typography } from "antd";
-import { AuthContext } from "../utils/auth";
+import React, {useEffect} from 'react';
+import {Link, useHistory} from 'react-router-dom';
+import {Layout, Menu, Typography} from 'antd';
+import {useAuth} from "../utils/auth";
 
 const { Header } = Layout;
 const { Text } = Typography;
 
-const NavigationBar = ({ isLoggedIn }) => {
+const NavigationBar = () => {
+  const {isLoggedIn, logout} = useAuth();
   const history = useHistory();
-  const { logout } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      history.push('/login');
+    }
+  }, [isLoggedIn, history]);
 
   const handleLogout = () => {
-    localStorage.removeItem("userToken");
     logout();
-    // Redirect to home page
-    history.push("/");
+    history.push('/');
   };
 
   const menuItems = [
@@ -54,13 +58,8 @@ const NavigationBar = ({ isLoggedIn }) => {
         justifyContent: "space-between",
       }}
     >
-      <Text style={{ color: "white", fontSize: "24px" }}>MedShare</Text>
-      <Menu
-        theme="dark"
-        mode="horizontal"
-        style={{ flex: 1 }}
-        items={menuItems}
-      />
+      <Text style={{color: 'white', fontSize: '24px'}}>MedShare</Text>
+      <Menu theme="dark" mode="horizontal" style={{flex: 1}} items={menuItems}/>
     </Header>
   );
 };

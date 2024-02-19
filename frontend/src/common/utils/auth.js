@@ -1,15 +1,17 @@
-import React, {createContext, useState} from 'react';
+import React, {createContext, useContext, useState} from 'react';
 
-export const AuthContext = createContext(undefined, undefined);
+const AuthContext = createContext(undefined, undefined);
 
 export const AuthProvider = ({children}) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('userToken'));
 
-  const login = () => {
+  const login = (token) => {
+    localStorage.setItem('userToken', token);
     setIsLoggedIn(true);
   };
 
   const logout = () => {
+    localStorage.removeItem('userToken');
     setIsLoggedIn(false);
   };
 
@@ -20,4 +22,4 @@ export const AuthProvider = ({children}) => {
   );
 };
 
-export default AuthProvider;
+export const useAuth = () => useContext(AuthContext);

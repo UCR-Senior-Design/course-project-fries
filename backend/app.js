@@ -5,7 +5,10 @@ const http = require("http");
 // const WebSocketServer = require("ws");
 const ws = require("ws");
 
+// const cookieParser = require("cookie-parser");
+
 const HttpError = require("../backend/models/http-error");
+
 const forumsRoutes = require("./routes/forums-routes");
 const commentsRoutes = require("./routes/comments-routes");
 const messagesRoutes = require("./routes/messages-routes");
@@ -13,11 +16,13 @@ const patientsRoutes = require("./routes/patients-routes");
 const doctorsRoutes = require("./routes/doctors-routes");
 const usersRoutes = require("./routes/users-routes");
 
+require('dotenv').config();
+
 const app = express();
 
-// Solve CORS
-const cors = require('cors')
-app.use(cors())
+const cors = require('cors');
+const jwt = require("jsonwebtoken");
+app.use(cors());
 
 // Parse req body, extract json/convert to JS before using route
 app.use(bodyParser.json());
@@ -31,6 +36,20 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
   next();
 });
+
+app.get("/api/verify", (req, res) => {
+  const token = req.header('Authorization')?.split(' ')[1]; // Bearer TOKEN
+
+  if (!token) {
+    return res.status(401).json({message: 'No token, authorization denied'});
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    res.json({message: 'Token is valid', user});
+  });
+});
+
 app.use("/api/users", usersRoutes);
 app.use("/api/forums", forumsRoutes);
 app.use("/api/comments", commentsRoutes);
@@ -50,7 +69,7 @@ app.use((error, req, res, next) => {
     return next(error);
   }
   res.status(error.code || 500);
-  res.json({ message: error.message || "An unknown error occurred!" });
+  res.json({message: error.message || "An unknown error occurred!"});
 });
 
 // Connect to Database
@@ -59,7 +78,7 @@ mongoose
     "mongodb+srv://cs178:fries@fries.d7odjp0.mongodb.net/MedShare?retryWrites=true&w=majority" // Connect to database with connection string
   )
   .then(() => {
-    app.listen(5001); // If connection to DB succeeds, start backend server
+    app.listen(process.env.PORT || 5001); // If connection to DB succeeds, start backend server
   })
   .catch((err) => {
     console.log(err);
