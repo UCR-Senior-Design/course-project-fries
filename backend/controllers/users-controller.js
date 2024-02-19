@@ -45,9 +45,7 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(email);
     const user = await User.findOne({ email: email });
-    console.log(user);
 
     if (!user) {
       return res.status(401).json({ message: "Not found the user" });
@@ -59,7 +57,6 @@ exports.login = async (req, res) => {
     }
 
     const token = createToken(user._id);
-    console.log(token);
     res.json({ message: "Login successful", token: token, user: user });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error: error });
