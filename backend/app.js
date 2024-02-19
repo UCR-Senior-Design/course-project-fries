@@ -1,12 +1,16 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const http = require("http");
+// const WebSocketServer = require("ws");
+const ws = require("ws");
 
 // const cookieParser = require("cookie-parser");
 
 const HttpError = require("../backend/models/http-error");
 
 const forumsRoutes = require("./routes/forums-routes");
+const commentsRoutes = require("./routes/comments-routes");
 const messagesRoutes = require("./routes/messages-routes");
 const patientsRoutes = require("./routes/patients-routes");
 const doctorsRoutes = require("./routes/doctors-routes");
@@ -16,7 +20,6 @@ require('dotenv').config();
 
 const app = express();
 
-// Solve CORS
 const cors = require('cors');
 const jwt = require("jsonwebtoken");
 app.use(cors());
@@ -25,27 +28,15 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With',
-    'Content-Type, Accept, Authorization'
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
-  next();
-})
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With',
-    'Content-Type, Accept, Authorization'
-  );
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
   next();
 });
 
-// app.use(cookieParser());
 app.get("/api/verify", (req, res) => {
   const token = req.header('Authorization')?.split(' ')[1]; // Bearer TOKEN
 
@@ -57,10 +48,11 @@ app.get("/api/verify", (req, res) => {
     if (err) return res.sendStatus(403);
     res.json({message: 'Token is valid', user});
   });
-})
+});
 
 app.use("/api/users", usersRoutes);
 app.use("/api/forums", forumsRoutes);
+app.use("/api/comments", commentsRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/patients", patientsRoutes);
 app.use("/api/doctors", doctorsRoutes);

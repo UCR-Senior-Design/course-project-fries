@@ -1,0 +1,15 @@
+.ForumListPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+
+.NewForumButton {
+    display: flex;
+    padding: 13px 25px;
+    background-color: #008CBA;
+    font-size: 1.5rem;
+    border-radius: 4px;
+    color: rgb(245 243 239);
+}

@@ -2,32 +2,25 @@ const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
 const { v4: uuidv4 } = require("uuid");
 const Forum = require("../models/forum");
-const forum = require("../models/forum");
+const Comment = require("../models/comment");
 
 // Create forum
 const createForum = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return next(
-      new HttpError('Invalid inputs passed, please check your data.', 422)
-    );
-  }
 
-  const { creator, headline, topic } = req.body;
+  const { creator, headline, topic, initComment, anon } = req.body;
 
   const createdForum = new Forum({
     creator,
     headline,
     topic,
+    initComment,
+    anon,
   });
 
   try {
     await createdForum.save();
-  }catch (err) {
-    const error = new HttpError(
-      'Creating Forum failed.',
-      500
-    );
+  } catch (err) {
+    const error = new HttpError("Creating Forum failed.", 500);
     return next(error);
   }
 
@@ -40,14 +33,13 @@ const getForumList = async (req, res, next) => {
   try {
     forumList = await Forum.find({});
   } catch (err) {
-    const error = new HttpError(
-      'Could not find any forums',
-      500
-    );
+    const error = new HttpError("Could not find any forums", 500);
     return next(error);
   }
-  
-  res.json({ forumList: forumList.map(forum => forum.toObject({ getters: true })) });
+
+  res.json({
+    forumList: forumList.map((forum) => forum.toObject({ getters: true })),
+  });
 };
 
 // Get forum by ID
@@ -58,8 +50,8 @@ const getForumById = async (req, res, next) => {
   try {
     forum = await Forum.findById(forumID);
   } catch (err) {
-    const error = new HttpError( 
-      'ID - Something went wrong, could not find a forum.', 
+    const error = new HttpError(
+      "ID - Something went wrong, could not find a forum.",
       500
     ); // Something wrong with get request
     return next(error);
@@ -67,13 +59,13 @@ const getForumById = async (req, res, next) => {
 
   if (!forum) {
     const error = new HttpError(
-      'Could not find a forum with the given creator id',
+      "Could not find a forum with the given creator id",
       404
     ); // No forums with the given id
-    return next(error);  
+    return next(error);
   }
 
-  res.json({ forum: forum.toObject( { getters: true }) });
+  res.json({ forum: forum.toObject({ getters: true }) });
 };
 
 // Get forums by Creator
@@ -84,8 +76,8 @@ const getForumByCreator = async (req, res, next) => {
   try {
     forum = await Forum.findOne({ creator: forumCreator });
   } catch (err) {
-    const error = new HttpError( 
-      'Creator - Something went wrong, could not find a forum.', 
+    const error = new HttpError(
+      "Creator - Something went wrong, could not find a forum.",
       500
     ); // Something wrong with get request
     return next(error);
@@ -93,13 +85,13 @@ const getForumByCreator = async (req, res, next) => {
 
   if (!forum) {
     const error = new HttpError(
-      'Could not find a forum with the given username',
+      "Could not find a forum with the given username",
       404
     ); // No forums with the given id
-    return next(error);  
+    return next(error);
   }
 
-  res.json({ forum: forum.toObject( { getters: true }) });
+  res.json({ forum: forum.toObject({ getters: true }) });
 };
 
 // Get forums by headline
@@ -110,8 +102,8 @@ const getForumByHeadline = async (req, res, next) => {
   try {
     forum = await Forum.findOne({ headline: reqheadline });
   } catch (err) {
-    const error = new HttpError( 
-      'Headline - Something went wrong, could not find a forum.', 
+    const error = new HttpError(
+      "Headline - Something went wrong, could not find a forum.",
       500
     ); // Something wrong with get request
     return next(error);
@@ -119,13 +111,13 @@ const getForumByHeadline = async (req, res, next) => {
 
   if (!forum) {
     const error = new HttpError(
-      'Could not find a forum with the given headline',
+      "Could not find a forum with the given headline",
       404
     ); // No forums with the given id
-    return next(error);  
+    return next(error);
   }
 
-  res.json({ forum: forum.toObject( { getters: true }) });
+  res.json({ forum: forum.toObject({ getters: true }) });
 };
 
 // Get forums by Topic
@@ -136,8 +128,8 @@ const getForumByTopic = async (req, res, next) => {
   try {
     forum = await Forum.findOne({ topic: reqTopic });
   } catch (err) {
-    const error = new HttpError( 
-      'Topic - Something went wrong, could not find a forum.', 
+    const error = new HttpError(
+      "Topic - Something went wrong, could not find a forum.",
       500
     ); // Something wrong with get request
     return next(error);
@@ -145,27 +137,24 @@ const getForumByTopic = async (req, res, next) => {
 
   if (!forum) {
     const error = new HttpError(
-      'Could not find a forum with the given topic',
+      "Could not find a forum with the given topic",
       404
     ); // No forums with the given id
-    return next(error);  
+    return next(error);
   }
 
-  res.json({ forum: forum.toObject( { getters: true }) });
+  res.json({ forum: forum.toObject({ getters: true }) });
 };
 
 // Patch Forum
 const updateForum = async (req, res, next) => {
   const errors = validationResult(req);
-  
-  if(!errors.isEmpty()) {
-    throw new HttpError(
-      'Invalid inputs passed',
-      422
-    );
+
+  if (!errors.isEmpty()) {
+    throw new HttpError("Invalid inputs passed", 422);
   }
 
-  const { headline, topic } = req.body;
+  const { headline, topic, initComment, rating, anon} = req.body;
   const forumId = req.params.fid;
 
   let forum;
@@ -173,7 +162,7 @@ const updateForum = async (req, res, next) => {
     forum = await Forum.findById(forumId);
   } catch (err) {
     const error = new HttpError(
-      'Something went wrong, could not update forum',
+      "Something went wrong, could not update forum",
       500
     );
     return next(error);
@@ -181,46 +170,42 @@ const updateForum = async (req, res, next) => {
 
   forum.headline = headline;
   forum.topic =  topic;
+  forum.initComment = initComment;
+  forum.rating = rating;
+  forum.anon = anon;
 
   try {
     await forum.save();
   } catch (err) {
     const error = new HttpError(
-      'Something went wrong, could not update the forum',
+      "Something went wrong, could not update the forum",
       500
     );
     return next(error);
   }
 
-  res.status(200).json({ forum: forum.toObject({ getters: true })});
+  res.status(200).json({ forum: forum.toObject({ getters: true }) });
 };
 
 // Delete forum
 const deleteForum = async (req, res, next) => {
   const forumId = req.params.fid;
-  
-  let forum;
-  try {
-    forum = await Forum.findById(forumId);
-  } catch (err) {
-    const error = new HttpError(
-      'Delete - Something went wrong, could not find a forum',
-      500
-    );
-    return next(error);
-  }
 
   try {
+    await Comment.deleteMany({ forum: forumId });
+    const forum = await Forum.findById(forumId);
+    if (!forum) {
+      throw new HttpError("forum not found", 404);
+    }
     await forum.deleteOne();
+    res.status(200).json({ message: "Deleted forum and associated comments" });
   } catch (err) {
     const error = new HttpError(
-      'Something went wrong, could not delete forum',
+      "Error with deleting comments",
       500
     );
     return next(error);
   }
-
-  res.status(200).json({ message: 'Deleted forum' });
 };
 
 exports.createForum = createForum;

@@ -1,129 +1,194 @@
 const HttpError = require("../models/http-error");
+const Message = require("../models/message");
+const Conversation = require("../models/conversation");
 const { validationResult } = require("express-validator");
-const { v4: uuidv4 } = require("uuid");
-const Patient = require("../models/patient");
+const http = require("http");
+const { start } = require("repl");
+const { DateTime } = require("luxon");
+const ws = require("ws");
+const { json } = require("body-parser");
+// All active connections
+const clients = {};
 
-let DUMMY_USERS = [
-  {
-    id: "p1",
-    firstname: "Megan",
-    lastname: "Chan",
-    role: "doctor",
-    doctor_id: "",
-  },
-  {
-    id: "p2",
-    firstname: "Patient A",
-    lastname: "Lastname A",
-    role: "patient",
-    doctor_id: "p1",
-  },
-  {
-    id: "p3",
-    firstname: "Patient B",
-    lastname: "Lastname B",
-    role: "patient",
-    doctor_id: "p1",
-  },
-  {
-    id: "p4",
-    firstname: "Patient C",
-    lastname: "Lastname C",
-    role: "patient",
-    doctor_id: "p5",
-  },
-  {
-    id: "p5",
-    firstname: "Doctor A",
-    lastname: "Lastname DrA",
-    role: "doctor",
-    doctor_id: "",
-  },
-];
+// Attach WebSocket Server instance to HTTP server instance
 
-// GET user by uid
-const get_user_by_uid = (req, res, next) => {
-  const user_id = req.params.uid;
-  const user = DUMMY_USERS.find((p) => {
-    return p.id == user_id;
-  });
-  if (!user) {
-    return next(new HttpError("Could not find user by provided uid.", 404));
+const server = http.createServer();
+const wss = new ws.WebSocketServer({ server });
+const port = 8080;
+server.listen(port, () => {
+  console.log(`WebSocket server is running on port ${port}`);
+});
+
+const send_msg = (JSON_msg, uid, recv_id, cid) => {
+  // TEST: Print all connected clients
+  for (const [client_id, connection] of Object.entries(clients)) {
+    console.log(`Connected client: ${client_id}`);
   }
-  res.json({ user: user }); // {user:user} == {user}
+  // If recipient is not connectected, do nothing
+  console.log(recv_id);
+  if (!clients.hasOwnProperty(recv_id)) {
+    console.log("recipient does not exist");
+  }
+  // Else, Sender sends recipient message
+  else {
+    const combined_data = JSON.stringify({
+      msg: JSON_msg,
+      timestamp: DateTime.now().toISO(),
+      cid: cid,
+    });
+
+    clients[recv_id].send(combined_data);
+  }
 };
 
-// GET list of patients by doctor uid
-const get_patientlist_by_dr_id = (req, res, next) => {
-  const doctor_id = req.params.doctor_id;
-  const patient_list = DUMMY_USERS.filter((p) => {
-    return p.doctor_id === doctor_id;
-  });
-
-  if (!patient_list || patient_list.length === 0) {
-    return next(
-      new HttpError("Could not find patients list for provided doctor id.", 404)
-    );
+const disconnect_client = (uid) => {
+  delete clients[uid];
+  console.log(`Disconnected client: ${uid}`);
+  // TEST: Print all connected clients
+  for (const [client_id, connection] of Object.entries(clients)) {
+    console.log(`Connected client: ${client_id}`);
   }
-
-  res.json({ patient_list });
 };
 
-// POST User
-const create_user = (req, res, next) => {
+const handle_client_activity = () => {
+  // Receive new client connection request & handle events
+  wss.on("connection", function (connection) {
+    console.log("Server received a new connection.");
+    // connection.send("Connected to WebSocket server!");
+
+    // Event listener for messages
+    connection.on("message", (message) => {
+      JSON_msg = JSON.parse(message);
+      // Store new connection if message type is "uid"
+      if (JSON_msg.type == "uid") {
+        console.log(`Client's uid: ${JSON_msg.content}`);
+        clients[JSON.stringify(JSON_msg.content)] = connection;
+      }
+      // Send messages between clients if message type is "client_msg"
+      else if (JSON_msg.type == "client_msg") {
+        send_msg(
+          JSON_msg.content,
+          JSON_msg.uid,
+          JSON.stringify(JSON_msg.recv_id),
+          JSON_msg.cid
+        );
+      } else if (JSON_msg.type == "disconnect") {
+        disconnect_client(JSON.stringify(JSON_msg.uid));
+      }
+    });
+  });
+};
+
+const create_conversation = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new HttpError("Invalid inputs passed, check your data.", 422);
   }
-
-  const { id, firstname, lastname, role, doctor } = req.body;
-  const { doctor_id } = doctor;
-  const created_user = {
-    id: uuidv4(),
-    firstname,
-    lastname,
-    role,
-    doctor_id,
-  };
-
-  DUMMY_USERS.push(created_user);
-  res.status(201).json({ created_user });
+  const { sender, recipient, title } = req.body;
+  console.log("create_conversation fxn line 86:");
+  console.log(req.body);
+  const created_conversation = new Conversation({
+    sender: sender,
+    recipient: recipient,
+    title: title,
+  });
+  try {
+    await created_conversation.save();
+  } catch (err) {
+    const error = new HttpError(
+      "Creating Conversation failed, please try again",
+      500
+    );
+    return next(error);
+  }
+  res.status(201).json({ created_conversation });
 };
 
-// PATCH User
-const patch_user = (req, res, next) => {
-  const { firstname, lastname, doctor_id } = req.body;
-  const user_id = req.params.uid;
+const save_message = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new HttpError("Invalid inputs passed, check your data.", 422);
+  }
+  const { conversation_id, sender, text, timestamp } = req.body;
+  console.log("save_message fxn line 111:");
+  console.log(req.body);
+  const created_message = new Message({
+    conversation_id: conversation_id,
+    sender: sender,
+    text: text,
+    timestamp: timestamp,
+  });
+  try {
+    await created_message.save();
+  } catch (err) {
+    const error = new HttpError(
+      "Creating Message failed, please try again",
+      500
+    );
+    return next(error);
+  }
+  res.status(201).json({ created_message });
+};
 
-  const updated_user = { ...DUMMY_USERS.find((p) => p.id == user_id) }; // Make a copy of user with given id
-  const user_index = DUMMY_USERS.findIndex((p) => p.id === user_id); // Get index of user in DUMMY_USERS
+const list_conversations_by_uid = async (req, res, next) => {
+  const uid = req.params.uid;
+  let conversation_list;
 
-  updated_user.firstname = firstname;
-  updated_user.lastname = lastname;
-  updated_user.doctor_id = doctor_id;
-
-  DUMMY_USERS[user_index] = updated_user;
-
-  if (!updated_user) {
-    return next(new HttpError("Could not find user by provided uid.", 404));
+  try {
+    conversation_list = await Conversation.find({
+      $or: [{ sender: uid }, { recipient: uid }],
+    });
+  } catch (err) {
+    const error = new HttpError("Something went wrong with the request.", 500);
+    return next(error);
   }
 
-  res.status(200).json({ user: updated_user });
-};
-
-// DELETE User
-const delete_user = (req, res, next) => {
-  const user_id = req.params.uid;
-  if (!DUMMY_USERS.find((p) => p.id === user_id)) {
-    throw new HttpError("Could not find user", 404);
+  if (!conversation_list) {
+    const error = new HttpError(
+      "Could not find conversation list by provided uid.",
+      404
+    );
+    return next(error);
   }
-  DUMMY_USERS = DUMMY_USERS.filter((p) => p.id !== user_id);
-  res.status(200).json({ message: "Deleted user" });
+
+  res.json({
+    conversation_list: conversation_list.map((conversation) =>
+      conversation.toObject({ getters: true })
+    ),
+  });
 };
 
-// Export pointer to functions for router
-exports.get_user_by_uid = get_user_by_uid;
-exports.get_patientlist_by_dr_id = get_patientlist_by_dr_id;
-exports.create_user = create_user;
-exports.patch_user = patch_user;
-exports.delete_user = delete_user;
+const list_message_history_by_cid = async (req, res, next) => {
+  const cid = req.params.cid;
+  let message_history;
+
+  // Return message history in an array
+  try {
+    message_history = await Message.find({
+      conversation_id: cid,
+    });
+  } catch (err) {
+    const error = new HttpError("Something went wrong with the request.", 500);
+    return next(error);
+  }
+
+  if (!message_history) {
+    const error = new HttpError(
+      "Could not find message history by provided cid.",
+      404
+    );
+    return next(error);
+  }
+
+  res.json({
+    message_history: message_history.map((message) =>
+      message.toObject({ getters: true })
+    ),
+  });
+};
+
+exports.handle_client_activity = handle_client_activity;
+exports.create_conversation = create_conversation;
+exports.save_message = save_message;
+exports.list_conversations_by_uid = list_conversations_by_uid;
+exports.list_message_history_by_cid = list_message_history_by_cid;

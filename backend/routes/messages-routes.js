@@ -4,22 +4,21 @@ const router = express.Router();
 const HttpError = require("../models/http-error");
 const messagesController = require("../controllers/messages-controller");
 
-// // GET user by uid
-// router.get("/:uid", messagesController.get_user_by_uid);
-// // GET list of patients by doctor uid
-// router.get(
-//   "/patientlist/:doctor_id",
-//   messagesController.get_patientlist_by_dr_id
-// );
-// // POST user
-// router.post(
-//   "/",
-//   [(check("name").not().isEmpty(), check("role").not().isEmpty())],
-//   messagesController.create_user
-// );
-// // PATCH user
-// router.patch("/:uid", messagesController.patch_user);
-// // DELETE user
-// router.delete("/:uid", messagesController.delete_user);
+// Send request to start WS Server when messages main page is accessed
+router.get("/", messagesController.handle_client_activity);
+// Save new conversation to DB
+router.post("/createconversation", messagesController.create_conversation);
+// Save messages to DB
+router.post("/savemessage", messagesController.save_message);
+// Fetch list of conversations by userid
+router.get(
+  "/listconversations/:uid",
+  messagesController.list_conversations_by_uid
+);
+// Fetch message history of conversation by conversation id
+router.get(
+  "/listmessagehistory/:cid",
+  messagesController.list_message_history_by_cid
+);
 
-module.exports = router;
+http: module.exports = router;

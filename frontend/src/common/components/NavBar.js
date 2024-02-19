@@ -3,8 +3,8 @@ import {Link, useHistory} from 'react-router-dom';
 import {Layout, Menu, Typography} from 'antd';
 import {useAuth} from "../utils/auth";
 
-const {Header} = Layout;
-const {Text} = Typography;
+const { Header } = Layout;
+const { Text } = Typography;
 
 const NavigationBar = () => {
   const {isLoggedIn, logout} = useAuth();
@@ -22,37 +22,40 @@ const NavigationBar = () => {
   };
 
   const menuItems = [
-    {
-      key: 'forum',
-      label: 'Forum',
-    },
-    {
-      key: 'message',
-      label: 'Message',
-    },
-    {key: 'chatbot', label: <Link to="/chatbot">Chatbot</Link>},
-    {key: 'spacer', label: '', style: {flexGrow: 1}},
     ...(isLoggedIn
-        ? [
-          {key: 'logout', label: 'Logout', onClick: handleLogout},
+      ? [
+          {
+            key: "forum",
+            label: <Link to="/forum">Forum</Link>,
+          },
+          {
+            key: "message",
+            label: <Link to="/messages">Message</Link>,
+          },
+          { key: "chatbot", label: <Link to="/chatbot">Chatbot</Link> },
+          {
+            key: "appointments",
+            label: <Link to="/appointments">Appointment</Link>,
+          },
+          { key: "spacer", label: "", style: { flexGrow: 1 } },
+          { key: "logout", label: "Logout", onClick: handleLogout },
         ]
-        : [
-          {key: 'login', label: <Link to="/login">Login</Link>},
-          {key: 'register', label: <Link to="/register">Register</Link>},
-        ]
-    ),
+      : [
+          { key: "login", label: <Link to="/login">Login</Link> },
+          { key: "register", label: <Link to="/register">Register</Link> },
+        ]),
   ];
 
   return (
     <Header
       style={{
-        position: 'sticky',
+        position: "sticky",
         top: 0,
         zIndex: 1,
-        width: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
       }}
     >
       <Text style={{color: 'white', fontSize: '24px'}}>MedShare</Text>
