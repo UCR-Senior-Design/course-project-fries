@@ -1,18 +1,25 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import ForumList from "../components/ForumList";
 import ForumForm from "../components/ForumForm";
 import ForumContext from "../components/common/ForumContext";
 import "./Forum.css";
 import NavigationBar from "../../common/components/NavBar";
 import { Layout, Typography, Button } from "antd";
-import { AuthContext } from "../../common/utils/auth";
+import { useAuth } from "../../common/utils/auth";
+import {useHistory} from "react-router-dom";
 const { Content } = Layout;
 const { Text } = Typography;
 
 const Forum = () => {
-  const { isLoggedIn } = useContext(AuthContext);
-  const { login, logout } = useContext(AuthContext);
-  login();
+  const history = useHistory();
+  const { isLoggedIn, userId } = useAuth(); // use userId here
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      history.push("/login");
+    }
+  }, [isLoggedIn, history]);
+
 
   const [forumList, setForumList] = useState([]); // Initialize as an empty array
   const [displayForumForm, setDisplayForumForm] = useState(false);
@@ -53,7 +60,7 @@ const Forum = () => {
   if (!isLoggedIn) {
     return (
       <Layout className="layout" style={{ height: "100vh" }}>
-        <NavigationBar isLoggedIn={isLoggedIn} />
+        <NavigationBar />
         <Content
           style={{
             padding: "0 50px",

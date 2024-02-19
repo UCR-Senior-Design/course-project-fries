@@ -24,7 +24,6 @@
     "langchain": "^0.1.17",
     "mammoth": "^1.6.0",
     "pdfjs-dist": "^4.0.379",
-    "uuid": "^9.0.1"
     "luxon": "^3.4.4",
     "mongoose": "^8.0.1",
     "uuid": "^9.0.1",

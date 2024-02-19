@@ -38,7 +38,7 @@ app.use((req, res, next) => {
 });
 
 app.get("/api/verify", (req, res) => {
-  const token = req.header('Authorization')?.split(' ')[1]; // Bearer TOKEN
+  const token = req.header('Authorization'); // Bearer TOKEN
 
   if (!token) {
     return res.status(401).json({message: 'No token, authorization denied'});

@@ -1,7 +1,8 @@
 import React from "react";
+import NavigationBar from "../../common/components/NavBar";
 
 const Appointments = () => {
-  return <h1>Appointments Page</h1>;
+  return <NavigationBar />
 };
 
 export default Appointments;

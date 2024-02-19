@@ -96,6 +96,7 @@ const Messages = () => {
 
   return (
     <Layout className="layout" style={{ height: "100vh" }}>
+      <NavigationBar />
       <Content style={{ padding: "0 40px" }}>
         <h1>Messages Inbox</h1>
         {/* TO DO: Manually entered UID should replace with login info */}

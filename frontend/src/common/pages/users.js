@@ -3,7 +3,11 @@ import {BrowserRouter as Router, Route, Switch,} from 'react-router-dom';
 import {Layout,} from 'antd';
 import LoginForm from '../forms/login_form';
 import RegisterForm from '../forms/register_form';
-import NavigationBar from '../components/NavBar'
+import NavigationBar from '../components/NavBar';
+import Messages from "../../messages/pages/Messages";
+import Forum from "../../forum/pages/Forum";
+import Chatbot from "../../chatbot/pages/Chatbot";
+import Appointments from "../../appointments/pages/Appointments";
 
 const { Content } = Layout;
 

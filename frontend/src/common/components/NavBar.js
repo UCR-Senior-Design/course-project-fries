@@ -3,8 +3,8 @@ import {Link, useHistory} from 'react-router-dom';
 import {Layout, Menu, Typography} from 'antd';
 import {useAuth} from "../utils/auth";
 
-const { Header } = Layout;
-const { Text } = Typography;
+const {Header} = Layout;
+const {Text} = Typography;
 
 const NavigationBar = () => {
   const {isLoggedIn, logout} = useAuth();
@@ -24,26 +24,27 @@ const NavigationBar = () => {
   const menuItems = [
     ...(isLoggedIn
       ? [
-          {
-            key: "forum",
-            label: <Link to="/forum">Forum</Link>,
-          },
-          {
-            key: "message",
-            label: <Link to="/messages">Message</Link>,
-          },
-          { key: "chatbot", label: <Link to="/chatbot">Chatbot</Link> },
-          {
-            key: "appointments",
-            label: <Link to="/appointments">Appointment</Link>,
-          },
-          { key: "spacer", label: "", style: { flexGrow: 1 } },
-          { key: "logout", label: "Logout", onClick: handleLogout },
-        ]
+        {
+          key: "forum",
+          label: <Link to="/forum">Forum</Link>,
+        },
+        {
+          key: "message",
+          label: <Link to="/messages">Message</Link>,
+        },
+        {key: "chatbot", label: <Link to="/chatbot">Chatbot</Link>},
+        {
+          key: "appointments",
+          label: <Link to="/appointments">Appointment</Link>,
+        },
+        {key: "spacer", label: "", style: {flexGrow: 1}},
+        {key: "logout", label: "Logout", onClick: handleLogout},
+      ]
       : [
-          { key: "login", label: <Link to="/login">Login</Link> },
-          { key: "register", label: <Link to="/register">Register</Link> },
-        ]),
+        {key: "spacer", label: "", style: {flexGrow: 1}},
+        {key: "login", label: <Link to="/login">Login</Link>},
+        {key: "register", label: <Link to="/register">Register</Link>},
+      ]),
   ];
 
   return (

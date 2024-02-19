@@ -1,32 +1,32 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {Layout, Button, List, Avatar, Typography} from 'antd';
 
 import NavigationBar from '../../common/components/NavBar';
-import {AuthContext} from "../../common/utils/auth";
 
 const {Content, Footer} = Layout;
 const {Text} = Typography;
 
 const Chatbot = () => {
-  const {isLoggedIn} = useContext(AuthContext);
-  // For test
-  // const {login} = useContext(AuthContext);
-  // login();
-
-  if (!isLoggedIn) {
-    return (
-      <Layout className="layout" style={{ height: "100vh" }}>
-        <NavigationBar isLoggedIn={isLoggedIn} />
-        <Content style={{ padding: '0 50px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Text>Please login first.</Text>
-        </Content>
-      </Layout>
-    );
-  }
+  // const {isLoggedIn} = useContext(AuthContext);
+  // const isLoggedIn = false;
+  // // For test
+  // // const {login} = useContext(AuthContext);
+  // // login();
+  //
+  // if (!isLoggedIn) {
+  //   return (
+  //     <Layout className="layout" style={{ height: "100vh" }}>
+  //       <NavigationBar isLoggedIn={isLoggedIn} />
+  //       <Content style={{ padding: '0 50px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+  //         <Text>Please login first.</Text>
+  //       </Content>
+  //     </Layout>
+  //   );
+  // }
 
   return (
     <Layout className="layout" style={{height: "100vh"}}>
-      <NavigationBar isLoggedIn={isLoggedIn} />
+      <NavigationBar />
       <Content style={{padding: '0 50px'}}>
         <div className="chat-window">
           <List
