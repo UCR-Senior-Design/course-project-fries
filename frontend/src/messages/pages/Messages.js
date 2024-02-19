@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import styles from "./Messages.module.css";
 import Compose from "../components/Compose";
 import Thread from "../components/Thread";
@@ -13,11 +13,6 @@ const { Content, Sider, Footer } = Layout;
 const { Text } = Typography;
 
 const Messages = () => {
-  const { isLoggedIn } = useContext(AuthContext);
-  // For test - manually login/logout
-  const { login } = useContext(AuthContext);
-  login();
-  //
   const [uid, setUid] = useState(""); // TODO: replace with what you get from login
   const [compose, setCompose] = useState(false);
   const [inbox, setInbox] = useState(false);
@@ -99,27 +94,8 @@ const Messages = () => {
     setViewThread(true);
   };
 
-  if (!isLoggedIn) {
-    return (
-      <Layout className="layout" style={{ height: "100vh" }}>
-        <NavigationBar isLoggedIn={isLoggedIn} />
-        <Content
-          style={{
-            padding: "0 50px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text>Please login first.</Text>
-        </Content>
-      </Layout>
-    );
-  }
-
   return (
     <Layout className="layout" style={{ height: "100vh" }}>
-      <NavigationBar isLoggedIn={isLoggedIn} />
       <Content style={{ padding: "0 40px" }}>
         <h1>Messages Inbox</h1>
         {/* TO DO: Manually entered UID should replace with login info */}
