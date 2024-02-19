@@ -6,7 +6,7 @@ import "./Forum.css";
 import NavigationBar from "../../common/components/NavBar";
 import { Layout, Typography, Button } from "antd";
 import { useAuth } from "../../common/utils/auth";
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 const { Content } = Layout;
 const { Text } = Typography;
 
@@ -20,7 +20,7 @@ const Forum = () => {
     }
   }, [isLoggedIn, history]);
 
-
+  console.log(userId);
   const [forumList, setForumList] = useState([]); // Initialize as an empty array
   const [displayForumForm, setDisplayForumForm] = useState(false);
   const [changeInForums, setChangeInForums] = useState(false);
@@ -77,17 +77,14 @@ const Forum = () => {
 
   return (
     <Layout className="layout" style={{ height: "100vh" }}>
-      <NavigationBar isLoggedIn={isLoggedIn} />
+      {/* <NavigationBar isLoggedIn={isLoggedIn} /> */}
       <Content style={{ padding: "0 40px" }}>
-        <ForumList 
-          items={forumList} 
-          onDeleteForum={handleDeleteForum} 
+        <ForumList
+          items={forumList}
+          onDeleteForum={handleDeleteForum}
           onUpdateForum={handleUpdateForumList}
-          />
-        <button 
-          className="NewForumButton" 
-          onClick={displayForumFormHandler}
-        >
+        />
+        <button className="NewForumButton" onClick={displayForumFormHandler}>
           New Forum
         </button>
         {displayForumForm === true && (

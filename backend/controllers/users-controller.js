@@ -1,71 +1,73 @@
 const jwt = require("jsonwebtoken");
-const User = require('../models/users');
+const User = require("../models/users");
 
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
 // Create json web token
 const createToken = (id) => {
-  return jwt.sign({id: id}, process.env.JWT_SECRET, {
-    expiresIn: '1h',
+  return jwt.sign({ id: id }, process.env.JWT_SECRET, {
+    expiresIn: "1h",
   });
 };
 
 exports.register = async (req, res) => {
   try {
-    const {email, firstname, lastname, role, password} = req.body;
+    const { email, firstname, lastname, role, password } = req.body;
 
     // Check if user already exists
-    const existingUser = await User.findOne({email: email});
+    const existingUser = await User.findOne({ email: email });
 
     if (existingUser) {
-      return res.status(400).json({message: 'Users already exists'});
+      return res.status(400).json({ message: "Users already exists" });
     }
 
     // Check user's role
     let isDoctor = false;
 
-    if (role === 'patient') {
+    if (role === "patient") {
       isDoctor = false;
-    } else if (role === 'doctor') {
+    } else if (role === "doctor") {
       isDoctor = true;
     } else {
-      return res.status(400).json({message: 'Invalid role'});
+      return res.status(400).json({ message: "Invalid role" });
     }
 
     // Create a new user
-    const user = new User({email, firstname, lastname, isDoctor, password});
+    const user = new User({ email, firstname, lastname, isDoctor, password });
     await user.save();
 
-    res.status(201).json({message: 'Users created successfully'});
+    res.status(201).json({ message: "Users created successfully" });
   } catch (error) {
-    res.status(500).json({message: 'Internal server error'});
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 exports.login = async (req, res) => {
   try {
-    const {email, password} = req.body;
-
-    const user = await User.findOne({email: email});
+    const { email, password } = req.body;
+    console.log(email);
+    const user = await User.findOne({ email: email });
+    console.log(user);
 
     if (!user) {
-      return res.status(401).json({message: 'Not found the user'});
+      return res.status(401).json({ message: "Not found the user" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({message: "Invalid credentials"});
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const token = createToken(user._id);
-    res.json({message: 'Login successful', token: token, user: user});
+    console.log(token);
+    res.json({ message: "Login successful", token: token, user: user });
   } catch (error) {
-    res.status(500).json({message: 'Internal server error', error: error});
+    res.status(500).json({ message: "Internal server error", error: error });
   }
 };
 
 exports.logout = (req, res) => {
   // Logout logic
-  localStorage.removeItem('token');
-  res.json({message: 'Logout successful'});
+  localStorage.removeItem("token");
+  res.json({ message: "Logout successful" });
 };
