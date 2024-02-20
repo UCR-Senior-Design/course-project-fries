@@ -1,5 +1,6 @@
 const HttpError = require("../models/http-error");
 const Message = require("../models/message");
+const User = require("../models/Users");
 const Conversation = require("../models/conversation");
 const { validationResult } = require("express-validator");
 const http = require("http");
@@ -187,8 +188,27 @@ const list_message_history_by_cid = async (req, res, next) => {
   });
 };
 
+const get_user_by_uid = async (req, res, next) => {
+  const uid = req.params.uid;
+  let user;
+
+  try {
+    user = await User.findById(uid);
+  } catch (err) {
+    const error = new HttpError("Something went wrong with the request.", 500);
+    return next(error); // stop code execution if error is detected
+  }
+
+  if (!user) {
+    const error = new HttpError("Could not find user by provided id.", 404);
+    return next(error);
+  }
+  res.json({ user: user.toObject({ getters: true }) });
+};
+
 exports.handle_client_activity = handle_client_activity;
 exports.create_conversation = create_conversation;
 exports.save_message = save_message;
 exports.list_conversations_by_uid = list_conversations_by_uid;
 exports.list_message_history_by_cid = list_message_history_by_cid;
+exports.get_user_by_uid = get_user_by_uid;

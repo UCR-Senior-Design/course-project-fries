@@ -6,7 +6,7 @@ import Thread from "../components/Thread";
 import Inbox from "../components/Inbox";
 import { Layout, Typography, Button } from "antd";
 import { useAuth } from "../../common/utils/auth";
-import { EditOutlined, InboxOutlined, SendOutlined } from "@ant-design/icons";
+import { EditOutlined, InboxOutlined } from "@ant-design/icons";
 import { DateTime } from "luxon";
 const { Content, Sider, Footer } = Layout;
 const { Text } = Typography;
