@@ -12,7 +12,7 @@ const { Text } = Typography;
 
 const Forum = () => {
   const history = useHistory();
-  const { isLoggedIn, userId, firstname, lastname, isDoctor } = useAuth(); // use userId here
+  const { isLoggedIn } = useAuth(); // use userId here
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -20,10 +20,6 @@ const Forum = () => {
     }
   }, [isLoggedIn, history]);
 
-  console.log("UserId", userId);
-  console.log("firstName:",firstname);
-  console.log("lastName:", lastname);
-  console.log("isDoctor:", isDoctor);
   const [forumList, setForumList] = useState([]); // Initialize as an empty array
   const [displayForumForm, setDisplayForumForm] = useState(false);
   const [changeInForums, setChangeInForums] = useState(false);
@@ -86,7 +82,6 @@ const Forum = () => {
           items={forumList}
           onDeleteForum={handleDeleteForum}
           onUpdateForum={handleUpdateForumList}
-          userId={userId}
         />
         <button className="NewForumButton" onClick={displayForumFormHandler}>
           New Forum
@@ -97,10 +92,6 @@ const Forum = () => {
               onCancel={closeForumFormHandler}
               onCreateForum={handleUpdateForumList}
               onUpdateForum={handleUpdateForumList}
-              userId={userId}
-              firstname={firstname}
-              lastname={lastname}
-              isDoctor={isDoctor}
             />
           </div>
         )}
