@@ -20,7 +20,9 @@ const ForumList = (props, onClick) => {
           anon={forum.anon}
           rating={forum.rating}
           onUpdateForum={props.onUpdateForum}
-          firstName={forum.firstname}
+          firstname={forum.firstname}
+          time={forum.time_stamp}
+          forumOwner={forum.user}
         />
       ))}
     </ul>

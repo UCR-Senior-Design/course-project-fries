@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import Modal from "./common/Modal";
 import CommentItem from "./CommentItem";
 import CommentForm from "./CommentForm";
+import { useAuth } from "../../common/utils/auth";
 
 const IndiForum = (props) => {
+  const { userId } = useAuth();
   const [commentList, setCommentList] = useState([]);
   const [changeInIndiForum, setChangeInIndiForum] = useState(false);
   const [displayCommentForm, setDisplayCommentForum] = useState(false);
@@ -125,11 +127,15 @@ const IndiForum = (props) => {
           <div className="indiForum__topic">Topic: {props.indiForumTopic}</div>
           <div className="indiForum__initComment">InitComment: {props.indiForumInitComment}</div>
           <div className="indiForumRating">Rating: {props.indiForumRating}</div>
+          <div className="indiForumTime">Time Posted: {}</div>
+          {props.indiForumOwner === userId && (
           <button
             onClick={() => deleteIndiForumHandler(props.indiForumIdP)}
           >
             Delete Forum
           </button>
+
+          )}
           {dislikedForum === false && (
             <div>
               <button

@@ -7,6 +7,24 @@ const ForumItem = (props) => {
   const { userId, firstname } = useAuth();
   const [disiplayIndiForum, setDisplayIndiForum] = useState(false);
   const [chosenIndiForum, setChosenIndiForum] = useState("");
+  const [formattedTime, setFormattedTime] = useState("");
+
+  useEffect(() => {
+    if (props.time) {
+      const date = new Date(props.time);
+      const options = {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric"
+      }
+      const formattedTime = date.toLocaleDateString();
+      const formattedDateTime = date.toLocaleString(undefined, options);
+      setFormattedTime(formattedDateTime);
+    }
+  }, [props.time]);
 
   const displayIndiForumHandler = (forumId) => {
     setDisplayIndiForum(true);
@@ -36,13 +54,13 @@ const ForumItem = (props) => {
           {props.anon === true ? 
               <div className="forum-item__creator">anonymous</div> 
             : 
-            <h2 className="forum-item__creator">{props.firstname}</h2>
+            <div className="forum-item__creator">{props.firstname}</div>
           }
           <h2 className="forum-item__headline">{props.headline}</h2>
           <h2 className="forum-item__topic">{props.topic}</h2>
           <h2 className="forum-item__initComment">{props.initComment}</h2>
-          <h2 className="forum-item__rating">Rating: {props.rating}</h2>
-          <h2 className="forum-item__anon">Anonymous?: {JSON.stringify(props.anon)}</h2>
+          <h2 className="forum-item__rating">{props.rating} likes</h2>
+          <h2>Posted: {formattedTime}</h2>
           <button
             className="forum-item__button"
             onClick={() => displayIndiForumHandler(props.fid)}
@@ -67,12 +85,16 @@ const ForumItem = (props) => {
                 indiForum={props.indiForum}
                 rating={props.rating}
                 anon={props.anon}
+                time={props.time}
+                indiForumOwner={props.forumOwner}
               />
             </div>
           )}
+          {props.forumOwner === userId && (
           <button onClick={() => deleteForumHandler(props.fid)}>
             Delete Forum
           </button>
+          )}
         </div>
       </div>
     </li>
