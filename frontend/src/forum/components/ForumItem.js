@@ -85,7 +85,7 @@ const ForumItem = (props) => {
                 indiForum={props.indiForum}
                 rating={props.rating}
                 anon={props.anon}
-                time={props.time}
+                time={formattedTime}
                 indiForumOwner={props.forumOwner}
               />
             </div>

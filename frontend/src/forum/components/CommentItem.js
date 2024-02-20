@@ -1,6 +1,8 @@
 import React , { useState, useEffect } from "react";
+import { useAuth } from "../../common/utils/auth";
 
 const CommentItem = (props) => {
+    const { userId } = useAuth();
     const [commentsVotedOnList, setCommentsList] = useState([]);
 
     const upVoteHandler = (cid) => {
@@ -50,12 +52,14 @@ const CommentItem = (props) => {
                             </button>
                         </div>
                     )}
+                    {props.commentOwner === userId && (
                     <button
                         className="commentForm_button"
                         onClick={() => deleteCommentHandler(props.cid)}
                     >
                         Delete Comment
                     </button>
+                    )}
                     <button
                         className="commentForm_button"
                     >

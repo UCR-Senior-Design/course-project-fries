@@ -127,7 +127,7 @@ const IndiForum = (props) => {
           <div className="indiForum__topic">Topic: {props.indiForumTopic}</div>
           <div className="indiForum__initComment">InitComment: {props.indiForumInitComment}</div>
           <div className="indiForumRating">Rating: {props.indiForumRating}</div>
-          <div className="indiForumTime">Time Posted: {}</div>
+          <div className="indiForumTime">Time Posted: {props.time}</div>
           {props.indiForumOwner === userId && (
           <button
             onClick={() => deleteIndiForumHandler(props.indiForumIdP)}
@@ -173,6 +173,7 @@ const IndiForum = (props) => {
                 onCreateComment={handleUpdateIndiForumList}
                 onDeleteComment={handleDeleteComment}
                 onUpdateComment={handleUpdateForum}
+                commentOwner={comment.user}
               />
             ))}
           </ul>
