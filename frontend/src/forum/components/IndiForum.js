@@ -117,7 +117,7 @@ const IndiForum = (props) => {
         <div className="indiForum__BaseContent">
           {props.anon === true ? 
             <div className="forum-item__creator">anonymous</div>
-            : <h2 className="forum-item__creator">{props.indiForumCreator}</h2>
+            : <h2 className="forum-item__creator">{props.indiForumFirstName}</h2>
           }
           <div className="indiForum__headline">
             Headline: {props.indiForumHeadline}
@@ -159,11 +159,10 @@ const IndiForum = (props) => {
               <CommentItem
                 key={comment._id}
                 cid={comment._id}
-                creator={comment.creator}
+                creator={comment.firstname}
                 text={comment.comment_text}
                 time_stamp={comment.time_stamp}
-                up_votes={comment.up_votes}
-                down_votes={comment.down_votes}
+                rating={comment.rating}
                 onCancel={closeCommentFormHandler}
                 onCreateComment={handleUpdateIndiForumList}
                 onDeleteComment={handleDeleteComment}

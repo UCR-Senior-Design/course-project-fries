@@ -37,7 +37,6 @@ const CommentForm = (props) => {
         isDoctor: isDoctor,
         anon: false,
       }
-      console.log(commentData);
       const response = await fetch("http://localhost:5001/api/comments", {
         method: "POST",
         body: JSON.stringify(commentData),

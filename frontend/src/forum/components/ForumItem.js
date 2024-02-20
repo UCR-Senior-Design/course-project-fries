@@ -55,7 +55,7 @@ const ForumItem = (props) => {
                 className="chosenIndiForum"
                 indiForumId={chosenIndiForum}
                 indiForumIdP={props.fid}
-                indiForumCreator={props.creator}
+                indiForumFirstName={props.firstName}
                 indiForumHeadline={props.headline}
                 indiForumTopic={props.topic}
                 indiForumInitComment={props.initComment}
