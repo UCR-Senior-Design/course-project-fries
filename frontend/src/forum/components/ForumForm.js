@@ -10,7 +10,7 @@ import {
  const { TextArea } = Input;
 
 const ForumForm = (props) => {
-  const { userId, firstname, lastname, isDoctor } = useAuth(); // use userId here
+  const { userId, firstname, isDoctor } = useAuth(); // use userId here
   const [newForum_headline, setNewForum_headline] = useState("");
   const [newForum_topic, setNewForum_topic] = useState("");
   const [newForum_initComment, setNewForum_initComment] = useState("");

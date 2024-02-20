@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./ForumItem.css";
 import IndiForum from "./IndiForum";
+import { useAuth } from "../../common/utils/auth";
 
 const ForumItem = (props) => {
+  const { userId, firstname } = useAuth();
   const [disiplayIndiForum, setDisplayIndiForum] = useState(false);
   const [chosenIndiForum, setChosenIndiForum] = useState("");
 
@@ -33,7 +35,8 @@ const ForumItem = (props) => {
         <div className="forum-item__info">
           {props.anon === true ? 
               <div className="forum-item__creator">anonymous</div> 
-            : <h2 className="forum-item__creator">{props.creator}</h2>
+            : 
+            <h2 className="forum-item__creator">{props.firstname}</h2>
           }
           <h2 className="forum-item__headline">{props.headline}</h2>
           <h2 className="forum-item__topic">{props.topic}</h2>
