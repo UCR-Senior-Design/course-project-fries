@@ -48,7 +48,8 @@ const ForumForm = (props) => {
     console.log("newForum_anon", newForum_anon);
     try {
       forumData = {
-        creator: newForum_creator,
+        user: props.userId,
+        firstname: props.firstname,
         headline: newForum_headline,
         initComment: newForum_initComment,
         topic: newForum_topic,

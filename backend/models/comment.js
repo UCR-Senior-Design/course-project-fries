@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const comment_schema = new Schema({
-  creator: { type: String, required: true},
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true},
+  username: { type: String, required: true },
   forum: { type: Schema.Types.ObjectId, ref: 'Forum', required: true },
   comment_text: { type: String, required: true },
   time_stamp: { type: Date, default: Date.now },
