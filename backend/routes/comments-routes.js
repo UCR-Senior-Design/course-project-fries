@@ -64,7 +64,7 @@ router.delete(
 router.post(
   "/",
   [
-    check("creator")
+    check("user")
       .not()
       .isEmpty(), 
     check("forumId")

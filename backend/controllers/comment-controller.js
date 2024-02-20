@@ -14,13 +14,15 @@ const createComment = async (req, res, next) => {
     );
   }
 
-  const { creator, forumId, comment_text, anon } = req.body;
+  const { user, firstname, forumId, comment_text, anon, isDoctor } = req.body;
 
   const createdComment = new Comment({
-    creator,
+    user: user,
+    firstname: firstname,
     forum: forumId,
-    comment_text,
-    anon
+    comment_text: comment_text,
+    anon: anon,
+    isDoctor: isDoctor,
   });
 
   try {
