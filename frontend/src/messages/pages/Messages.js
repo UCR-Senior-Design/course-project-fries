@@ -1,30 +1,35 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import styles from "./Messages.module.css";
 import Compose from "../components/Compose";
 import Thread from "../components/Thread";
 import Inbox from "../components/Inbox";
 import { Layout, Typography, Button } from "antd";
-import { useState } from "react";
-import NavigationBar from "../../common/components/NavBar";
-import { AuthContext } from "../../common/utils/auth";
+import { useAuth } from "../../common/utils/auth";
 import { EditOutlined, InboxOutlined, SendOutlined } from "@ant-design/icons";
 import { DateTime } from "luxon";
 const { Content, Sider, Footer } = Layout;
 const { Text } = Typography;
 
 const Messages = () => {
-  const [uid, setUid] = useState(""); // TODO: replace with what you get from login
+  const history = useHistory();
+  const { isLoggedIn, userId } = useAuth(); // use userId here
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      history.push("/login");
+    }
+  }, [isLoggedIn, history]);
+
+  console.log(userId);
+
+  const [uid, setUid] = useState(userId);
   const [compose, setCompose] = useState(false);
-  const [inbox, setInbox] = useState(false);
+  const [inbox, setInbox] = useState(true);
   const [viewthread, setViewThread] = useState(false);
   const [conversationId, setConversationId] = useState("");
   const [recipient, setRecipient] = useState("");
   const [title, setTitle] = useState("");
-
-  // Set uid into a variable
-  const entered_uid_handler = (event) => {
-    setUid(event.target.value);
-  };
 
   // Save conversation and first message, display Thread
   const send_message = (enteredMessage, conversation_id, recipient, title) => {
@@ -70,19 +75,8 @@ const Messages = () => {
     setInbox(true);
   };
 
-  // Display Sent (All conversations where user sent the last message)
-  const sent_btn_handler = (event) => {
-    setCompose(false);
-    setInbox(false);
-  };
-
   // Display Thread selected from Inbox
   const select_convo_handler = (conversation_id, recipient, sender, title) => {
-    console.log("here");
-    console.log(conversation_id);
-    console.log(recipient);
-    console.log(sender);
-    console.log(title);
     setConversationId(conversation_id);
     if (recipient !== uid) {
       setRecipient(recipient);
@@ -99,17 +93,6 @@ const Messages = () => {
       {/* <NavigationBar /> */}
       <Content style={{ padding: "0 40px" }}>
         <h1>Messages Inbox</h1>
-        {/* TO DO: Manually entered UID should replace with login info */}
-        <div>
-          <form>
-            <input
-              type="text"
-              placeholder="Enter UID"
-              value={uid}
-              onChange={entered_uid_handler}
-            ></input>
-          </form>
-        </div>
         <div className={styles.main}>
           <ul className={styles.side_menu}>
             <Button
@@ -124,10 +107,6 @@ const Messages = () => {
               <InboxOutlined style={{ paddingRight: "4px" }} />
               Inbox
             </li>
-            {/* <li className={styles.side_menu_button} onClick={sent_btn_handler}>
-              <SendOutlined style={{ paddingRight: "4px" }} />
-              Sent
-            </li> */}
           </ul>
           <div className={styles.inbox_body}>
             {inbox === true && (

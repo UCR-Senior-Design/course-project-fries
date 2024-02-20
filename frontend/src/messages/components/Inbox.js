@@ -7,6 +7,7 @@ const { Text } = Typography;
 const Inbox = ({ uid, onSetConvoId }) => {
   //TODO: use uid from login
   const [convoList, setConvoList] = useState([]);
+  const [noMsg, setNoMsg] = useState(false);
 
   // Fetch all Conversations where user is either sender or recipient
   useEffect(() => {
@@ -15,6 +16,9 @@ const Inbox = ({ uid, onSetConvoId }) => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
+        if (data.conversation_list.length === 0) {
+          setNoMsg(true);
+        }
         setConvoList(data.conversation_list);
       })
       .catch((error) => {
@@ -27,27 +31,31 @@ const Inbox = ({ uid, onSetConvoId }) => {
     onSetConvoId(_id, recipient, sender, title);
   };
 
-  console.log(convoList);
+  // console.log(convoList);
   return (
     <div>
-      {convoList.map(({ _id, recipient, sender, title }) => (
-        <ul
-          key={_id}
-          className={styles.conversation_item}
-          onClick={() =>
-            select_conversation_handler(_id, recipient, sender, title)
-          }
-        >
-          <h3>{title}</h3>
-          <div>
-            <Text>From: {sender}</Text>
-          </div>
-          <div>
-            <Text>To: {recipient}</Text>
-          </div>
-          {/* <ul>Conversation id: {_id}</ul> */}
-        </ul>
-      ))}
+      {noMsg ? (
+        <h1 style={{ marginLeft: "20px" }}>No Messages</h1>
+      ) : (
+        convoList.map(({ _id, recipient, sender, title }) => (
+          <ul
+            key={_id}
+            className={styles.conversation_item}
+            onClick={() =>
+              select_conversation_handler(_id, recipient, sender, title)
+            }
+          >
+            <h3>{title}</h3>
+            <div>
+              <Text>From: {sender}</Text>
+            </div>
+            <div>
+              <Text>To: {recipient}</Text>
+            </div>
+            {/* <ul>Conversation id: {_id}</ul> */}
+          </ul>
+        ))
+      )}
     </div>
   );
 };
