@@ -30,6 +30,7 @@ const Messages = () => {
   const [conversationId, setConversationId] = useState("");
   const [recipient, setRecipient] = useState("");
   const [title, setTitle] = useState("");
+  const [otherUserName, setOtherUserName] = useState("");
 
   // Save conversation and first message, display Thread
   const send_message = (enteredMessage, conversation_id, recipient, title) => {
@@ -76,7 +77,13 @@ const Messages = () => {
   };
 
   // Display Thread selected from Inbox
-  const select_convo_handler = (conversation_id, recipient, sender, title) => {
+  const select_convo_handler = (
+    conversation_id,
+    recipient,
+    sender,
+    title,
+    otherUserName
+  ) => {
     setConversationId(conversation_id);
     if (recipient !== uid) {
       setRecipient(recipient);
@@ -84,6 +91,7 @@ const Messages = () => {
       setRecipient(sender);
     }
     setTitle(title);
+    setOtherUserName(otherUserName);
     setInbox(false);
     setViewThread(true);
   };
@@ -123,6 +131,8 @@ const Messages = () => {
                 conversation_id={conversationId}
                 recipient={recipient}
                 title={title}
+                otherUserName={otherUserName}
+                onExit={inbox_btn_handler}
                 uid={uid} // TODO: replace with login uid -- temporarily passing in user id
               ></Thread>
             )}

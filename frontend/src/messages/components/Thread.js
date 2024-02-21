@@ -8,7 +8,14 @@ import { DateTime } from "luxon";
 // const { Content, Sider, Footer } = Layout;
 const { Text } = Typography;
 
-const Thread = ({ conversation_id, recipient, uid, title }) => {
+const Thread = ({
+  conversation_id,
+  recipient,
+  uid,
+  title,
+  otherUserName,
+  onExit,
+}) => {
   // TODO: replace uid with login uid
 
   const [messageHistory, setMessageHistory] = useState([]);
@@ -129,26 +136,27 @@ const Thread = ({ conversation_id, recipient, uid, title }) => {
     setEnteredMessage("");
   };
 
-  const logout_handler = () => {
-    console.log(`Client disconnected: ${uid}`);
-    sendJsonMessage({
-      type: "disconnect",
-      uid: uid,
-    });
+  const exit = () => {
+    onExit();
   };
+
+  // const logout_handler = () => {
+  //   console.log(`Client disconnected: ${uid}`);
+  //   sendJsonMessage({
+  //     type: "disconnect",
+  //     uid: uid,
+  //   });
+  // };
 
   return (
     <div>
       <div className={styles.header}>
-        <h3>Message Thread</h3>
         <h2>{title}</h2>
-        <CloseOutlined />
+        <h4>{otherUserName}</h4>
+        <CloseOutlined onClick={exit} />
       </div>
-      <button onClick={logout_handler}>Logout</button>
+      {/* <button onClick={logout_handler}>Logout</button> */}
       <div className={styles.main}>
-        <div>{recipient}</div>
-        <div>{title}</div>
-
         <div id="compose_message_history" className={styles.list}>
           {messageHistory.map(({ sender, text, sent, timestamp }) => (
             <div

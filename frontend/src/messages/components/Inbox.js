@@ -27,9 +27,15 @@ const Inbox = ({ uid, onSetConvoId }) => {
       });
   }, []);
 
-  const select_conversation_handler = (_id, recipient, sender, title) => {
+  const select_conversation_handler = (
+    _id,
+    recipient,
+    sender,
+    title,
+    otherUserName
+  ) => {
     // Render Thread by conversation id, pass info to Messages.js
-    onSetConvoId(_id, recipient, sender, title);
+    onSetConvoId(_id, recipient, sender, title, otherUserName);
   };
 
   const other_user_in_convo = async (recipient, sender) => {
@@ -63,7 +69,13 @@ const Inbox = ({ uid, onSetConvoId }) => {
               key={_id}
               className={styles.conversation_item}
               onClick={() =>
-                select_conversation_handler(_id, recipient, sender, title)
+                select_conversation_handler(
+                  _id,
+                  recipient,
+                  sender,
+                  title,
+                  otherUserName
+                )
               }
             >
               <h3>{title}</h3>
