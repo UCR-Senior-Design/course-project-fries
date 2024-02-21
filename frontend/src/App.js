@@ -14,6 +14,7 @@ import Messages from "./messages/pages/Messages";
 import Patient from "./patient/pages/Patient";
 import Chatbot from "./chatbot/pages/Chatbot";
 import Users from "./common/pages/users";
+import AppointmentForm from "./appointments/components/AppointmentForm";
 
 const App = () => {
   return (
@@ -25,6 +26,9 @@ const App = () => {
           </Route>
           <Route path="/appointments" exact={true}>
             <Appointments />
+          </Route>
+          <Route path="/AppointmentForm" exact={true}>
+            <AppointmentForm />
           </Route>
           <Route path="/chatbot" exact={true}>
             <Chatbot />
