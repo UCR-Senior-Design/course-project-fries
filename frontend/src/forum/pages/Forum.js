@@ -3,13 +3,17 @@ import ForumList from "../components/ForumList";
 import ForumForm from "../components/ForumForm";
 import "./Forum.css";
 import NavigationBar from "../../common/components/NavBar";
-import { Layout, Typography, Button } from "antd";
+import { Layout, Typography, Button, theme, Flex} from "antd";
 import { useAuth } from "../../common/utils/auth";
 import { useHistory } from "react-router-dom";
-const { Content } = Layout;
+import { PlusSquareOutlined } from '@ant-design/icons'
+const { Header, Content, Footer, Sider } = Layout;
 const { Text } = Typography;
 
 const Forum = () => {
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
   const history = useHistory();
   const { isLoggedIn } = useAuth(); // use userId here
 
@@ -74,28 +78,49 @@ const Forum = () => {
   }
 
   return (
-    <Layout className="layout" style={{ height: "100vh" }}>
-      {/* <NavigationBar isLoggedIn={isLoggedIn} /> */}
-      <Content style={{ padding: "0 40px" }}>
-        <ForumList
-          items={forumList}
-          onDeleteForum={handleDeleteForum}
-          onUpdateForum={handleUpdateForumList}
-        />
-        <button className="NewForumButton" onClick={displayForumFormHandler}>
-          New Forum
-        </button>
-        {displayForumForm === true && (
-          <div>
-            <ForumForm
-              onCancel={closeForumFormHandler}
-              onCreateForum={handleUpdateForumList}
+    <Flex>
+      <Layout style={{ minHeight: "100vh" }}>
+        <Header 
+          style={{ 
+            padding: 0, 
+            background: colorBgContainer
+          }}
+        >
+          <NavigationBar/>
+        </Header>
+        <Layout style={{ marginLeft: 55 }}>
+          
+          <Content>
+            <ForumList
+              items={forumList}
+              onDeleteForum={handleDeleteForum}
               onUpdateForum={handleUpdateForumList}
             />
-          </div>
-        )}
-      </Content>
-    </Layout>
+            <Button 
+              type="primary" 
+              shape="circle" 
+              size="large" 
+              style={{
+                position:"fixed",
+                left: "20px",
+                bottom: "20px",
+              }}
+              vertical
+              icon={<PlusSquareOutlined/>} onClick={displayForumFormHandler}
+            />
+            {displayForumForm === true && (
+              <div>
+                <ForumForm
+                  onCancel={closeForumFormHandler}
+                  onCreateForum={handleUpdateForumList}
+                  onUpdateForum={handleUpdateForumList}
+                />
+              </div>
+            )}
+          </Content>
+        </Layout>
+      </Layout>
+    </Flex>
   );
 };
 
