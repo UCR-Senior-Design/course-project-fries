@@ -3,6 +3,9 @@ import Modal from "./common/IndiForumModal";
 import CommentItem from "./CommentItem";
 import CommentForm from "./CommentForm";
 import { useAuth } from "../../common/utils/auth";
+import { Button } from "antd";
+import { FullscreenOutlined } from '@ant-design/icons';
+import './IndiForum.css';
 
 const IndiForum = (props) => {
   const { userId } = useAuth();
@@ -129,12 +132,11 @@ const IndiForum = (props) => {
           <div className="indiForumRating">Rating: {props.indiForumRating}</div>
           <div className="indiForumTime">Time Posted: {props.time}</div>
           {props.indiForumOwner === userId && (
-          <button
-            onClick={() => deleteIndiForumHandler(props.indiForumIdP)}
-          >
-            Delete Forum
-          </button>
-
+            <button
+              onClick={() => deleteIndiForumHandler(props.indiForumIdP)}
+            >
+              Delete Forum
+            </button>
           )}
           {dislikedForum === false && (
             <div>

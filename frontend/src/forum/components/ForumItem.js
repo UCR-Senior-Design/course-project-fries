@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./ForumItem.css";
 import IndiForum from "./IndiForum";
 import { useAuth } from "../../common/utils/auth";
+import { Button } from "antd";
+import { FullscreenOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const ForumItem = (props) => {
   const { userId, firstname } = useAuth();
@@ -61,12 +63,13 @@ const ForumItem = (props) => {
           <h2 className="forum-item__initComment">{props.initComment}</h2>
           <h2 className="forum-item__rating">{props.rating} likes</h2>
           <h2>Posted: {formattedTime}</h2>
-          <button
-            className="forum-item__button"
+          <Button ghost
+            type="primary"
+            shape="round"
+            size="small"
+            icon={<FullscreenOutlined />}
             onClick={() => displayIndiForumHandler(props.fid)}
-          >
-            View Forum
-          </button>
+          />
           {disiplayIndiForum === true && (
             <div>
               <IndiForum
@@ -91,9 +94,13 @@ const ForumItem = (props) => {
             </div>
           )}
           {props.forumOwner === userId && (
-          <button onClick={() => deleteForumHandler(props.fid)}>
-            Delete Forum
-          </button>
+            <Button ghost
+              type="primary"
+              shape="round"
+              size="small"
+              onClick={() => deleteForumHandler(props.fid)}
+              icon={<DeleteOutlined />}
+            />
           )}
         </div>
       </div>
