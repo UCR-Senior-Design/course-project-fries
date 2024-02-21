@@ -7,6 +7,8 @@ const { Text } = Typography;
 const Inbox = ({ uid, onSetConvoId }) => {
   //TODO: use uid from login
   const [convoList, setConvoList] = useState([]);
+  const [renderedConvoList, setRenderedConvoList] = useState([]);
+  const [noMsg, setNoMsg] = useState(false);
 
   // Fetch all Conversations where user is either sender or recipient
   useEffect(() => {
@@ -15,6 +17,9 @@ const Inbox = ({ uid, onSetConvoId }) => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
+        if (data.conversation_list.length === 0) {
+          setNoMsg(true);
+        }
         setConvoList(data.conversation_list);
       })
       .catch((error) => {
@@ -22,32 +27,78 @@ const Inbox = ({ uid, onSetConvoId }) => {
       });
   }, []);
 
-  const select_conversation_handler = (_id, recipient, sender, title) => {
+  const select_conversation_handler = (
+    _id,
+    recipient,
+    sender,
+    title,
+    otherUserName
+  ) => {
     // Render Thread by conversation id, pass info to Messages.js
-    onSetConvoId(_id, recipient, sender, title);
+    onSetConvoId(_id, recipient, sender, title, otherUserName);
   };
 
-  console.log(convoList);
+  const other_user_in_convo = async (recipient, sender) => {
+    try {
+      // Display name of other user in conversation
+      const userId = recipient !== uid ? recipient : sender;
+
+      const response = await fetch(
+        `http://localhost:5001/api/messages/getuser/${userId}`
+      );
+      const data = await response.json();
+
+      console.log(data);
+
+      const concatenatedName = data.user.firstname + " " + data.user.lastname;
+
+      return concatenatedName;
+    } catch (error) {
+      console.error(error);
+      return "Unknown User";
+    }
+  };
+
+  useEffect(() => {
+    const fetchAndRenderConvoList = async () => {
+      const updatedList = await Promise.all(
+        convoList.map(async ({ _id, recipient, sender, title }) => {
+          const otherUserName = await other_user_in_convo(recipient, sender);
+          return (
+            <ul
+              key={_id}
+              className={styles.conversation_item}
+              onClick={() =>
+                select_conversation_handler(
+                  _id,
+                  recipient,
+                  sender,
+                  title,
+                  otherUserName
+                )
+              }
+            >
+              <h3>{title}</h3>
+              <Text>{otherUserName}</Text>
+            </ul>
+          );
+        })
+      );
+      setRenderedConvoList(updatedList);
+    };
+
+    if (convoList.length > 0) {
+      fetchAndRenderConvoList();
+    }
+  }, [convoList]);
+
   return (
     <div>
-      {convoList.map(({ _id, recipient, sender, title }) => (
-        <ul
-          key={_id}
-          className={styles.conversation_item}
-          onClick={() =>
-            select_conversation_handler(_id, recipient, sender, title)
-          }
-        >
-          <h3>{title}</h3>
-          <div>
-            <Text>From: {sender}</Text>
-          </div>
-          <div>
-            <Text>To: {recipient}</Text>
-          </div>
-          {/* <ul>Conversation id: {_id}</ul> */}
-        </ul>
-      ))}
+      {noMsg ? (
+        <h1 style={{ marginLeft: "20px" }}>No Messages</h1>
+      ) : (
+        <>{renderedConvoList}</>
+      )}
     </div>
   );
 };

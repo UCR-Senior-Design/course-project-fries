@@ -20,5 +20,7 @@ router.get(
   "/listmessagehistory/:cid",
   messagesController.list_message_history_by_cid
 );
+// Fetch user by uid
+router.get("/getuser/:uid", messagesController.get_user_by_uid);
 
 http: module.exports = router;
