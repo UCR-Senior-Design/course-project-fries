@@ -4,7 +4,7 @@ import cn from "classnames";
 import styles from "./Compose.module.css";
 import { CloseOutlined } from "@ant-design/icons";
 
-const Compose = ({ onSentMessage, messages, uid }) => {
+const Compose = ({ onSentMessage, messages, uid, onExit }) => {
   const [recipient, setRecipient] = useState("");
   const [title, setTitle] = useState("");
   const [enteredMessage, setEnteredMessage] = useState("");
@@ -50,11 +50,15 @@ const Compose = ({ onSentMessage, messages, uid }) => {
     setEnteredMessage("");
   };
 
+  const exit = () => {
+    onExit();
+  };
+
   return (
     <div>
       <div className={styles.header}>
         <h3>New Message</h3>
-        <CloseOutlined />
+        <CloseOutlined onClick={exit} />
       </div>
       <div className={styles.main}>
         <div>
@@ -77,21 +81,6 @@ const Compose = ({ onSentMessage, messages, uid }) => {
             ></input>
           </form>
         </div>
-        {/* <div id="compose_message_history" className={styles.list}>
-          {messages.map(({ text, sent, timestamp }) => (
-            <div
-              key={text}
-              className={cn(
-                styles.shared,
-                sent ? styles.sent : styles.received
-              )}
-            >
-              <div className={styles.timestamp}>{timestamp}</div>
-              <div>{text}</div>
-            </div>
-          ))}
-        </div> */}
-
         <div style={{ textAlign: "center", padding: "20px 50px" }}>
           <form className={styles.input_msg_form} onSubmit={msg_submit_handler}>
             <input

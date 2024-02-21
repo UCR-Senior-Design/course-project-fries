@@ -124,6 +124,7 @@ const Messages = () => {
               <Compose
                 onSentMessage={send_message}
                 uid={uid} // TODO: replace with login uid -- temporarily passing in user id
+                onExit={inbox_btn_handler}
               ></Compose>
             )}
             {viewthread === true && (
