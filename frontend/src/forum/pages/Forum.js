@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ForumList from "../components/ForumList";
 import ForumForm from "../components/ForumForm";
-import ForumContext from "../components/common/ForumContext";
 import "./Forum.css";
 import NavigationBar from "../../common/components/NavBar";
 import { Layout, Typography, Button } from "antd";

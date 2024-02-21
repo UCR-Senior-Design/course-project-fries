@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Modal from "./common/Modal";
+import Modal from "./common/IndiForumModal";
 import CommentItem from "./CommentItem";
 import CommentForm from "./CommentForm";
 import { useAuth } from "../../common/utils/auth";

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Modal from "./common/Modal";
+import Modal from "./common/ForumCreateModal";
 import { useAuth } from "../../common/utils/auth";
 import {
   Switch,
@@ -92,21 +92,24 @@ const ForumForm = (props) => {
           }}
         >
           <h2>Create a new forum</h2>
-          <Form.Item label="Headline">
+          <Form.Item>
+            <label>Headline</label>
             <Input
               type="text"
               value={newForum_headline}
               onChange={headlineChangeHandler}
             />
           </Form.Item>
-          <Form.Item label="Topic">
+          <Form.Item>
+            <label>Topic</label>
             <Input
               type="text"
               value={newForum_topic}
               onChange={topicChangeHandler}
             />
           </Form.Item>
-          <Form.Item label="Initial Comment">
+          <Form.Item>
+            <label>Initial Comment</label>
             <TextArea 
               rows={4}
               type="text"

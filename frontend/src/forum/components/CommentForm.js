@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Modal from "./common/Modal";
+import Modal from "./common/CommentCreateModal";
 import { useAuth } from "../../common/utils/auth";
 import {
   Switch,
@@ -73,7 +73,8 @@ const CommentForm = (props) => {
           }}
         >
           <h2>Add Comment</h2>
-          <Form.Item label={"Comment Text"}>
+          <Form.Item>
+            <label>comment_text:</label>
             <TextArea
             rows={4}
               type="text"
