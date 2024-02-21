@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
-import Modal from "./common/Modal";
+import Modal from "./common/IndiForumModal";
 import CommentItem from "./CommentItem";
 import CommentForm from "./CommentForm";
+import { useAuth } from "../../common/utils/auth";
+import { Button } from "antd";
+import { FullscreenOutlined } from '@ant-design/icons';
+import './IndiForum.css';
 
 const IndiForum = (props) => {
+  const { userId } = useAuth();
   const [commentList, setCommentList] = useState([]);
   const [changeInIndiForum, setChangeInIndiForum] = useState(false);
   const [displayCommentForm, setDisplayCommentForum] = useState(false);
@@ -117,7 +122,7 @@ const IndiForum = (props) => {
         <div className="indiForum__BaseContent">
           {props.anon === true ? 
             <div className="forum-item__creator">anonymous</div>
-            : <h2 className="forum-item__creator">{props.indiForumCreator}</h2>
+            : <h2 className="forum-item__creator">{props.indiForumFirstName}</h2>
           }
           <div className="indiForum__headline">
             Headline: {props.indiForumHeadline}
@@ -125,11 +130,14 @@ const IndiForum = (props) => {
           <div className="indiForum__topic">Topic: {props.indiForumTopic}</div>
           <div className="indiForum__initComment">InitComment: {props.indiForumInitComment}</div>
           <div className="indiForumRating">Rating: {props.indiForumRating}</div>
-          <button
-            onClick={() => deleteIndiForumHandler(props.indiForumIdP)}
-          >
-            Delete Forum
-          </button>
+          <div className="indiForumTime">Time Posted: {props.time}</div>
+          {props.indiForumOwner === userId && (
+            <button
+              onClick={() => deleteIndiForumHandler(props.indiForumIdP)}
+            >
+              Delete Forum
+            </button>
+          )}
           {dislikedForum === false && (
             <div>
               <button
@@ -159,15 +167,15 @@ const IndiForum = (props) => {
               <CommentItem
                 key={comment._id}
                 cid={comment._id}
-                creator={comment.creator}
+                creator={comment.firstname}
                 text={comment.comment_text}
                 time_stamp={comment.time_stamp}
-                up_votes={comment.up_votes}
-                down_votes={comment.down_votes}
+                rating={comment.rating}
                 onCancel={closeCommentFormHandler}
                 onCreateComment={handleUpdateIndiForumList}
                 onDeleteComment={handleDeleteComment}
                 onUpdateComment={handleUpdateForum}
+                commentOwner={comment.user}
               />
             ))}
           </ul>

@@ -1,6 +1,9 @@
 import React , { useState, useEffect } from "react";
+import { useAuth } from "../../common/utils/auth";
+import "./IndiForum.css"
 
 const CommentItem = (props) => {
+    const { userId } = useAuth();
     const [commentsVotedOnList, setCommentsList] = useState([]);
 
     const upVoteHandler = (cid) => {
@@ -25,7 +28,7 @@ const CommentItem = (props) => {
     };
 
     return (
-        <li className='comment-item'>
+        <li className='indiForum__BaseContent'>
             <div className='comment-item__content'>
                 <div className="comment-item__info">
                     <div>Comment</div>
@@ -50,12 +53,14 @@ const CommentItem = (props) => {
                             </button>
                         </div>
                     )}
+                    {props.commentOwner === userId && (
                     <button
                         className="commentForm_button"
                         onClick={() => deleteCommentHandler(props.cid)}
                     >
                         Delete Comment
                     </button>
+                    )}
                     <button
                         className="commentForm_button"
                     >

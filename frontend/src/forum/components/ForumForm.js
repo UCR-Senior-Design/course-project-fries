@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Modal from "./common/Modal";
-import ForumContext from "./common/ForumContext";
+import Modal from "./common/ForumCreateModal";
+import { useAuth } from "../../common/utils/auth";
 import {
   Switch,
   Button,
@@ -10,15 +10,11 @@ import {
  const { TextArea } = Input;
 
 const ForumForm = (props) => {
-  const [newForum_creator, setNewForum_creator] = useState(""); // Change later for login
+  const { userId, firstname, isDoctor } = useAuth(); // use userId here
   const [newForum_headline, setNewForum_headline] = useState("");
   const [newForum_topic, setNewForum_topic] = useState("");
   const [newForum_initComment, setNewForum_initComment] = useState("");
   const [newForum_anon, setNewForum_anon] = useState(false);
-
-  const creatorChangeHandler = (event) => {
-    setNewForum_creator(event.target.value);
-  };
 
   const headlineChangeHandler = (event) => {
     setNewForum_headline(event.target.value);
@@ -48,12 +44,13 @@ const ForumForm = (props) => {
     console.log("newForum_anon", newForum_anon);
     try {
       forumData = {
-        user: props.userId,
-        firstname: props.firstname,
+        user: userId,
+        firstname: firstname,
         headline: newForum_headline,
         initComment: newForum_initComment,
         topic: newForum_topic,
-        anon: newForum_anon
+        anon: newForum_anon,
+        isDoctor: isDoctor,
       };
       try {
         const response = await fetch("http://localhost:5001/api/forums", {
@@ -95,28 +92,24 @@ const ForumForm = (props) => {
           }}
         >
           <h2>Create a new forum</h2>
-          <Form.Item label="Creator">
-            <Input
-              type="text"
-              value={newForum_creator}
-              onChange={creatorChangeHandler}
-            />
-          </Form.Item>
-          <Form.Item label="Headline">
+          <Form.Item>
+            <label>Headline</label>
             <Input
               type="text"
               value={newForum_headline}
               onChange={headlineChangeHandler}
             />
           </Form.Item>
-          <Form.Item label="Topic">
+          <Form.Item>
+            <label>Topic</label>
             <Input
               type="text"
               value={newForum_topic}
               onChange={topicChangeHandler}
             />
           </Form.Item>
-          <Form.Item label="Initial Comment">
+          <Form.Item>
+            <label>Initial Comment</label>
             <TextArea 
               rows={4}
               type="text"

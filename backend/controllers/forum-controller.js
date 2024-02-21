@@ -7,7 +7,7 @@ const Comment = require("../models/comment");
 // Create forum
 const createForum = async (req, res, next) => {
 
-  const { user, firstname, headline, topic, initComment, anon } = req.body;
+  const { user, firstname, headline, topic, initComment, anon, isDoctor} = req.body;
 
   const createdForum = new Forum({
     user,
@@ -16,6 +16,7 @@ const createForum = async (req, res, next) => {
     topic,
     initComment,
     anon,
+    isDoctor,
   });
 
   try {
@@ -155,7 +156,7 @@ const updateForum = async (req, res, next) => {
     throw new HttpError("Invalid inputs passed", 422);
   }
 
-  const { user, firstname, headline, topic, initComment, rating, anon} = req.body;
+  const { user, firstname, headline, topic, initComment, rating, anon, isDoctor} = req.body;
   const forumId = req.params.fid;
 
   let forum;
@@ -176,6 +177,7 @@ const updateForum = async (req, res, next) => {
   forum.initComment = initComment;
   forum.rating = rating;
   forum.anon = anon;
+  forum.isDoctor = isDoctor;
 
   try {
     await forum.save();

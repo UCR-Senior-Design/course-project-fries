@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import Modal from "./common/Modal";
+import Modal from "./common/CommentCreateModal";
+import { useAuth } from "../../common/utils/auth";
 import {
   Switch,
   Button,
@@ -9,12 +10,8 @@ import {
 const { TextArea } = Input;
 
 const CommentForm = (props) => {
-  const [newComment_creator, setNewComment_creator] = useState(""); // Change later for login
+  const { userId, firstname, isDoctor } = useAuth();
   const [newComment_text, setNewComment_text] = useState("");
-
-  const commentCreatorChangeHandler = (event) => {
-    setNewComment_creator(event.target.value);
-  };
 
   const commentTextChangeHandler = (event) => {
     setNewComment_text(event.target.value);
@@ -30,21 +27,26 @@ const CommentForm = (props) => {
     // Add if for if not editting?
     let fid;
     fid = props.fid;
+    let commentData;
     try {
+      commentData = {
+        user: userId,
+        forumId: fid,
+        comment_text: newComment_text,
+        firstname: firstname,
+        isDoctor: isDoctor,
+        anon: false,
+      }
       const response = await fetch("http://localhost:5001/api/comments", {
         method: "POST",
+        body: JSON.stringify(commentData),
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          creator: newComment_creator,
-          forumId: fid,
-          comment_text: newComment_text,
-        }),
-        
       });
+      
       if (!response.ok) {
-        throw new Error("Unable to create new forum");
+        throw new Error("Unable to create new comment");
       }
       console.log(response);
 
@@ -71,14 +73,8 @@ const CommentForm = (props) => {
           }}
         >
           <h2>Add Comment</h2>
-          <Form.Item label={"Creator"}>
-            <Input
-              type="text"
-              value={newComment_creator}
-              onChange={commentCreatorChangeHandler}
-            />
-          </Form.Item>
-          <Form.Item label={"Comment Text"}>
+          <Form.Item>
+            <label>comment_text:</label>
             <TextArea
             rows={4}
               type="text"
