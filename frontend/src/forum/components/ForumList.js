@@ -13,11 +13,16 @@ const ForumList = (props, onClick) => {
         <ForumItem
           key={forum._id}
           fid={forum._id}
-          creator={forum.creator}
           headline={forum.headline}
           topic={forum.topic}
           initComment={forum.initComment}
           onDeleteForum={props.onDeleteForum}
+          anon={forum.anon}
+          rating={forum.rating}
+          onUpdateForum={props.onUpdateForum}
+          firstname={forum.firstname}
+          time={forum.time_stamp}
+          forumOwner={forum.user}
         />
       ))}
     </ul>

@@ -2,23 +2,21 @@ const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
 const { v4: uuidv4 } = require("uuid");
 const Forum = require("../models/forum");
+const Comment = require("../models/comment");
 
 // Create forum
 const createForum = async (req, res, next) => {
-  // const errors = validationResult(req);
-  // if (!errors.isEmpty()) {
-  //   return next(
-  //     new HttpError('Invalid inputs passed, please check your data.', 422)
-  //   );
-  // }
 
-  const { creator, headline, topic, initComment } = req.body;
+  const { user, firstname, headline, topic, initComment, anon, isDoctor} = req.body;
 
   const createdForum = new Forum({
-    creator,
+    user,
+    firstname,
     headline,
     topic,
     initComment,
+    anon,
+    isDoctor,
   });
 
   try {
@@ -158,7 +156,7 @@ const updateForum = async (req, res, next) => {
     throw new HttpError("Invalid inputs passed", 422);
   }
 
-  const { headline, topic, initComment } = req.body;
+  const { user, firstname, headline, topic, initComment, rating, anon, isDoctor} = req.body;
   const forumId = req.params.fid;
 
   let forum;
@@ -172,9 +170,14 @@ const updateForum = async (req, res, next) => {
     return next(error);
   }
 
+  forum.user = user;
+  forum.firstname = firstname;
   forum.headline = headline;
   forum.topic =  topic;
   forum.initComment = initComment;
+  forum.rating = rating;
+  forum.anon = anon;
+  forum.isDoctor = isDoctor;
 
   try {
     await forum.save();
@@ -193,28 +196,21 @@ const updateForum = async (req, res, next) => {
 const deleteForum = async (req, res, next) => {
   const forumId = req.params.fid;
 
-  let forum;
   try {
-    forum = await Forum.findById(forumId);
-  } catch (err) {
-    const error = new HttpError(
-      "Delete - Something went wrong, could not find a forum",
-      500
-    );
-    return next(error);
-  }
-
-  try {
+    await Comment.deleteMany({ forum: forumId });
+    const forum = await Forum.findById(forumId);
+    if (!forum) {
+      throw new HttpError("forum not found", 404);
+    }
     await forum.deleteOne();
+    res.status(200).json({ message: "Deleted forum and associated comments" });
   } catch (err) {
     const error = new HttpError(
-      "Something went wrong, could not delete forum",
+      "Error with deleting comments",
       500
     );
     return next(error);
   }
-
-  res.status(200).json({ message: "Deleted forum" });
 };
 
 exports.createForum = createForum;

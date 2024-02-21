@@ -1,18 +1,27 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import ForumList from "../components/ForumList";
 import ForumForm from "../components/ForumForm";
-import ForumContext from "../components/common/ForumContext";
 import "./Forum.css";
 import NavigationBar from "../../common/components/NavBar";
-import { Layout, Typography, Button } from "antd";
-import { AuthContext } from "../../common/utils/auth";
-const { Content } = Layout;
+import { Layout, Typography, Button, theme, Flex} from "antd";
+import { useAuth } from "../../common/utils/auth";
+import { useHistory } from "react-router-dom";
+import { PlusSquareOutlined } from '@ant-design/icons'
+const { Header, Content, Footer, Sider } = Layout;
 const { Text } = Typography;
 
 const Forum = () => {
-  const { isLoggedIn } = useContext(AuthContext);
-  const { login, logout } = useContext(AuthContext);
-  login();
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+  const history = useHistory();
+  const { isLoggedIn } = useAuth(); // use userId here
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      history.push("/login");
+    }
+  }, [isLoggedIn, history]);
 
   const [forumList, setForumList] = useState([]); // Initialize as an empty array
   const [displayForumForm, setDisplayForumForm] = useState(false);
@@ -53,7 +62,7 @@ const Forum = () => {
   if (!isLoggedIn) {
     return (
       <Layout className="layout" style={{ height: "100vh" }}>
-        <NavigationBar isLoggedIn={isLoggedIn} />
+        <NavigationBar />
         <Content
           style={{
             padding: "0 50px",
@@ -69,26 +78,49 @@ const Forum = () => {
   }
 
   return (
-    <Layout className="layout" style={{ height: "100vh" }}>
-      <NavigationBar isLoggedIn={isLoggedIn} />
-      <Content style={{ padding: "0 40px" }}>
-        <ForumList items={forumList} onDeleteForum={handleDeleteForum} />
-        <button 
-          className="NewForumButton" 
-          onClick={displayForumFormHandler}
+    <Flex>
+      <Layout style={{ minHeight: "100vh" }}>
+        <Header 
+          style={{ 
+            padding: 0, 
+            background: colorBgContainer
+          }}
         >
-          New Forum
-        </button>
-        {displayForumForm === true && (
-          <div>
-            <ForumForm
-              onCancel={closeForumFormHandler}
-              onCreateForum={handleUpdateForumList}
+          <NavigationBar/>
+        </Header>
+        <Layout style={{ marginLeft: 55 }}>
+          
+          <Content>
+            <ForumList
+              items={forumList}
+              onDeleteForum={handleDeleteForum}
+              onUpdateForum={handleUpdateForumList}
             />
-          </div>
-        )}
-      </Content>
-    </Layout>
+            <Button 
+              type="primary" 
+              shape="circle" 
+              size="large" 
+              style={{
+                position:"fixed",
+                left: "20px",
+                bottom: "20px",
+              }}
+              vertical
+              icon={<PlusSquareOutlined/>} onClick={displayForumFormHandler}
+            />
+            {displayForumForm === true && (
+              <div>
+                <ForumForm
+                  onCancel={closeForumFormHandler}
+                  onCreateForum={handleUpdateForumList}
+                  onUpdateForum={handleUpdateForumList}
+                />
+              </div>
+            )}
+          </Content>
+        </Layout>
+      </Layout>
+    </Flex>
   );
 };
 

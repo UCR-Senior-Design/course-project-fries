@@ -1,168 +1,106 @@
-import React, { useContext } from "react";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import styles from "./Messages.module.css";
 import Compose from "../components/Compose";
-import { Layout, Typography, Button, message } from "antd";
-import useWebSocket from "react-use-websocket";
-import { useState, useEffect } from "react";
-import NavigationBar from "../../common/components/NavBar";
-import { AuthContext } from "../../common/utils/auth";
-import { EditOutlined, InboxOutlined, SendOutlined } from "@ant-design/icons";
+import Thread from "../components/Thread";
+import Inbox from "../components/Inbox";
+import { Layout, Typography, Button } from "antd";
+import { useAuth } from "../../common/utils/auth";
+import { EditOutlined, InboxOutlined } from "@ant-design/icons";
 import { DateTime } from "luxon";
 const { Content, Sider, Footer } = Layout;
 const { Text } = Typography;
 
 const Messages = () => {
-  const { isLoggedIn } = useContext(AuthContext);
-  // For test - manually login/logout
-  const { login } = useContext(AuthContext);
-  login();
-  //
-  const [outgoingMessage, setOutgoingMessage] = useState("");
-  const [recipient, setRecipient] = useState("");
-  const [uid, setUid] = useState(""); // TODO: replace with what you get from login
-  const [compose, setCompose] = useState(false);
-  const [messageHistory, setMessageHistory] = useState([]);
+  const history = useHistory();
+  const { isLoggedIn, userId } = useAuth(); // use userId here
 
   useEffect(() => {
-    // Connect to WS Server when Messages page is mounted
-    fetch("http://localhost:5001/api/messages/").then((response) =>
-      response.json()
-    );
-    // Disconnect client from WS Server when page is unloaded (refreshed)
-    // const unload_handler = (event) => {
-    //   console.log(`Client disconnected: ${uid}`);
-    //   sendJsonMessage({
-    //     type: "disconnect",
-    //     uid: uid,
-    //   });
-    // };
-
-    // window.addEventListener("beforeunload", unload_handler);
-
-    // return () => {
-    //   window.removeEventListener("beforeunload", unload_handler);
-    //   // Disconnect client from WS Server when page is unmounted
-    //   console.log(`Client disconnected: ${uid}`);
-    //   sendJsonMessage({
-    //     type: "disconnect",
-    //     uid: uid,
-    //   });
-    // };
-  }, []);
-
-  // Connect to server
-  const ws_URL = "ws://localhost:8080";
-  const { sendJsonMessage, lastMessage } = useWebSocket(ws_URL, {
-    onOpen: () => {
-      console.log("WebSocket connection established.");
-    },
-  });
-
-  // Listen for messages from the server
-  useEffect(() => {
-    if (lastMessage !== null && lastMessage.data) {
-      console.log("lastMessage: ", lastMessage.data);
-      const parsed_data = JSON.parse(lastMessage.data);
-      setMessageHistory((messageHistory) => [
-        ...messageHistory,
-        {
-          text: parsed_data.msg,
-          sent: false,
-          timestamp: parsed_data.timestamp,
-        },
-      ]);
+    if (!isLoggedIn) {
+      history.push("/login");
     }
-  }, [lastMessage]);
+  }, [isLoggedIn, history]);
 
-  // Set uid into a variable
-  const entered_uid_handler = (event) => {
-    setUid(event.target.value);
-  };
-  // Submit uid to WS server
-  const submit_uid_handler = (event) => {
-    event.preventDefault();
-    sendJsonMessage({
-      type: "uid",
-      content: uid, // TODO: make api to get DBuid
-    });
-  };
+  console.log(userId);
 
-  let recip;
-  const addRecipient = (data) => {
-    recip = data;
-    // console.log(data);
-    // setRecipient(data);
-    // console.log(recipient);
-  };
+  const [uid, setUid] = useState(userId);
+  const [compose, setCompose] = useState(false);
+  const [inbox, setInbox] = useState(true);
+  const [viewthread, setViewThread] = useState(false);
+  const [conversationId, setConversationId] = useState("");
+  const [recipient, setRecipient] = useState("");
+  const [title, setTitle] = useState("");
+  const [otherUserName, setOtherUserName] = useState("");
 
-  // Send messages to server
-  const send_message = (data) => {
-    setOutgoingMessage(data);
+  // Save conversation and first message, display Thread
+  const send_message = (enteredMessage, conversation_id, recipient, title) => {
+    const timestamp_ = DateTime.now().toISO();
+    // Post first message to DB
+    fetch("http://localhost:5001/api/messages/savemessage", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        conversation_id: conversation_id,
+        sender: uid,
+        text: enteredMessage,
+        timestamp: timestamp_,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => console.error(error));
 
-    sendJsonMessage({
-      type: "client_msg",
-      content: data,
-      uid: uid,
-      recv_id: recip,
-    });
-
-    setMessageHistory((messageHistory) => [
-      ...messageHistory,
-      { text: data, sent: true, timestamp: DateTime.now().toISO() },
-    ]);
-    console.log(messageHistory);
-  };
-
-  // TEMP: Disable client from receiving messages
-  const logout_handler = () => {
-    console.log(`Client disconnected: ${uid}`);
-    sendJsonMessage({
-      type: "disconnect",
-      uid: uid,
-    });
+    // Display Thread
+    setConversationId(conversation_id);
+    setRecipient(recipient);
+    setTitle(title);
+    setCompose(false);
+    setViewThread(true);
   };
 
   // Compose new message
   const compose_handler = (event) => {
+    setInbox(false);
+    setViewThread(false);
     setCompose(true);
   };
 
-  if (!isLoggedIn) {
-    return (
-      <Layout className="layout" style={{ height: "100vh" }}>
-        <NavigationBar isLoggedIn={isLoggedIn} />
-        <Content
-          style={{
-            padding: "0 50px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text>Please login first.</Text>
-        </Content>
-      </Layout>
-    );
-  }
+  // Display Inbox
+  const inbox_btn_handler = (event) => {
+    setCompose(false);
+    setViewThread(false);
+    setInbox(true);
+  };
+
+  // Display Thread selected from Inbox
+  const select_convo_handler = (
+    conversation_id,
+    recipient,
+    sender,
+    title,
+    otherUserName
+  ) => {
+    setConversationId(conversation_id);
+    if (recipient !== uid) {
+      setRecipient(recipient);
+    } else {
+      setRecipient(sender);
+    }
+    setTitle(title);
+    setOtherUserName(otherUserName);
+    setInbox(false);
+    setViewThread(true);
+  };
 
   return (
     <Layout className="layout" style={{ height: "100vh" }}>
-      <NavigationBar isLoggedIn={isLoggedIn} />
+      {/* <NavigationBar /> */}
       <Content style={{ padding: "0 40px" }}>
         <h1>Messages Inbox</h1>
-        {/* TO DO: Manually entered UID should replace with login info */}
-        <div>
-          <form onSubmit={submit_uid_handler}>
-            <input
-              type="text"
-              placeholder="Enter UID"
-              value={uid}
-              onChange={entered_uid_handler}
-            ></input>
-            <button>Submit</button>
-          </form>
-          <button onClick={logout_handler}>Logout</button>
-        </div>
         <div className={styles.main}>
           <ul className={styles.side_menu}>
             <Button
@@ -173,24 +111,32 @@ const Messages = () => {
               <EditOutlined />
               Compose
             </Button>
-            <li className={styles.side_menu_button}>
+            <li className={styles.side_menu_button} onClick={inbox_btn_handler}>
               <InboxOutlined style={{ paddingRight: "4px" }} />
               Inbox
             </li>
-            <li className={styles.side_menu_button}>
-              <SendOutlined style={{ paddingRight: "4px" }} />
-              Sent
-            </li>
           </ul>
           <div className={styles.inbox_body}>
+            {inbox === true && (
+              <Inbox uid={uid} onSetConvoId={select_convo_handler}></Inbox>
+            )}
             {compose === true && (
               <Compose
                 onSentMessage={send_message}
-                onSetRecipient={addRecipient}
-                messages={messageHistory}
+                uid={uid} // TODO: replace with login uid -- temporarily passing in user id
+                onExit={inbox_btn_handler}
               ></Compose>
             )}
-            {compose === false && <h1>hi</h1>}
+            {viewthread === true && (
+              <Thread
+                conversation_id={conversationId}
+                recipient={recipient}
+                title={title}
+                otherUserName={otherUserName}
+                onExit={inbox_btn_handler}
+                uid={uid} // TODO: replace with login uid -- temporarily passing in user id
+              ></Thread>
+            )}
           </div>
         </div>
       </Content>
