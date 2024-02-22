@@ -1,12 +1,20 @@
 import React from 'react';
 import {useHistory} from 'react-router-dom';
-import {Form, Input, Button, notification, Select} from 'antd';
+import {Form, Input, Button, notification, Select, Layout} from 'antd';
 
 import axios from 'axios';
+import NavigationBar from "../components/NavBar";
+import {useAuth} from "../utils/auth";
 const {Option} = Select;
 
 const RegisterForm = () => {
+  const {isLoggedIn} = useAuth();
   const history = useHistory();
+
+  if (isLoggedIn) {
+    history.push('/');
+  }
+
   const handleRegister = async (values) => {
     try {
       const response = await axios.post('http://localhost:5001/api/users/register', values);
@@ -23,7 +31,8 @@ const RegisterForm = () => {
   };
 
   return (
-    <>
+    <Layout className="layout" style={{height: "100vh"}}>
+      <NavigationBar/>
       <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
         <h1 style={{marginBottom: '20px'}}>Register</h1>
         <Form
@@ -81,7 +90,7 @@ const RegisterForm = () => {
           </Form.Item>
         </Form>
       </div>
-    </>
+    </Layout>
   );
 };
 

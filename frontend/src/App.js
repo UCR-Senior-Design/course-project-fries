@@ -13,16 +13,20 @@ import Forum from "./forum/pages/Forum";
 import Messages from "./messages/pages/Messages";
 import Patient from "./patient/pages/Patient";
 import Chatbot from "./chatbot/pages/Chatbot";
-import Users from "./common/pages/users";
 import AppointmentForm from "./appointments/components/AppointmentForm";
+import LoginForm from "./common/forms/login_form";
+import RegisterForm from "./common/forms/register_form";
+import LandingPage from "./common/pages/landing";
 
 const App = () => {
   return (
     <AuthProvider>
       <Router>
         <Switch>
+          <Route path="/login" exact={true} component={LoginForm} />
+          <Route path="/register" exact={true} component={RegisterForm} />
           <Route path="/" exact={true}>
-            <Users />
+            <LandingPage />
           </Route>
           <Route path="/appointments" exact={true}>
             <Appointments />

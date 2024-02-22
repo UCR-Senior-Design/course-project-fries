@@ -8,6 +8,7 @@ import { Layout, Typography, Button } from "antd";
 import { useAuth } from "../../common/utils/auth";
 import { EditOutlined, InboxOutlined } from "@ant-design/icons";
 import { DateTime } from "luxon";
+import NavigationBar from "../../common/components/NavBar";
 const { Content, Sider, Footer } = Layout;
 const { Text } = Typography;
 
@@ -98,7 +99,7 @@ const Messages = () => {
 
   return (
     <Layout className="layout" style={{ height: "100vh" }}>
-      {/* <NavigationBar /> */}
+       <NavigationBar />
       <Content style={{ padding: "0 40px" }}>
         <h1>Messages Inbox</h1>
         <div className={styles.main}>

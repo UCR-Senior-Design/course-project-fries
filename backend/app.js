@@ -12,8 +12,6 @@ const HttpError = require("../backend/models/http-error");
 const forumsRoutes = require("./routes/forums-routes");
 const commentsRoutes = require("./routes/comments-routes");
 const messagesRoutes = require("./routes/messages-routes");
-const patientsRoutes = require("./routes/patients-routes");
-const doctorsRoutes = require("./routes/doctors-routes");
 const usersRoutes = require("./routes/users-routes");
 
 require('dotenv').config();
@@ -54,8 +52,6 @@ app.use("/api/users", usersRoutes);
 app.use("/api/forums", forumsRoutes);
 app.use("/api/comments", commentsRoutes);
 app.use("/api/messages", messagesRoutes);
-app.use("/api/patients", patientsRoutes);
-app.use("/api/doctors", doctorsRoutes);
 
 // Handle Unsupported Route error
 app.use((req, res, next) => {

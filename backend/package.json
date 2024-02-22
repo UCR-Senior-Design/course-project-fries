@@ -22,10 +22,11 @@
     "fastify": "^4.26.0",
     "jsonwebtoken": "^9.0.2",
     "langchain": "^0.1.17",
-    "mammoth": "^1.6.0",
-    "pdfjs-dist": "^4.0.379",
     "luxon": "^3.4.4",
+    "mammoth": "^1.6.0",
     "mongoose": "^8.0.1",
+    "openai": "^4.28.0",
+    "pdfjs-dist": "^4.0.379",
     "uuid": "^9.0.1",
     "ws": "^8.14.2"
   },

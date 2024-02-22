@@ -1,12 +1,17 @@
 import React from 'react';
 import {useHistory} from 'react-router-dom';
-import {Form, Input, Button} from 'antd';
+import {Form, Input, Button, Layout} from 'antd';
 import axios from 'axios';
 import {useAuth} from "../utils/auth";
+import NavigationBar from "../components/NavBar";
 
 const LoginForm = () => {
-  const {login} = useAuth();
+  const {login, isLoggedIn} = useAuth();
   const history = useHistory();
+
+  if (isLoggedIn) {
+    history.push('/');
+  }
 
   const handleLogin = async (values) => {
     const {email, password} = values;
@@ -20,7 +25,8 @@ const LoginForm = () => {
   };
 
   return (
-    <>
+    <Layout className="layout" style={{height: "100vh"}}>
+      <NavigationBar/>
       <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
         <h1 style={{marginBottom: '20px'}}>Login</h1>
         <Form onFinish={handleLogin} style={{width: '300px'}}>
@@ -43,7 +49,7 @@ const LoginForm = () => {
           </Form.Item>
         </Form>
       </div>
-    </>
+    </Layout>
   );
 };
 
