@@ -133,7 +133,7 @@ const IndiForum = (props) => {
           </div>
           <div className="indiForum__topic">Topic: {props.indiForumTopic}</div>
           <div className="indiForum__initComment">InitComment: {props.indiForumInitComment}</div>
-          <div className="indiForumRating">Rating: {props.indiForumRating}</div>
+          <div className="indiForumRating">Rating: {props.rating}</div>
           <div className="indiForumTime">Time Posted: {props.time}</div>
           {props.indiForumOwner === userId && (
             <button

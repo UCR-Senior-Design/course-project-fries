@@ -12,6 +12,11 @@ const { TextArea } = Input;
 const CommentForm = (props) => {
   const { userId, firstname, isDoctor } = useAuth();
   const [newComment_text, setNewComment_text] = useState("");
+  const [newComment_anon, setNewForum_anon] = useState(false);
+
+  const changeAnonHandler = (checked) => {
+    setNewForum_anon((prevAnon) => !prevAnon);
+  };
 
   const commentTextChangeHandler = (event) => {
     setNewComment_text(event.target.value);
@@ -35,7 +40,7 @@ const CommentForm = (props) => {
         comment_text: newComment_text,
         firstname: firstname,
         isDoctor: isDoctor,
-        anon: false,
+        anon: newComment_anon,
       }
       const response = await fetch("http://localhost:5001/api/comments", {
         method: "POST",
@@ -81,6 +86,9 @@ const CommentForm = (props) => {
               value={newComment_text}
               onChange={commentTextChangeHandler}
             />
+          </Form.Item>
+          <Form.Item label="anonymous" valuePropName="checked">
+            <Switch onChange={changeAnonHandler}/>
           </Form.Item>
           <Form.Item>
             <Button onClick={formSubmitHandler}>Post</Button>

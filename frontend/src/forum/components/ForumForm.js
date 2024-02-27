@@ -41,7 +41,6 @@ const ForumForm = (props) => {
     props.onCancel();
     // Add if for if not editting?
     let forumData;
-    console.log("newForum_anon", newForum_anon);
     try {
       forumData = {
         user: userId,
