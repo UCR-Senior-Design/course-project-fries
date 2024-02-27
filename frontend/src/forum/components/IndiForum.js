@@ -45,21 +45,25 @@ const IndiForum = (props) => {
       let forumData;
       if (dislikedForum) {
         forumData = {
-          creator: props.indiForumCreator,
+          user: props.indiForumOwner,
+          firstname: props.indiForumFirstName,
           headline: props.indiForumHeadline,
           initComment: props.indiForumInitComment,
           topic: props.indiForumTopic,
           rating: props.rating - 1,
-          anon: props.anon
+          anon: props.anon,
+          isDoctor: props.isDoctor,
         }
       } else if (likedForum) {
         forumData = {
-          creator: props.indiForumCreator,
+          user: props.indiForumOwner,
+          firstname: props.indiForumFirstName,
           headline: props.indiForumHeadline,
           initComment: props.indiForumInitComment,
           topic: props.indiForumTopic,
           rating: props.rating + 1,
           anon: props.anon,
+          isDoctor: props.isDoctor,
         }
       }
       console.log("fid: ", props.indiForumIdP);

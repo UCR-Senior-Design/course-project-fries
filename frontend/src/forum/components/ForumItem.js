@@ -6,7 +6,7 @@ import { Button } from "antd";
 import { FullscreenOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const ForumItem = (props) => {
-  const { userId, firstname } = useAuth();
+  const { userId } = useAuth();
   const [disiplayIndiForum, setDisplayIndiForum] = useState(false);
   const [chosenIndiForum, setChosenIndiForum] = useState("");
   const [formattedTime, setFormattedTime] = useState("");
@@ -76,12 +76,10 @@ const ForumItem = (props) => {
                 className="chosenIndiForum"
                 indiForumId={chosenIndiForum}
                 indiForumIdP={props.fid}
-                indiForumFirstName={props.firstName}
+                indiForumFirstName={props.firstname}
                 indiForumHeadline={props.headline}
                 indiForumTopic={props.topic}
                 indiForumInitComment={props.initComment}
-                indiForumThumbsUp={props.thumbsUp}
-                indiForumThumbsDown={props.thumbsDown}
                 onCancel={closeIndiForumHandler}
                 onDelete={deleteForumHandler}
                 onUpdateForum={props.onUpdateForum}
@@ -90,6 +88,7 @@ const ForumItem = (props) => {
                 anon={props.anon}
                 time={formattedTime}
                 indiForumOwner={props.forumOwner}
+                isDoctor={props.isDoctor}
               />
             </div>
           )}
