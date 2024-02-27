@@ -180,6 +180,8 @@ const IndiForum = (props) => {
                 onDeleteComment={handleDeleteComment}
                 onUpdateComment={handleUpdateForum}
                 commentOwner={comment.user}
+                commentAnon={comment.anon}
+                commentIsDoctor={comment.isDoctor}
               />
             ))}
           </ul>

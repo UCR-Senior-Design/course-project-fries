@@ -33,8 +33,11 @@ const CommentItem = (props) => {
                 <div className="comment-item__info">
                     <div>Comment</div>
                     <div className='comment-item__text'>{props.text}</div>
+                    {props.commentAnon === false ?
+                        <div className="comment-item__creator">By {props.creator}</div>
+                        : <div className="comment-item__creator">By anonymous</div>
+                    }
                     <div className='comment-item__timeStamp'>{props.time_stamp}</div>
-                    <div className="comment-item__creator">By {props.creator}</div>
                     <div className="comment-item__rating">Rating {props.rating}</div>
                     {
                     /*
