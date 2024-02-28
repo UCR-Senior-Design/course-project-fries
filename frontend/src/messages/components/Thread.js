@@ -5,7 +5,7 @@ import { CloseOutlined } from "@ant-design/icons";
 import { Layout, Typography, Button, message } from "antd";
 import useWebSocket from "react-use-websocket";
 import { DateTime } from "luxon";
-// const { Content, Sider, Footer } = Layout;
+const { Footer } = Layout;
 const { Text } = Typography;
 
 const Thread = ({
@@ -172,7 +172,15 @@ const Thread = ({
           ))}
         </div>
 
-        <div style={{ textAlign: "center", padding: "20px 50px" }}>
+        <Footer
+          style={{
+            textAlign: "center",
+            padding: "20px 50px",
+            position: "sticky",
+            bottom: 0,
+            zIndex: 100,
+          }}
+        >
           <form className={styles.input_msg_form} onSubmit={msg_submit_handler}>
             <input
               type="text"
@@ -185,7 +193,7 @@ const Thread = ({
               Send
             </Button>
           </form>
-        </div>
+        </Footer>
       </div>
     </div>
   );

@@ -206,9 +206,43 @@ const get_user_by_uid = async (req, res, next) => {
   res.json({ user: user.toObject({ getters: true }) });
 };
 
+const list_users = async (req, res, next) => {
+  const uid = req.params.uid;
+  let users_list;
+
+  // If user who owns uid is a doctor, return all users
+
+  // If user who owns uid is a patient, return doctors only
+
+  // Return list of users in an array
+  try {
+    users_list = await User.find();
+  } catch (err) {
+    const error = new HttpError("Something went wrong with the request.", 500);
+    return next(error);
+  }
+
+  if (!users_list) {
+    const error = new HttpError(
+      "Could not find any users to add to users list.",
+      404
+    );
+    return next(error);
+  }
+
+  res.json({
+    users_list: users_list.map((user) => {
+      const { _id, firstname, lastname } = user.toObject({ getters: true });
+      const fullname = firstname + " " + lastname;
+      return { value: _id, label: fullname };
+    }),
+  });
+};
+
 exports.handle_client_activity = handle_client_activity;
 exports.create_conversation = create_conversation;
 exports.save_message = save_message;
 exports.list_conversations_by_uid = list_conversations_by_uid;
 exports.list_message_history_by_cid = list_message_history_by_cid;
 exports.get_user_by_uid = get_user_by_uid;
+exports.list_users = list_users;

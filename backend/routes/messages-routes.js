@@ -23,4 +23,7 @@ router.get(
 // Fetch user by uid
 router.get("/getuser/:uid", messagesController.get_user_by_uid);
 
+// Fetch list of all users
+router.get("/listusers/:uid", messagesController.list_users);
+
 http: module.exports = router;

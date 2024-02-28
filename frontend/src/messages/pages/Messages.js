@@ -99,7 +99,7 @@ const Messages = () => {
 
   return (
     <Layout className="layout" style={{ height: "100vh" }}>
-       <NavigationBar />
+      <NavigationBar />
       <Content style={{ padding: "0 40px" }}>
         <h1>Messages Inbox</h1>
         <div className={styles.main}>
@@ -124,7 +124,7 @@ const Messages = () => {
             {compose === true && (
               <Compose
                 onSentMessage={send_message}
-                uid={uid} // TODO: replace with login uid -- temporarily passing in user id
+                uid={uid}
                 onExit={inbox_btn_handler}
               ></Compose>
             )}
@@ -135,7 +135,7 @@ const Messages = () => {
                 title={title}
                 otherUserName={otherUserName}
                 onExit={inbox_btn_handler}
-                uid={uid} // TODO: replace with login uid -- temporarily passing in user id
+                uid={uid}
               ></Thread>
             )}
           </div>
