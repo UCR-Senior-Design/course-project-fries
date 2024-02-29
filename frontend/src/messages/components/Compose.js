@@ -5,7 +5,7 @@ import styles from "./Compose.module.css";
 import { CloseOutlined } from "@ant-design/icons";
 const { Footer } = Layout;
 
-const Compose = ({ onSentMessage, messages, uid, onExit }) => {
+const Compose = ({ onSentMessage, uid, onExit }) => {
   const [recipient, setRecipient] = useState("");
   const [title, setTitle] = useState("");
   const [enteredMessage, setEnteredMessage] = useState("");

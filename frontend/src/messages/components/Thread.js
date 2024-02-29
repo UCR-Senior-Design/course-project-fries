@@ -16,8 +16,6 @@ const Thread = ({
   otherUserName,
   onExit,
 }) => {
-  // TODO: replace uid with login uid
-
   const [messageHistory, setMessageHistory] = useState([]);
   const [enteredMessage, setEnteredMessage] = useState("");
 
@@ -139,14 +137,6 @@ const Thread = ({
   const exit = () => {
     onExit();
   };
-
-  // const logout_handler = () => {
-  //   console.log(`Client disconnected: ${uid}`);
-  //   sendJsonMessage({
-  //     type: "disconnect",
-  //     uid: uid,
-  //   });
-  // };
 
   return (
     <div>

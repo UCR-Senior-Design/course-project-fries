@@ -3,7 +3,7 @@ import "./ForumItem.css";
 import IndiForum from "./IndiForum";
 import { useAuth } from "../../common/utils/auth";
 import { Button } from "antd";
-import { FullscreenOutlined, DeleteOutlined } from '@ant-design/icons';
+import { FullscreenOutlined, DeleteOutlined } from "@ant-design/icons";
 
 const ForumItem = (props) => {
   const { userId, firstname } = useAuth();
@@ -11,6 +11,7 @@ const ForumItem = (props) => {
   const [chosenIndiForum, setChosenIndiForum] = useState("");
   const [formattedTime, setFormattedTime] = useState("");
 
+  console.log(userId);
   useEffect(() => {
     if (props.time) {
       const date = new Date(props.time);
@@ -20,8 +21,8 @@ const ForumItem = (props) => {
         day: "numeric",
         hour: "numeric",
         minute: "numeric",
-        second: "numeric"
-      }
+        second: "numeric",
+      };
       const formattedTime = date.toLocaleDateString();
       const formattedDateTime = date.toLocaleString(undefined, options);
       setFormattedTime(formattedDateTime);
@@ -53,17 +54,18 @@ const ForumItem = (props) => {
     <li className="forum-item">
       <div className="forum-item__content">
         <div className="forum-item__info">
-          {props.anon === true ? 
-              <div className="forum-item__creator">anonymous</div> 
-            : 
+          {props.anon === true ? (
+            <div className="forum-item__creator">anonymous</div>
+          ) : (
             <div className="forum-item__creator">{props.firstname}</div>
-          }
+          )}
           <h2 className="forum-item__headline">{props.headline}</h2>
           <h2 className="forum-item__topic">{props.topic}</h2>
           <h2 className="forum-item__initComment">{props.initComment}</h2>
           <h2 className="forum-item__rating">{props.rating} likes</h2>
           <h2>Posted: {formattedTime}</h2>
-          <Button ghost
+          <Button
+            ghost
             type="primary"
             shape="round"
             size="small"
@@ -94,7 +96,8 @@ const ForumItem = (props) => {
             </div>
           )}
           {props.forumOwner === userId && (
-            <Button ghost
+            <Button
+              ghost
               type="primary"
               shape="round"
               size="small"

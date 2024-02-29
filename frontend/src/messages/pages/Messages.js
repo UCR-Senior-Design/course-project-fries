@@ -24,14 +24,20 @@ const Messages = () => {
 
   console.log(userId);
 
-  const [uid, setUid] = useState(userId);
   const [compose, setCompose] = useState(false);
-  const [inbox, setInbox] = useState(true);
+  const [inbox, setInbox] = useState(false);
   const [viewthread, setViewThread] = useState(false);
   const [conversationId, setConversationId] = useState("");
   const [recipient, setRecipient] = useState("");
   const [title, setTitle] = useState("");
   const [otherUserName, setOtherUserName] = useState("");
+
+  useEffect(() => {
+    console.log(userId);
+    if (userId) {
+      setInbox(true);
+    }
+  }, [userId]);
 
   // Save conversation and first message, display Thread
   const send_message = (enteredMessage, conversation_id, recipient, title) => {
@@ -44,7 +50,7 @@ const Messages = () => {
       },
       body: JSON.stringify({
         conversation_id: conversation_id,
-        sender: uid,
+        sender: userId,
         text: enteredMessage,
         timestamp: timestamp_,
       }),
@@ -65,9 +71,11 @@ const Messages = () => {
 
   // Compose new message
   const compose_handler = (event) => {
-    setInbox(false);
-    setViewThread(false);
-    setCompose(true);
+    if (userId) {
+      setInbox(false);
+      setViewThread(false);
+      setCompose(true);
+    }
   };
 
   // Display Inbox
@@ -85,16 +93,18 @@ const Messages = () => {
     title,
     otherUserName
   ) => {
-    setConversationId(conversation_id);
-    if (recipient !== uid) {
-      setRecipient(recipient);
-    } else {
-      setRecipient(sender);
+    if (userId) {
+      setConversationId(conversation_id);
+      if (recipient !== userId) {
+        setRecipient(recipient);
+      } else {
+        setRecipient(sender);
+      }
+      setTitle(title);
+      setOtherUserName(otherUserName);
+      setInbox(false);
+      setViewThread(true);
     }
-    setTitle(title);
-    setOtherUserName(otherUserName);
-    setInbox(false);
-    setViewThread(true);
   };
 
   return (
@@ -119,12 +129,15 @@ const Messages = () => {
           </ul>
           <div className={styles.inbox_body}>
             {inbox === true && (
-              <Inbox uid={uid} onSetConvoId={select_convo_handler}></Inbox>
+              <Inbox uid={userId} onSetConvoId={select_convo_handler}></Inbox>
+            )}
+            {!inbox && !compose && !viewthread && (
+              <h1 style={{ padding: "4px" }}>No Messages</h1>
             )}
             {compose === true && (
               <Compose
                 onSentMessage={send_message}
-                uid={uid}
+                uid={userId}
                 onExit={inbox_btn_handler}
               ></Compose>
             )}
@@ -135,7 +148,7 @@ const Messages = () => {
                 title={title}
                 otherUserName={otherUserName}
                 onExit={inbox_btn_handler}
-                uid={uid}
+                uid={userId}
               ></Thread>
             )}
           </div>
