@@ -43,42 +43,49 @@ const send_msg = (JSON_msg, uid, recv_id, cid) => {
 };
 
 const disconnect_client = (uid) => {
-  delete clients[uid];
-  console.log(`Disconnected client: ${uid}`);
-  // TEST: Print all connected clients
-  for (const [client_id, connection] of Object.entries(clients)) {
-    console.log(`Connected client: ${client_id}`);
+  const client_connection = clients[uid];
+  if (client_connection) {
+    clients[uid].close();
+    delete clients[uid];
+    console.log(`Disconnected client: ${uid}`);
+    // TEST: Print all connected clients
+    for (const [client_id, connection] of Object.entries(clients)) {
+      console.log(`Connected client: ${client_id}`);
+    }
+  } else {
+    console.log(`Client ${uid} not found or already closed.`);
   }
 };
-
 const handle_client_activity = () => {
-  // Receive new client connection request & handle events
-  wss.on("connection", function (connection) {
-    console.log("Server received a new connection.");
-    // connection.send("Connected to WebSocket server!");
-
-    // Event listener for messages
-    connection.on("message", (message) => {
-      JSON_msg = JSON.parse(message);
-      // Store new connection if message type is "uid"
-      if (JSON_msg.type == "uid") {
-        console.log(`Client's uid: ${JSON_msg.content}`);
-        clients[JSON.stringify(JSON_msg.content)] = connection;
-      }
-      // Send messages between clients if message type is "client_msg"
-      else if (JSON_msg.type == "client_msg") {
-        send_msg(
-          JSON_msg.content,
-          JSON_msg.uid,
-          JSON.stringify(JSON_msg.recv_id),
-          JSON_msg.cid
-        );
-      } else if (JSON_msg.type == "disconnect") {
-        disconnect_client(JSON.stringify(JSON_msg.uid));
-      }
-    });
-  });
+  console.log("hi");
 };
+// const handle_client_activity = () => {
+// Receive new client connection request & handle events
+wss.on("connection", function (socket) {
+  console.log("Server received a new connection.");
+
+  // Event listener for messages
+  socket.on("message", (message) => {
+    JSON_msg = JSON.parse(message);
+    // Store new connection if message type is "uid"
+    if (JSON_msg.type == "uid") {
+      console.log(`Client's uid: ${JSON_msg.content}`);
+      clients[JSON.stringify(JSON_msg.content)] = socket;
+    }
+    // Send messages between clients if message type is "client_msg"
+    else if (JSON_msg.type == "client_msg") {
+      send_msg(
+        JSON_msg.content,
+        JSON_msg.uid,
+        JSON.stringify(JSON_msg.recv_id),
+        JSON_msg.cid
+      );
+    } else if (JSON_msg.type == "disconnect") {
+      disconnect_client(JSON.stringify(JSON_msg.uid));
+    }
+  });
+});
+// };
 
 const create_conversation = async (req, res, next) => {
   const errors = validationResult(req);
