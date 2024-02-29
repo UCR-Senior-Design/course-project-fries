@@ -25,7 +25,9 @@
   width: 70%;
   height: 70vh;
   z-index: 100;
-  padding: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   align-items: center;
   border-radius: 10px;
   overflow-y: auto;

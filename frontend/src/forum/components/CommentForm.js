@@ -89,7 +89,8 @@ const CommentForm = (props) => {
               onChange={commentTextChangeHandler}
             />
           </Form.Item>
-          <Form.Item label="anonymous" valuePropName="checked">
+          <label>anonymous</label>
+          <Form.Item valuePropName="checked">
             <Switch onChange={changeAnonHandler}/>
           </Form.Item>
           <Form.Item>
