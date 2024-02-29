@@ -3,7 +3,7 @@ import { Layout, Button, Select, Input } from "antd";
 import cn from "classnames";
 import styles from "./Compose.module.css";
 import { CloseOutlined } from "@ant-design/icons";
-const { Footer } = Layout;
+const { Content, Footer } = Layout;
 
 const Compose = ({ onSentMessage, uid, onExit }) => {
   const [recipient, setRecipient] = useState("");
@@ -41,7 +41,7 @@ const Compose = ({ onSentMessage, uid, onExit }) => {
   const msg_submit_handler = async (event) => {
     event.preventDefault();
     // Save conversation to DB
-    if (recipient.length > 1 || title.length > 1) {
+    if (recipient !== "" && title != "" && enteredMessage != "") {
       fetch("http://localhost:5001/api/messages/createconversation", {
         method: "POST",
         headers: {
@@ -81,71 +81,73 @@ const Compose = ({ onSentMessage, uid, onExit }) => {
   };
 
   return (
-    <div>
+    <Layout className="layout" style={{ height: "69.6vh" }}>
       <div className={styles.header}>
         <h3>New Message</h3>
         <CloseOutlined onClick={exit} />
       </div>
-      <div className={styles.main}>
-        <div>
-          <Select
-            showSearch
-            style={{
-              width: 500,
-            }}
-            placeholder="Select Recipient"
-            variant="borderless"
-            status={recipError}
-            optionFilterProp="children"
-            filterOption={(input, option) =>
-              (option?.label ?? "").includes(input)
-            }
-            filterSort={(optionA, optionB) =>
-              (optionA?.label ?? "")
-                .toLowerCase()
-                .localeCompare((optionB?.label ?? "").toLowerCase())
-            }
-            onChange={select_recipient_handler}
-            options={options}
-          />
-        </div>
-
-        <div>
-          <form>
-            <Input
-              type="text"
-              placeholder="Enter Title"
+      <Content>
+        <div className={styles.main}>
+          <div>
+            <Select
+              showSearch
               style={{
                 width: 500,
               }}
+              placeholder="Select Recipient"
               variant="borderless"
-              status={titleError}
-              value={title}
-              onChange={entered_title_handler}
-            ></Input>
-          </form>
-        </div>
-        <Footer
-          style={{
-            textAlign: "center",
-            padding: "20px 50px",
-          }}
-        >
-          <form className={styles.input_msg_form} onSubmit={msg_submit_handler}>
-            <input
-              type="text"
-              placeholder="Type your message here..."
-              className={styles.input_msg}
-              value={enteredMessage}
-              onChange={entered_message_handler}
+              status={recipError}
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                (option?.label ?? "").includes(input)
+              }
+              filterSort={(optionA, optionB) =>
+                (optionA?.label ?? "")
+                  .toLowerCase()
+                  .localeCompare((optionB?.label ?? "").toLowerCase())
+              }
+              onChange={select_recipient_handler}
+              options={options}
             />
-            <Button type="primary" onClick={msg_submit_handler}>
-              Send
-            </Button>
-          </form>
-        </Footer>
-      </div>
-    </div>
+          </div>
+
+          <div>
+            <form>
+              <Input
+                type="text"
+                placeholder="Enter Title"
+                style={{
+                  width: 500,
+                }}
+                variant="borderless"
+                status={titleError}
+                value={title}
+                onChange={entered_title_handler}
+              ></Input>
+            </form>
+          </div>
+        </div>
+      </Content>
+      <Footer
+        style={{
+          textAlign: "center",
+          padding: "20px 50px",
+        }}
+      >
+        <form className={styles.input_msg_form} onSubmit={msg_submit_handler}>
+          <input
+            type="text"
+            placeholder="Type your message here..."
+            className={styles.input_msg}
+            value={enteredMessage}
+            onChange={entered_message_handler}
+          />
+          <Button type="primary" onClick={msg_submit_handler}>
+            Send
+          </Button>
+        </form>
+      </Footer>
+    </Layout>
   );
 };
 
