@@ -7,6 +7,7 @@ import {
   Form,
   Input,
  } from 'antd';
+ import { CloseOutlined } from '@ant-design/icons';
  const { TextArea } = Input;
 
 const ForumForm = (props) => {
@@ -41,7 +42,6 @@ const ForumForm = (props) => {
     props.onCancel();
     // Add if for if not editting?
     let forumData;
-    console.log("newForum_anon", newForum_anon);
     try {
       forumData = {
         user: userId,
@@ -124,7 +124,13 @@ const ForumForm = (props) => {
             <Button onClick={formSubmitHandler}>Submit</Button>
           </Form.Item>
           <Form.Item>
-            <Button onClick={closeFormHandler}>Cancel</Button>
+            <Button danger
+              shape="circle"
+              size="large"
+              icon={<CloseOutlined/>}
+              className="closeButton"
+              onClick={closeFormHandler} 
+            />
           </Form.Item>
         </Form>
       </Modal>

@@ -1,7 +1,7 @@
  .forum-item {
-    display: block;
+    display: flex;
     padding: 0.5rem;
-    margin: 1rem 0;
+    margin: 1rem auto;
     width: 95%;
     background-color: rgba(244, 242, 237, 0.91);
     color: #3a3a3a;

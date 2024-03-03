@@ -1,11 +1,19 @@
-.indiForum__BaseContent {
-    display: block;
-    padding: 0.5rem;
-    margin: 1rem 0;
-    width: 95%;
+.indiForumContainer {
+    position: fixed;
+}
+
+.commentInfo {
     background-color: rgba(244, 242, 237, 0.91);
     color: #3a3a3a;
     border: 1px solid #3a3a3a;
+}
+
+.indiForum__BaseContent {
+    background-color: rgba(244, 242, 237, 0.91);
+    color: #3a3a3a;
+    border: 1px solid #3a3a3a;
+    padding: 0 10px;
+    min-height: 150px;
 }
 
 .forum-item:hover {
@@ -31,4 +39,28 @@
 .forum-item__initComment {
     font-size: 1rem;
     margin: 0 1rem;
+}
+
+.closeButton {
+    position: fixed;
+    bottom: 70px;
+    left: 47%;
+    z-index: 1;
+}
+
+.newCommentButton {
+    position: fixed;
+    bottom: 70px;
+    left: 53%;
+    z-index: 1;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    padding: 0;
+    margin: 7px 0;
 }
