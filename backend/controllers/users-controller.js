@@ -5,9 +5,13 @@ const bcrypt = require("bcrypt");
 
 // Create json web token
 const createToken = (id, firstname, lastname, isDoctor) => {
-  return jwt.sign({ id: id, firstname: firstname, lastname: lastname, isDoctor: isDoctor }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
-  });
+  return jwt.sign(
+    { id: id, firstname: firstname, lastname: lastname, isDoctor: isDoctor },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1h",
+    }
+  );
 };
 
 exports.register = async (req, res) => {
@@ -56,7 +60,13 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = createToken(user._id, user.firstname, user.lastname, user.isDoctor);
+    const token = createToken(
+      user._id,
+      user.firstname,
+      user.lastname,
+      user.isDoctor
+    );
+    // console.log(token);
     res.json({ message: "Login successful", token: token, user: user });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error: error });

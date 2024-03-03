@@ -5,7 +5,7 @@ import { CloseOutlined } from "@ant-design/icons";
 import { Layout, Typography, Button, message } from "antd";
 import useWebSocket from "react-use-websocket";
 import { DateTime } from "luxon";
-// const { Content, Sider, Footer } = Layout;
+const { Footer, Content } = Layout;
 const { Text } = Typography;
 
 const Thread = ({
@@ -16,8 +16,6 @@ const Thread = ({
   otherUserName,
   onExit,
 }) => {
-  // TODO: replace uid with login uid
-
   const [messageHistory, setMessageHistory] = useState([]);
   const [enteredMessage, setEnteredMessage] = useState("");
 
@@ -140,54 +138,55 @@ const Thread = ({
     onExit();
   };
 
-  // const logout_handler = () => {
-  //   console.log(`Client disconnected: ${uid}`);
-  //   sendJsonMessage({
-  //     type: "disconnect",
-  //     uid: uid,
-  //   });
-  // };
-
   return (
-    <div>
+    <Layout className="layout" style={{ minHeight: "69.6vh" }}>
       <div className={styles.header}>
         <h2>{title}</h2>
         <h4>{otherUserName}</h4>
         <CloseOutlined onClick={exit} />
       </div>
-      {/* <button onClick={logout_handler}>Logout</button> */}
-      <div className={styles.main}>
-        <div id="compose_message_history" className={styles.list}>
-          {messageHistory.map(({ sender, text, sent, timestamp }) => (
-            <div
-              key={timestamp}
-              className={cn(
-                styles.shared,
-                sent || sender === uid ? styles.sent : styles.received
-              )}
-            >
-              <div className={styles.timestamp}>{timestamp}</div>
-              <div>{text}</div>
-            </div>
-          ))}
+      <Content>
+        <div className={styles.main}>
+          <div id="compose_message_history" className={styles.list}>
+            {messageHistory.map(({ sender, text, sent, timestamp }) => (
+              <div
+                key={timestamp}
+                className={cn(
+                  styles.shared,
+                  sent || sender === uid ? styles.sent : styles.received
+                )}
+              >
+                <div className={styles.timestamp}>{timestamp}</div>
+                <div>{text}</div>
+              </div>
+            ))}
+          </div>
         </div>
+      </Content>
 
-        <div style={{ textAlign: "center", padding: "20px 50px" }}>
-          <form className={styles.input_msg_form} onSubmit={msg_submit_handler}>
-            <input
-              type="text"
-              placeholder="Type your message here..."
-              className={styles.input_msg}
-              value={enteredMessage}
-              onChange={entered_message_handler}
-            />
-            <Button type="primary" onClick={msg_submit_handler}>
-              Send
-            </Button>
-          </form>
-        </div>
-      </div>
-    </div>
+      <Footer
+        style={{
+          textAlign: "center",
+          padding: "20px 50px",
+          position: "sticky",
+          bottom: 0,
+          zIndex: 100,
+        }}
+      >
+        <form className={styles.input_msg_form} onSubmit={msg_submit_handler}>
+          <input
+            type="text"
+            placeholder="Type your message here..."
+            className={styles.input_msg}
+            value={enteredMessage}
+            onChange={entered_message_handler}
+          />
+          <Button type="primary" onClick={msg_submit_handler}>
+            Send
+          </Button>
+        </form>
+      </Footer>
+    </Layout>
   );
 };
 

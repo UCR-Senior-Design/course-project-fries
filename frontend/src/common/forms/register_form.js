@@ -1,75 +1,87 @@
-import React from 'react';
-import {useHistory} from 'react-router-dom';
-import {Form, Input, Button, notification, Select, Layout} from 'antd';
+import React from "react";
+import { useHistory } from "react-router-dom";
+import { Form, Input, Button, notification, Select, Layout } from "antd";
 
-import axios from 'axios';
+import axios from "axios";
 import NavigationBar from "../components/NavBar";
-import {useAuth} from "../utils/auth";
-const {Option} = Select;
+import { useAuth } from "../utils/auth";
+const { Option } = Select;
 
 const RegisterForm = () => {
-  const {isLoggedIn} = useAuth();
+  const { isLoggedIn } = useAuth();
   const history = useHistory();
 
   if (isLoggedIn) {
-    history.push('/');
+    history.push("/");
   }
 
   const handleRegister = async (values) => {
     try {
-      const response = await axios.post('http://localhost:5001/api/users/register', values);
+      const response = await axios.post(
+        "http://localhost:5001/api/users/register",
+        values
+      );
 
       if (response.status === 201) {
-        notification.success({message: 'Registration successful!'});
-        history.push('/login');
+        notification.success({ message: "Registration successful!" });
+        history.push("/login");
       } else {
-        notification.error({message: 'Registration failed. Please try again.'});
+        notification.error({
+          message: "Registration failed. Please try again.",
+        });
       }
     } catch (error) {
-      notification.error({message: 'An error occurred during registration.'});
+      notification.error({ message: "An error occurred during registration." });
     }
   };
 
   return (
-    <Layout className="layout" style={{height: "100vh"}}>
-      <NavigationBar/>
-      <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
-        <h1 style={{marginBottom: '20px'}}>Register</h1>
+    <Layout className="layout" style={{ height: "100vh" }}>
+      <NavigationBar />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <h1 style={{ marginBottom: "20px" }}>Register</h1>
         <Form
           onFinish={handleRegister}
-          style={{maxWidth: 300}}
+          style={{ maxWidth: 300 }}
           initialValues={{
-            email: '',
-            firstname: '',
-            lastname: '',
-            password: '',
+            email: "",
+            firstname: "",
+            lastname: "",
+            password: "",
             role: undefined,
           }}
         >
           <Form.Item
             name="email"
             rules={[
-              {required: true, message: 'Please enter your email'},
-              {type: 'email', message: 'Please enter a valid email'},
+              { required: true, message: "Please enter your email" },
+              { type: "email", message: "Please enter a valid email" },
             ]}
           >
-            <Input placeholder="Email"/>
+            <Input placeholder="Email" />
           </Form.Item>
           <Form.Item
             name="firstname"
-            rules={[{required: true, message: 'Please enter your username'}]}
+            rules={[{ required: true, message: "Please enter your username" }]}
           >
-            <Input placeholder="First name"/>
+            <Input placeholder="First name" />
           </Form.Item>
           <Form.Item
             name="lastname"
-            rules={[{required: true, message: 'Please enter your username'}]}
+            rules={[{ required: true, message: "Please enter your username" }]}
           >
-            <Input placeholder="Last name"/>
+            <Input placeholder="Last name" />
           </Form.Item>
           <Form.Item
             name="role"
-            rules={[{required: true, message: 'Please select your role'}]}
+            rules={[{ required: true, message: "Please select your role" }]}
           >
             <Select placeholder="Please select your role">
               <Option value="patient">Patient</Option>
@@ -79,9 +91,9 @@ const RegisterForm = () => {
           </Form.Item>
           <Form.Item
             name="password"
-            rules={[{required: true, message: 'Please enter your password'}]}
+            rules={[{ required: true, message: "Please enter your password" }]}
           >
-            <Input.Password placeholder="Password"/>
+            <Input.Password placeholder="Password" />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">

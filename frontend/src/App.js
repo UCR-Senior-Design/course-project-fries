@@ -7,7 +7,7 @@ import {
   Switch,
 } from "react-router-dom";
 
-import {AuthProvider} from "./common/utils/auth";
+import { AuthProvider } from "./common/utils/auth";
 import Appointments from "./appointments/pages/Appointments";
 import Forum from "./forum/pages/Forum";
 import Messages from "./messages/pages/Messages";
