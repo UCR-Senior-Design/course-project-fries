@@ -19,11 +19,10 @@
 
 .modal {
   position: fixed;
-  top: 15vh;
   bottom: 15vh;
-  left: 10%;
-  width: 500px;
-  height: 70vh;
+  width: 25%;
+  height: 50%;
+  left: 37%;
   z-index: 100;
   padding: 1rem;
   align-items: center;

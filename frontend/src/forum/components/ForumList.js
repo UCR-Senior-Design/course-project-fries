@@ -23,6 +23,7 @@ const ForumList = (props, onClick) => {
           firstname={forum.firstname}
           time={forum.time_stamp}
           forumOwner={forum.user}
+          isDoctor={forum.isDoctor}
         />
       ))}
     </ul>

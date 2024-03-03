@@ -6,7 +6,7 @@ import NavigationBar from "../../common/components/NavBar";
 import { Layout, Typography, Button, theme, Flex} from "antd";
 import { useAuth } from "../../common/utils/auth";
 import { useHistory } from "react-router-dom";
-import { PlusSquareOutlined } from '@ant-design/icons'
+import { PlusOutlined } from '@ant-design/icons'
 const { Header, Content, Footer, Sider } = Layout;
 const { Text } = Typography;
 
@@ -82,6 +82,9 @@ const Forum = () => {
       <Layout style={{ minHeight: "100vh" }}>
         <Header 
           style={{ 
+            position: 'sticky',
+            top: 0,
+            zIndex: 1,
             padding: 0, 
             background: colorBgContainer
           }}
@@ -106,7 +109,7 @@ const Forum = () => {
                 bottom: "20px",
               }}
               vertical
-              icon={<PlusSquareOutlined/>} onClick={displayForumFormHandler}
+              icon={<PlusOutlined />} onClick={displayForumFormHandler}
             />
             {displayForumForm === true && (
               <div>
