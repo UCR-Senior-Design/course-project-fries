@@ -56,9 +56,7 @@ const disconnect_client = (uid) => {
     console.log(`Client ${uid} not found or already closed.`);
   }
 };
-const handle_client_activity = () => {
-  console.log("hi");
-};
+
 // const handle_client_activity = () => {
 // Receive new client connection request & handle events
 wss.on("connection", function (socket) {
@@ -246,7 +244,7 @@ const list_users = async (req, res, next) => {
   });
 };
 
-exports.handle_client_activity = handle_client_activity;
+// exports.handle_client_activity = handle_client_activity;
 exports.create_conversation = create_conversation;
 exports.save_message = save_message;
 exports.list_conversations_by_uid = list_conversations_by_uid;

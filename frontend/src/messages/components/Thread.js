@@ -37,10 +37,7 @@ const Thread = ({
       .catch((error) => {
         console.error(error);
       });
-    // Connect to WS Server when Messages page is mounted
-    fetch("http://localhost:5001/api/messages/").then((response) =>
-      response.json()
-    );
+  
     // Disconnect client from WS Server when page is unloaded (refreshed)
     const unload_handler = (event) => {
       console.log(`Client disconnected: ${uid}`);
