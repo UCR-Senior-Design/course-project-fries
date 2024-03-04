@@ -4,31 +4,24 @@ import { Form, Input, Button, notification, Select, Layout } from "antd";
 
 import axios from "axios";
 import NavigationBar from "../components/NavBar";
-import { useAuth } from "../utils/auth";
-const { Option } = Select;
+
+const {Option} = Select;
 
 const RegisterForm = () => {
-  const { isLoggedIn } = useAuth();
   const history = useHistory();
-
-  if (isLoggedIn) {
-    history.push("/");
-  }
 
   const handleRegister = async (values) => {
     try {
-      const response = await axios.post(
+      const res = await axios.post(
         "http://localhost:5001/api/users/register",
         values
       );
 
-      if (response.status === 201) {
-        notification.success({ message: "Registration successful!" });
-        history.push("/login");
+      if (res.status === 201) {
+        notification.success({message: res.data.message});
+        history.push('/login');
       } else {
-        notification.error({
-          message: "Registration failed. Please try again.",
-        });
+        notification.error({message: res.data.message});
       }
     } catch (error) {
       notification.error({ message: "An error occurred during registration." });

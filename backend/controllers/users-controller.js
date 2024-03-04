@@ -57,17 +57,11 @@ exports.login = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "Invalid password" });
     }
 
-    const token = createToken(
-      user._id,
-      user.firstname,
-      user.lastname,
-      user.isDoctor
-    );
-    // console.log(token);
-    res.json({ message: "Login successful", token: token, user: user });
+    const token = createToken(user._id, user.firstname, user.lastname, user.isDoctor);
+    res.status(201).json({ message: "Login successful", token: token, user: user });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error: error });
   }

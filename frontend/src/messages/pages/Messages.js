@@ -1,29 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import styles from "./Messages.module.css";
 import Compose from "../components/Compose";
 import Thread from "../components/Thread";
 import Inbox from "../components/Inbox";
-import { Layout, Typography, Button } from "antd";
+import { Layout, Button } from "antd";
 import { useAuth } from "../../common/utils/auth";
 import { EditOutlined, InboxOutlined } from "@ant-design/icons";
 import { DateTime } from "luxon";
 import NavigationBar from "../../common/components/NavBar";
-const { Content, Sider, Footer } = Layout;
-const { Text } = Typography;
+
+const {Content, Sider, Footer} = Layout;
 
 const Messages = () => {
-  const history = useHistory();
-  const { isLoggedIn, userId } = useAuth(); // use userId here
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-      history.push("/login");
-    }
-  }, [isLoggedIn, history]);
-
-  console.log(userId);
-
+  const { userId } = useAuth(); // use userId here
+  const [uid, setUid] = useState(userId);
   const [compose, setCompose] = useState(false);
   const [inbox, setInbox] = useState(false);
   const [viewthread, setViewThread] = useState(false);
