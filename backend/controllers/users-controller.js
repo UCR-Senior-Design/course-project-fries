@@ -5,9 +5,13 @@ const bcrypt = require("bcrypt");
 
 // Create json web token
 const createToken = (id, firstname, lastname, isDoctor) => {
-  return jwt.sign({ id: id, firstname: firstname, lastname: lastname, isDoctor: isDoctor }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
-  });
+  return jwt.sign(
+    { id: id, firstname: firstname, lastname: lastname, isDoctor: isDoctor },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1h",
+    }
+  );
 };
 
 exports.register = async (req, res) => {

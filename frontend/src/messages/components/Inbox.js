@@ -1,23 +1,27 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { Typography } from "antd";
 import styles from "./Inbox.module.css";
+import { useAuth } from "../../common/utils/auth";
+
 const { Text } = Typography;
 // import { CloseOutlined } from "@ant-design/icons";
 
 const Inbox = ({ uid, onSetConvoId }) => {
-  //TODO: use uid from login
   const [convoList, setConvoList] = useState([]);
   const [renderedConvoList, setRenderedConvoList] = useState([]);
   const [noMsg, setNoMsg] = useState(false);
 
   // Fetch all Conversations where user is either sender or recipient
   useEffect(() => {
+    // console.log(uid);
     // Fetch conversations when the Inbox mounts
     fetch(`http://localhost:5001/api/messages/listconversations/${uid}`)
       .then((response) => response.json())
       .then((data) => {
+        // console.log(uid);
         console.log(data);
-        if (data.conversation_list.length === 0) {
+        if (data && data.conversation_list.length === 0) {
           setNoMsg(true);
         }
         setConvoList(data.conversation_list);
