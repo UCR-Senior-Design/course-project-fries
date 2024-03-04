@@ -26,6 +26,11 @@ const Forum = () => {
   const [forumList, setForumList] = useState([]); // Initialize as an empty array
   const [displayForumForm, setDisplayForumForm] = useState(false);
   const [changeInForums, setChangeInForums] = useState(false);
+  const [inIndiForum, setInIndiForum] = useState(false);
+  
+  const buttonToggle = () => {
+    setInIndiForum((prevState) => !prevState);
+  };
 
   const displayForumFormHandler = () => {
     setDisplayForumForm(true);
@@ -98,19 +103,23 @@ const Forum = () => {
               items={forumList}
               onDeleteForum={handleDeleteForum}
               onUpdateForum={handleUpdateForumList}
+              inIndiForum={inIndiForum}
+              buttonToggle={buttonToggle}
             />
-            <Button 
-              type="primary" 
-              shape="circle" 
-              size="large" 
-              style={{
-                position:"fixed",
-                left: "20px",
-                bottom: "20px",
-              }}
-              vertical
-              icon={<PlusOutlined />} onClick={displayForumFormHandler}
-            />
+            {inIndiForum === false && (
+              <Button 
+                type="primary" 
+                shape="circle" 
+                size="large" 
+                style={{
+                  position:"fixed",
+                  left: "20px",
+                  bottom: "20px",
+                }}
+                vertical
+                icon={<PlusOutlined />} onClick={displayForumFormHandler}
+              />
+            )};
             {displayForumForm === true && (
               <div>
                 <ForumForm

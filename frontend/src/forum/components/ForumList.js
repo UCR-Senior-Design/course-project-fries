@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import ForumItem from "./ForumItem";
 import './ForumList.css';
 
 const ForumList = (props, onClick) => {
+  
   if (props.items.length < 1) {
     return <h2>No forums posted yet... Why not add one</h2>
   }
@@ -24,6 +25,8 @@ const ForumList = (props, onClick) => {
           time={forum.time_stamp}
           forumOwner={forum.user}
           isDoctor={forum.isDoctor}
+          inIndiForum={props.inIndiForum}
+          buttonToggle={props.buttonToggle}
         />
       ))}
     </ul>
