@@ -211,11 +211,18 @@ const get_user_by_uid = async (req, res, next) => {
 
 const list_users = async (req, res, next) => {
   const uid = req.params.uid;
+  let user;
+  let isDoctor;
   let users_list;
 
-  // If user who owns uid is a doctor, return all users
-
-  // If user who owns uid is a patient, return doctors only
+  // Check if user is either doctor or patient
+  try {
+    user = await User.findById(uid);
+    isDoctor = user.isDoctor;
+  } catch (err) {
+    const error = new HttpError("Something went wrong with the request.", 500);
+    return next(error);
+  }
 
   // Return list of users in an array
   try {
@@ -233,13 +240,38 @@ const list_users = async (req, res, next) => {
     return next(error);
   }
 
-  res.json({
-    users_list: users_list.map((user) => {
-      const { _id, firstname, lastname } = user.toObject({ getters: true });
-      const fullname = firstname + " " + lastname;
-      return { value: _id, label: fullname };
-    }),
-  });
+  // If user who owns uid is a doctor, return all users
+  if (isDoctor) {
+    res.json({
+      users_list: users_list
+        .map((user) => {
+          const { _id, firstname, lastname } = user.toObject({ getters: true });
+          const fullname = firstname + " " + lastname;
+          if (uid !== _id.toString()) {
+            return { value: _id, label: fullname };
+          }
+          return null;
+        })
+        .filter((item) => item !== null),
+    });
+  }
+  // If user who owns uid is a patient, return doctors only
+  else {
+    res.json({
+      users_list: users_list
+        .map((user) => {
+          const { _id, firstname, lastname, isDoctor } = user.toObject({
+            getters: true,
+          });
+          const fullname = firstname + " " + lastname;
+          if (uid !== _id.toString() && isDoctor) {
+            return { value: _id, label: fullname };
+          }
+          return null;
+        })
+        .filter((item) => item !== null),
+    });
+  }
 };
 
 exports.create_conversation = create_conversation;
