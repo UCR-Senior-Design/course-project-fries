@@ -217,7 +217,7 @@ const list_users = async (req, res, next) => {
 
   // If user who owns uid is a patient, return doctors only
 
-  // Return list of users in an array
+  // Return list of users in an array (excluding user's uid)
   try {
     users_list = await User.find();
   } catch (err) {
@@ -234,11 +234,18 @@ const list_users = async (req, res, next) => {
   }
 
   res.json({
-    users_list: users_list.map((user) => {
-      const { _id, firstname, lastname } = user.toObject({ getters: true });
-      const fullname = firstname + " " + lastname;
-      return { value: _id, label: fullname };
-    }),
+    users_list: users_list
+      .map((user) => {
+        const { _id, firstname, lastname } = user.toObject({ getters: true });
+        const fullname = firstname + " " + lastname;
+        if (uid !== _id.toString()) {
+          console.log(_id.toString());
+          console.log(uid);
+          return { value: _id, label: fullname };
+        }
+        return null;
+      })
+      .filter((item) => item !== null),
   });
 };
 
