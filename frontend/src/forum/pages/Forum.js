@@ -119,7 +119,7 @@ const Forum = () => {
                 vertical
                 icon={<PlusOutlined />} onClick={displayForumFormHandler}
               />
-            )};
+            )}
             {displayForumForm === true && (
               <div>
                 <ForumForm

@@ -92,7 +92,7 @@ const CommentItem = (props) => {
                     
                     {props.commentOwner === userId && (
                     <Button danger
-                        size="large"
+                        size="small"
                         icon={<DeleteOutlined/>}
                         className="commentForm_button"
                         onClick={() => deleteCommentHandler(props.cid)}

@@ -127,23 +127,23 @@ const ForumItem = (props) => {
               />
             </div>
           )}
+          { props.inIndiForum === false && (
+            <Button ghost
+              type="primary"
+              size="large"
+              icon={<PlusSquareOutlined />}
+              onClick={() => displayIndiForumHandler(props.fid)}
+            />
+          )}
           {props.inIndiForum === false && props.forumOwner === userId && (
-            <div>
-              <Button ghost
-                type="primary"
-                size="large"
-                icon={<PlusSquareOutlined />}
-                onClick={() => displayIndiForumHandler(props.fid)}
-              />
-              <Button danger
-                style={{
-                  zIndex: "0"
-                }}
-                size="large"
-                onClick={() => deleteForumHandler(props.fid)}
-                icon={<DeleteOutlined />}
-              />
-            </div>
+            <Button danger
+              style={{
+                zIndex: "0"
+              }}
+              size="large"
+              onClick={() => deleteForumHandler(props.fid)}
+              icon={<DeleteOutlined />}
+            />
           )}
         </div>
       </div>
