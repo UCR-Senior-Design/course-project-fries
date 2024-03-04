@@ -11,7 +11,7 @@ const NavigationBar = () => {
   const history = useHistory();
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!isLoggedIn && history.location.pathname !== '/register') {
       history.push('/login');
     }
   }, [isLoggedIn, history]);

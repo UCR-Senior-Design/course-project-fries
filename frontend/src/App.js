@@ -25,9 +25,7 @@ const App = () => {
         <Switch>
           <Route path="/login" exact={true} component={LoginForm} />
           <Route path="/register" exact={true} component={RegisterForm} />
-          <Route path="/" exact={true}>
-            <LandingPage />
-          </Route>
+          <Route path="/" exact={true} component={LandingPage} />
           <Route path="/appointments" exact={true}>
             <Appointments />
           </Route>
