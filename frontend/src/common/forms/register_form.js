@@ -12,12 +12,12 @@ const RegisterForm = () => {
 
   const handleRegister = async (values) => {
     try {
-      const response = await axios.post(
+      const res = await axios.post(
         "http://localhost:5001/api/users/register",
         values
       );
 
-      if (response.status === 201) {
+      if (res.status === 201) {
         notification.success({message: res.data.message});
         history.push('/login');
       } else {
