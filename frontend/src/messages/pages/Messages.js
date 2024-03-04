@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Messages.module.css";
 import Compose from "../components/Compose";
 import Thread from "../components/Thread";
