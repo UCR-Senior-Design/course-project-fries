@@ -1,5 +1,7 @@
 import React , { useState, useEffect } from "react";
 import { useAuth } from "../../common/utils/auth";
+import { Button } from "antd";
+import { PlusSquareOutlined, DeleteOutlined } from '@ant-design/icons';
 import "./IndiForum.css";
 
 const CommentItem = (props) => {
@@ -89,18 +91,13 @@ const CommentItem = (props) => {
                     </div>
                     
                     {props.commentOwner === userId && (
-                    <button
+                    <Button danger
+                        size="small"
+                        icon={<DeleteOutlined/>}
                         className="commentForm_button"
                         onClick={() => deleteCommentHandler(props.cid)}
-                    >
-                        Delete Comment
-                    </button>
+                    />
                     )}
-                    <button
-                        className="commentForm_button"
-                    >
-                        Reply to {props.creator}
-                    </button>
                 </div>
             </div>
         </li>
