@@ -1,25 +1,27 @@
 import React from 'react';
 import {useHistory} from 'react-router-dom';
-import {Form, Input, Button, Layout} from 'antd';
+import {Form, Input, Button, Layout, notification} from 'antd';
 import axios from 'axios';
 import {useAuth} from "../utils/auth";
 import NavigationBar from "../components/NavBar";
 
 const LoginForm = () => {
-  const {login, isLoggedIn} = useAuth();
+  const {login} = useAuth();
   const history = useHistory();
-
-  if (isLoggedIn) {
-    history.push('/');
-  }
 
   const handleLogin = async (values) => {
     const {email, password} = values;
     try {
       const res = await axios.post('http://localhost:5001/api/users/login', {email, password});
       login(res.data.token);
-      history.push('/');
+      if (res.status === 201) {
+        notification.success({message: res.data.message});
+        history.push('/');
+      } else {
+        notification.error({message: res.data.message});
+      }
     } catch (err) {
+      notification.error({message: err.response.data.message});
       console.log(err);
     }
   };

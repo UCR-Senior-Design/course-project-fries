@@ -3,25 +3,14 @@ import ForumList from "../components/ForumList";
 import ForumForm from "../components/ForumForm";
 import "./Forum.css";
 import NavigationBar from "../../common/components/NavBar";
-import { Layout, Typography, Button, theme, Flex} from "antd";
-import { useAuth } from "../../common/utils/auth";
-import { useHistory } from "react-router-dom";
+import { Layout, Button, theme, Flex} from "antd";
 import { PlusOutlined } from '@ant-design/icons'
 const { Header, Content, Footer, Sider } = Layout;
-const { Text } = Typography;
 
 const Forum = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-  const history = useHistory();
-  const { isLoggedIn } = useAuth(); // use userId here
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-      history.push("/login");
-    }
-  }, [isLoggedIn, history]);
 
   const [forumList, setForumList] = useState([]); // Initialize as an empty array
   const [displayForumForm, setDisplayForumForm] = useState(false);
@@ -64,40 +53,22 @@ const Forum = () => {
     setChangeInForums(false);
   }, [changeInForums]);
 
-  if (!isLoggedIn) {
-    return (
-      <Layout className="layout" style={{ height: "100vh" }}>
-        <NavigationBar />
-        <Content
-          style={{
-            padding: "0 50px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text>Please login first.</Text>
-        </Content>
-      </Layout>
-    );
-  }
-
   return (
     <Flex>
       <Layout style={{ minHeight: "100vh" }}>
-        <Header 
-          style={{ 
+        <Header
+          style={{
             position: 'sticky',
             top: 0,
             zIndex: 1,
-            padding: 0, 
+            padding: 0,
             background: colorBgContainer
           }}
         >
           <NavigationBar/>
         </Header>
         <Layout style={{ marginLeft: 55 }}>
-          
+
           <Content>
             <ForumList
               items={forumList}
@@ -106,6 +77,7 @@ const Forum = () => {
               inIndiForum={inIndiForum}
               buttonToggle={buttonToggle}
             />
+
             {inIndiForum === false && (
               <Button 
                 type="primary" 
@@ -120,6 +92,7 @@ const Forum = () => {
                 icon={<PlusOutlined />} onClick={displayForumFormHandler}
               />
             )}
+
             {displayForumForm === true && (
               <div>
                 <ForumForm
