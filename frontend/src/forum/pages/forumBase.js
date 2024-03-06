@@ -1,14 +1,12 @@
 import React, { useContext } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Layout } from "antd";
-import LoginForm from "../forms/login_form";
-import RegisterForm from "../forms/register_form";
-import NavigationBar from "../components/NavBar";
-import { AuthContext } from "../utils/auth";
-
+import Forum from "./Forum";
+import NavigationBar from "../../common/components/NavBar";
+import { AuthContext } from "../../common/utils/auth";
 const { Content } = Layout;
 
-const Users = () => {
+const ForumBase = () => {
   const { isLoggedIn } = useContext(AuthContext);
 
   return (
@@ -17,8 +15,7 @@ const Users = () => {
         <NavigationBar isLoggedIn={isLoggedIn} />
         <Content style={{ height: "100vh", width: "100vw", padding: 0 }}>
           <Switch>
-            <Route path="/login" component={LoginForm} />
-            <Route path="/register" component={RegisterForm} />
+            <Route path="/forum" component={Forum} />
           </Switch>
         </Content>
       </Layout>
@@ -26,4 +23,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default ForumBase;

@@ -4,7 +4,10 @@ const SALT_WORK_FACTOR = 10;
 
 const userSchema = new mongoose.Schema({
   email: {type: String, required: true, unique: true, match: /.+@.+\..+/},
-  username: {type: String, required: true, },
+  firstname: {type: String, required: true, },
+  lastname: {type: String, required: true, },
+  // username: {type: String, required: true, },
+  isDoctor: {type: Boolean, required: true, }, // doctor: true, patient: false
   password: {type: String, required: true, minlength: 6, },
 });
 

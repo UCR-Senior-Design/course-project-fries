@@ -1,0 +1,8 @@
+.conversation_item {
+  margin-top: 10px;
+  padding: 20px;
+}
+.conversation_item:hover {
+  background-color: #bae0ff;
+  border-radius: 4px;
+}
