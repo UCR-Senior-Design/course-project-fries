@@ -15,6 +15,7 @@ import Patient from "./patient/pages/Patient";
 import Chatbot from "./chatbot/pages/Chatbot";
 import Users from "./common/pages/users";
 import AppointmentForm from "./appointments/components/AppointmentForm";
+import AppointmentSlots from "./appointments/components/AppointmentSlots";
 
 const App = () => {
   return (
@@ -29,6 +30,9 @@ const App = () => {
           </Route>
           <Route path="/AppointmentForm" exact={true}>
             <AppointmentForm />
+          </Route>
+          <Route path="/AppointmentSlots" exact={true}>
+            <AppointmentSlots />
           </Route>
           <Route path="/chatbot" exact={true}>
             <Chatbot />
