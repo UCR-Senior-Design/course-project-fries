@@ -14,6 +14,7 @@ import Messages from "./messages/pages/Messages";
 import Patient from "./patient/pages/Patient";
 import Chatbot from "./chatbot/pages/Chatbot";
 import AppointmentForm from "./appointments/components/AppointmentForm";
+import AppointmentSlots from "./appointments/components/AppointmentSlots";
 import LoginForm from "./common/forms/login_form";
 import RegisterForm from "./common/forms/register_form";
 import LandingPage from "./common/pages/landing";
@@ -31,6 +32,9 @@ const App = () => {
           </Route>
           <Route path="/AppointmentForm" exact={true}>
             <AppointmentForm />
+          </Route>
+          <Route path="/AppointmentSlots" exact={true}>
+            <AppointmentSlots />
           </Route>
           <Route path="/chatbot" exact={true}>
             <Chatbot />
