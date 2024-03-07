@@ -11,19 +11,27 @@ const Inbox = ({ uid, onSetConvoId }) => {
 
   // Fetch all Conversations where user is either sender or recipient
   useEffect(() => {
-    // Fetch conversations when the Inbox mounts
-    fetch(`http://localhost:5001/api/messages/listconversations/${uid}`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        if (data && data.conversation_list.length === 0) {
-          setNoMsg(true);
-        }
-        setConvoList(data.conversation_list);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    const fetchData = async () => {
+      // Fetch conversations when the Inbox mounts
+      fetch(`http://localhost:5001/api/messages/listconversations/${uid}`)
+        .then((response) => response.json())
+        .then((data) => {
+          // console.log(data);
+          if (data && data.conversation_list.length === 0) {
+            setNoMsg(true);
+          }
+          setConvoList(data.conversation_list);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
+
+    fetchData();
+
+    const intervalId = setInterval(fetchData, 60000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   // Render Thread by conversation id, pass info to Messages.js
