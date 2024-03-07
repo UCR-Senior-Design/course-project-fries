@@ -14,6 +14,7 @@ const conversation_schema = new Schema({
     required: true,
   },
   title: { type: String, required: true },
+  last_timestamp: { type: Date, required: true },
 });
 
 module.exports = mongoose.model("Conversation", conversation_schema);
