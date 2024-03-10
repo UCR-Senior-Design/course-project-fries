@@ -33,7 +33,6 @@ const Thread = ({
     )
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setMessageHistory(data.message_history);
       })
       .catch((error) => {
@@ -54,7 +53,6 @@ const Thread = ({
     return () => {
       window.removeEventListener("beforeunload", unload_handler);
       // Disconnect client from WS Server when page is unmounted
-      console.log(`Client disconnected: ${uid}`);
       sendJsonMessage({
         type: "disconnect",
         uid: uid,
@@ -69,7 +67,7 @@ const Thread = ({
       console.log("WebSocket connection established.");
       sendJsonMessage({
         type: "uid",
-        content: uid, // TODO: make api to get DBuid
+        content: uid,
       });
     },
   });

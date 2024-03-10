@@ -29,7 +29,7 @@ wss.on("connection", function (socket) {
     JSON_msg = JSON.parse(message);
     // Store new connection if message type is "uid"
     if (JSON_msg.type == "uid") {
-      console.log(`Client's uid: ${JSON_msg.content}`);
+      console.log(`New client's uid: ${JSON_msg.content}`);
       clients[JSON.stringify(JSON_msg.content)] = socket;
     }
     // Send messages between clients if message type is "client_msg"
@@ -49,7 +49,7 @@ wss.on("connection", function (socket) {
 const send_msg = (JSON_msg, uid, recv_id, cid) => {
   // TEST: Print all connected clients
   for (const [client_id, connection] of Object.entries(clients)) {
-    console.log(`Connected client: ${client_id}`);
+    console.log(`Currently connected client: ${client_id}`);
   }
   // If recipient is not connectected, do nothing
   console.log(recv_id);

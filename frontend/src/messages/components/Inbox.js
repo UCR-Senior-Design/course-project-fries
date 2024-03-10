@@ -29,7 +29,7 @@ const Inbox = ({ uid, onSetConvoId }) => {
 
     fetchData();
 
-    const intervalId = setInterval(fetchData, 2000);
+    const intervalId = setInterval(fetchData, 60000);
 
     return () => clearInterval(intervalId);
   }, []);
@@ -42,7 +42,6 @@ const Inbox = ({ uid, onSetConvoId }) => {
     title,
     otherUserName
   ) => {
-    console.log(recipient);
     onSetConvoId(_id, recipient, sender, title, otherUserName);
   };
 
