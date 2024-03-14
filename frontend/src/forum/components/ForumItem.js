@@ -7,7 +7,7 @@ import { PlusSquareOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const ForumItem = (props) => {
   const { userId } = useAuth();
-  const [disiplayIndiForum, setDisplayIndiForum] = useState(false);
+  const [displayIndiForum, setDisplayIndiForum] = useState(false);
   const [chosenIndiForum, setChosenIndiForum] = useState("");
   const [formattedTime, setFormattedTime] = useState("");
   const [timeSincePosted, setTimeSincePosted] = useState("");
@@ -48,7 +48,6 @@ const ForumItem = (props) => {
       return () => clearInterval(interval);
   }, []);
 
-  console.log(userId);
   useEffect(() => {
     if (props.time) {
       const date = new Date(props.time);
@@ -69,10 +68,12 @@ const ForumItem = (props) => {
   const displayIndiForumHandler = (forumId) => {
     setDisplayIndiForum(true);
     setChosenIndiForum(forumId);
+    props.buttonToggle();
   };
 
   const closeIndiForumHandler = () => {
     setDisplayIndiForum(false);
+    props.buttonToggle();
   };
 
   const deleteForumHandler = (forumId) => {
@@ -82,7 +83,6 @@ const ForumItem = (props) => {
       if (!response.ok) {
         console.log("error with deleteForumHandler");
       }
-      console.log(response);
       props.onDeleteForum(forumId);
     });
   };
@@ -101,15 +101,13 @@ const ForumItem = (props) => {
           <h2 className="forum-item__initComment">{props.initComment}</h2>
           <h2 className="forum-item__rating">{props.rating} likes</h2>
           <h2>Posted: {timeSincePosted}</h2>
-          <Button ghost
-            type="primary"
-            size="large"
-            icon={<PlusSquareOutlined />}
-            onClick={() => displayIndiForumHandler(props.fid)}
-          />
-          {disiplayIndiForum === true && (
+          
+          {displayIndiForum === true && (
             <div>
               <IndiForum
+                style={{
+                  zIndex: "3"
+                }}
                 className="chosenIndiForum"
                 indiForumId={chosenIndiForum}
                 indiForumIdP={props.fid}
@@ -129,8 +127,19 @@ const ForumItem = (props) => {
               />
             </div>
           )}
-          {props.forumOwner === userId && (
+          { props.inIndiForum === false && (
+            <Button ghost
+              type="primary"
+              size="large"
+              icon={<PlusSquareOutlined />}
+              onClick={() => displayIndiForumHandler(props.fid)}
+            />
+          )}
+          {props.inIndiForum === false && props.forumOwner === userId && (
             <Button danger
+              style={{
+                zIndex: "0"
+              }}
               size="large"
               onClick={() => deleteForumHandler(props.fid)}
               icon={<DeleteOutlined />}

@@ -4,7 +4,7 @@ import CommentItem from "./CommentItem";
 import CommentForm from "./CommentForm";
 import { useAuth } from "../../common/utils/auth";
 import { ConfigProvider, Layout, Typography, Button, theme, Flex} from "antd";
-import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
+import { CloseOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import './IndiForum.css';
 const { Header, Content } = Layout;
 const { Text } = Typography;
@@ -160,34 +160,25 @@ const IndiForum = (props) => {
                 <div className="indiForum__initComment">InitComment: {props.indiForumInitComment}</div>
                 <div className="indiForumRating">Rating: {props.rating}</div>
                 <div className="indiForumTime">Time Posted: {props.time}</div>
-                {props.indiForumOwner === userId && (
-                  <button
-                    onClick={() => deleteIndiForumHandler(props.indiForumIdP)}
-                  >
-                    Delete Forum
-                  </button>
-                )}
-                {dislikedForum === false && (
-                  <div>
-                    <button
-                      className="IndiForum__thumbsUp"
-                      onClick={handleLikeButton}
-                    >
-                      Upvote
-                    </button>
-                  </div>
-                )}
-                {likedForum === false && (
-                  <div>
-                    <button
-                      className="IndiForum__thumbsDown"
-                      onClick={handleDislikeButton}
-                    >
-                      Downvote
-                    </button>
-                  </div>
-                )}
-                
+                <div>
+                  {dislikedForum === false && (
+                    <div>
+                      <button
+                        className="IndiForum__thumbsUp"
+                        onClick={handleLikeButton}
+                      >
+                        Upvote
+                      </button>
+                    </div>
+                  )}
+                  {props.indiForumOwner === userId && (
+                    <Button danger
+                      size="small"
+                      icon={<DeleteOutlined />}
+                      onClick={() => deleteIndiForumHandler(props.indiForumIdP)}
+                    />
+                  )}
+                </div>
               </div>
             </Header>
             <Layout>

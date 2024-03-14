@@ -18,8 +18,10 @@
   height: 100vh;
 }
 
-.subbutton{
-  background-color: green;
+.selectbutton{
+  background-color: lightgreen;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .input
@@ -27,9 +29,6 @@
   background-color: white;
 }
 
-.SubmitHandler {
-  background-color: purple;
-}
 /* List of appointments styles */
 .appointments-list {
   list-style-type: none;
@@ -53,4 +52,17 @@
   background-color: #e90000;
   border-radius: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.initText {
+  font-size: 25px;
+  font-weight: bold;
+  text-align: center;
+  margin-left: 10px;
+}
+
+.text {
+  font-size: 15px;
+  font-weight: bold;
+  text-align: left;
 }

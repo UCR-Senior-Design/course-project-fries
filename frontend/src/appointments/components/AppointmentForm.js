@@ -12,14 +12,11 @@ const AppointmentForm = (props) => {
     firstName: '',
     lastName: '',
     description: '',
-    slotTime: '',
-    slotDate: ''
+    //slotTime: '',
+    //slotDate: ''
   })
-  const [AM, setAM] = useState(true);
   const [error, setError] = useState('')
 
-  const slotsAM = ['8:00-9:00', '9:00-10:00', '10:00-11:00', '11:00-12:00'];
-  const slotsPM = ['1:00-2:00', '2:00-3:00', '3:00-4:00', '4:00-5:00'];
   const baseUrl = 'http://localhost:3000/appointments';
 
   const changeHandler = event => {
@@ -30,21 +27,9 @@ const AppointmentForm = (props) => {
     })
   }
 
-  const switchHandler = () => {
-    setError('');
-    setAM(!AM);
-  }
-
-  const dateHandler = (date, datestring) => {
-    setError('');
-    setInput({
-      ...input, 
-      slotDate: date
-    })
-  }
 
   const validateInput = () => {
-    if (!input.email || !input.firstName || !input.lastName || !input.slotTime || !input.slotDate || !input.description) {
+    if (!input.email || !input.firstName || !input.lastName || !input.description) {
       setError('All fields are required');
       return false;
     } else {
@@ -63,8 +48,6 @@ const AppointmentForm = (props) => {
             firstName: '',
             lastName: '',
             description: '',
-            slotTime: '',
-            slotDate: ''
           })
           props.history.push('/');
         })
@@ -74,36 +57,21 @@ const AppointmentForm = (props) => {
     }
   }
 
-  const Back = () => {
-    window.location.href = "/appointments";
-  };
 
   return (
     <Form className={`${styles['appt-form']} ${styles.AppointmentForm}`} onSubmit={submitHandler}>
-      <header className={styles['App-header']}>
-        <NavigationBar />
-      </header>
+      <div className={styles.text}> 
+        Enter the following information:
+      </div>
+    
       <Input className={styles.input} name='email' value={input.email} placeholder='Email' onChange={changeHandler} />
       <Input className={styles.input} name='firstName' value={input.firstName} placeholder='First name' onChange={changeHandler} />
       <Input className={styles.input} name='lastName' value={input.lastName} placeholder='Last name' onChange={changeHandler} />
       <Input className={styles.input} name='description' value={input.description} placeholder='Description' onChange={changeHandler} />
-      <Switch checkedChildren="AM" unCheckedChildren="PM" defaultChecked onChange={switchHandler}/>
-      {AM ? (
-        <Radio.Group className={styles.radioGroup} name='slotTime' value={input.slotTime} onChange={changeHandler}>
-          {slotsAM.map(item => <Radio key={item} value={`${item} AM`}>{`${item} AM`}</Radio>)}
-        </Radio.Group>
-      ) : (
-        <Radio.Group className={styles.radioGroup} name='slotTime' value={input.slotTime} onChange={changeHandler}>
-          {slotsPM.map(item => <Radio key={item} value={`${item} PM`}>{`${item} PM`}</Radio>)}
-        </Radio.Group>
-      )}
-      
-      <DatePicker className={styles.datePicker} onChange={dateHandler}></DatePicker>
       
       {error && <div className={styles.error}>{error}</div>}
       
-      <Button className={styles.button} onClick={submitHandler}>Submit</Button>
-      <Button className={styles.button} onClick={Back}>Back</Button>
+      <Button className={styles.selectbutton} onClick={submitHandler}>Submit</Button>
     </Form>
   )
   }
