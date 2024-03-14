@@ -32,7 +32,7 @@ const NavigationBar = () => {
           key: "message",
           label: <Link to="/messages">Message</Link>,
         },
-        {key: "chatbot", label: <Link to="/chatbot">Chatbot</Link>},
+        {key: "chatbot", label: <Link to="/chat">Chatbot</Link>},
         {
           key: "appointments",
           label: <Link to="/appointments">Appointment</Link>,

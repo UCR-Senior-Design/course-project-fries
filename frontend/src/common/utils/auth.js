@@ -26,6 +26,7 @@ export const AuthProvider = ({children}) => {
         setIsDoctor(response.data.user.isDoctor);
       } catch (err) {
         console.error(err);
+        logout();
       }
     };
 
