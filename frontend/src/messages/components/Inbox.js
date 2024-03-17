@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import { Typography } from "antd";
 import styles from "./Inbox.module.css";
-import { useAuth } from "../../common/utils/auth";
 
 const { Text } = Typography;
-// import { CloseOutlined } from "@ant-design/icons";
 
 const Inbox = ({ uid, onSetConvoId }) => {
   const [convoList, setConvoList] = useState([]);
@@ -14,23 +11,30 @@ const Inbox = ({ uid, onSetConvoId }) => {
 
   // Fetch all Conversations where user is either sender or recipient
   useEffect(() => {
-    // console.log(uid);
-    // Fetch conversations when the Inbox mounts
-    fetch(`http://localhost:5001/api/messages/listconversations/${uid}`)
-      .then((response) => response.json())
-      .then((data) => {
-        // console.log(uid);
-        console.log(data);
-        if (data && data.conversation_list.length === 0) {
-          setNoMsg(true);
-        }
-        setConvoList(data.conversation_list);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    const fetchData = async () => {
+      // Fetch conversations when the Inbox mounts
+      fetch(`http://localhost:5001/api/messages/listconversations/${uid}`)
+        .then((response) => response.json())
+        .then((data) => {
+          // console.log(data);
+          if (data && data.conversation_list.length === 0) {
+            setNoMsg(true);
+          }
+          setConvoList(data.conversation_list);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
+
+    fetchData();
+
+    const intervalId = setInterval(fetchData, 60000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
+  // Render Thread by conversation id, pass info to Messages.js
   const select_conversation_handler = (
     _id,
     recipient,
@@ -38,24 +42,20 @@ const Inbox = ({ uid, onSetConvoId }) => {
     title,
     otherUserName
   ) => {
-    // Render Thread by conversation id, pass info to Messages.js
     onSetConvoId(_id, recipient, sender, title, otherUserName);
   };
 
+  // Get name of other user in conversation
   const other_user_in_convo = async (recipient, sender) => {
     try {
-      // Display name of other user in conversation
       const userId = recipient !== uid ? recipient : sender;
 
       const response = await fetch(
         `http://localhost:5001/api/messages/getuser/${userId}`
       );
+
       const data = await response.json();
-
-      console.log(data);
-
       const concatenatedName = data.user.firstname + " " + data.user.lastname;
-
       return concatenatedName;
     } catch (error) {
       console.error(error);
@@ -65,30 +65,49 @@ const Inbox = ({ uid, onSetConvoId }) => {
 
   useEffect(() => {
     const fetchAndRenderConvoList = async () => {
-      const updatedList = await Promise.all(
-        convoList.map(async ({ _id, recipient, sender, title }) => {
-          const otherUserName = await other_user_in_convo(recipient, sender);
-          return (
-            <ul
-              key={_id}
-              className={styles.conversation_item}
-              onClick={() =>
-                select_conversation_handler(
-                  _id,
-                  recipient,
-                  sender,
-                  title,
-                  otherUserName
-                )
-              }
-            >
-              <h3>{title}</h3>
-              <Text>{otherUserName}</Text>
-            </ul>
-          );
-        })
+      // Order by last_timestamp
+      const ordered_list = [...convoList].sort(
+        (a, b) => new Date(b.last_timestamp) - new Date(a.last_timestamp)
       );
-      setRenderedConvoList(updatedList);
+
+      // Get other_user_in_convo for each conversation in order
+      const updatedList = await Promise.all(
+        ordered_list.map(
+          async ({ _id, recipient, sender, title, last_timestamp }) => {
+            const otherUserName = await other_user_in_convo(recipient, sender);
+            return {
+              id: _id,
+              title,
+              otherUserName,
+              sender,
+              recipient,
+              last_timestamp,
+            };
+          }
+        )
+      );
+
+      // Convert the ordered data to React elements
+      const renderedElements = updatedList.map((item) => (
+        <ul
+          key={item.id}
+          className={styles.conversation_item}
+          onClick={() =>
+            select_conversation_handler(
+              item.id,
+              item.recipient,
+              item.sender,
+              item.title,
+              item.otherUserName
+            )
+          }
+        >
+          <h3>{item.title}</h3>
+          <Text>{item.otherUserName}</Text>
+        </ul>
+      ));
+
+      setRenderedConvoList(renderedElements);
     };
 
     if (convoList.length > 0) {

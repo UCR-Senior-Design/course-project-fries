@@ -29,7 +29,7 @@ wss.on("connection", function (socket) {
     JSON_msg = JSON.parse(message);
     // Store new connection if message type is "uid"
     if (JSON_msg.type == "uid") {
-      console.log(`Client's uid: ${JSON_msg.content}`);
+      console.log(`New client's uid: ${JSON_msg.content}`);
       clients[JSON.stringify(JSON_msg.content)] = socket;
     }
     // Send messages between clients if message type is "client_msg"
@@ -49,7 +49,7 @@ wss.on("connection", function (socket) {
 const send_msg = (JSON_msg, uid, recv_id, cid) => {
   // TEST: Print all connected clients
   for (const [client_id, connection] of Object.entries(clients)) {
-    console.log(`Connected client: ${client_id}`);
+    console.log(`Currently connected client: ${client_id}`);
   }
   // If recipient is not connectected, do nothing
   console.log(recv_id);
@@ -88,13 +88,14 @@ const create_conversation = async (req, res, next) => {
   if (!errors.isEmpty()) {
     throw new HttpError("Invalid inputs passed, check your data.", 422);
   }
-  const { sender, recipient, title } = req.body;
+  const { sender, recipient, title, last_timestamp } = req.body;
   console.log("create_conversation fxn line 86:");
   console.log(req.body);
   const created_conversation = new Conversation({
     sender: sender,
     recipient: recipient,
     title: title,
+    last_timestamp: last_timestamp,
   });
   try {
     await created_conversation.save();
@@ -122,6 +123,8 @@ const save_message = async (req, res, next) => {
     text: text,
     timestamp: timestamp,
   });
+
+  // Save new message
   try {
     await created_message.save();
   } catch (err) {
@@ -131,6 +134,34 @@ const save_message = async (req, res, next) => {
     );
     return next(error);
   }
+
+  // Update coversation last_timestamp to record most recent message timestamp
+  let conversation;
+  try {
+    conversation = await Conversation.findById(conversation_id);
+    if (!conversation) {
+      const error = new HttpError("Conversation not found", 404);
+      return next(error);
+    } else {
+      conversation.last_timestamp = timestamp;
+      try {
+        await conversation.save();
+      } catch (err) {
+        const error = new HttpError(
+          "Updating Conversation timestamp failed, please try again",
+          500
+        );
+        return next(error);
+      }
+    }
+  } catch (err) {
+    const error = new HttpError(
+      "Updating Conversation failed, please try again",
+      500
+    );
+    return next(error);
+  }
+
   res.status(201).json({ created_message });
 };
 
