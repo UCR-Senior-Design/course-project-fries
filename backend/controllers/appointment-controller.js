@@ -17,8 +17,32 @@ const findAllAppointments = async (req, res, next) => {
       );
       return next(error);
     }
+    const appointmentsWithDoctorNames = await Promise.all(
+      appt_list.map(async (appt) => {
+        const { _id, doctor_id, date, time, description } = appt.toObject({
+          getters: true,
+        });
+        //Get doctor fullname
+        const doc = await User.findById(doctor_id); // Wait for the promise to resolve
+        if (!doc) return null; // If no doctor found, return null
+        const fullname = doc.firstname + " " + doc.lastname;
+        return {
+          _id: _id,
+          doctor_id: doctor_id,
+          date: date,
+          time: time,
+          description: description,
+          doctor_name: fullname,
+        };
+      })
+    );
 
-    res.json({ appt_list: appt_list });
+    // Filter out null items (if any)
+    const filteredAppointments = appointmentsWithDoctorNames.filter(
+      (item) => item !== null
+    );
+
+    res.json({ appt_list: filteredAppointments });
   } catch (err) {
     const error = new HttpError(
       "An error occurred while retrieving the list of appointments.",
