@@ -5,6 +5,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
     "antd": "^5.12.1",
+    "async_hooks": "^1.0.0",
     "axios": "^1.6.2",
     "classnames": "^2.5.1",
     "dotenv": "^16.4.5",

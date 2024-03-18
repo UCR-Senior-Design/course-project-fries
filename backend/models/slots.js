@@ -13,6 +13,6 @@ const slotsSchema = new Schema({
   }, 
 }, { versionKey: false })
 
-const slotModel = mongoose.model('user', slotsSchema);
+module.exports = mongoose.model('Slot', slotsSchema);
 
-module.exports = slotsModel;
+// module.exports = slotsModel;

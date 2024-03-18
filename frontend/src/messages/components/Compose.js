@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Layout, Button, Select, Input } from "antd";
-import cn from "classnames";
 import styles from "./Compose.module.css";
 import { CloseOutlined } from "@ant-design/icons";
 import { DateTime } from "luxon";
@@ -42,7 +41,7 @@ const Compose = ({ onSentMessage, uid, onExit }) => {
   const msg_submit_handler = async (event) => {
     event.preventDefault();
     // Save conversation to DB
-    if (recipient !== "" && title != "" && enteredMessage != "") {
+    if (recipient !== "" && title != "" && enteredMessage !== "") {
       const timestamp_ = DateTime.now().toISO();
       fetch("http://localhost:5001/api/messages/createconversation", {
         method: "POST",

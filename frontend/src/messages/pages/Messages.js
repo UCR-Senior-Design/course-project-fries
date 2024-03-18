@@ -9,11 +9,10 @@ import { EditOutlined, InboxOutlined } from "@ant-design/icons";
 import { DateTime } from "luxon";
 import NavigationBar from "../../common/components/NavBar";
 
-const {Content, Sider, Footer} = Layout;
+const {Content,} = Layout;
 
 const Messages = () => {
   const { userId } = useAuth(); // use userId here
-  const [uid, setUid] = useState(userId);
   const [compose, setCompose] = useState(false);
   const [inbox, setInbox] = useState(false);
   const [viewthread, setViewThread] = useState(false);
@@ -23,7 +22,6 @@ const Messages = () => {
   const [otherUserName, setOtherUserName] = useState("");
 
   useEffect(() => {
-    console.log(userId);
     if (userId) {
       setInbox(true);
     }

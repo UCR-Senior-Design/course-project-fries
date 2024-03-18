@@ -11,21 +11,20 @@
   background-color: white;
 }
 
-.container{
+.container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
 
-.selectbutton{
+.selectbutton {
   background-color: lightgreen;
   margin-top: 10px;
   margin-bottom: 10px;
 }
 
-.input
-{
+.input {
   background-color: white;
 }
 
