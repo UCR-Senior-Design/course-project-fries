@@ -110,16 +110,14 @@ function deleteAppointment(req, res) {
 const list_doctors = async (req, res, next) => {
   let doctors_list;
   let unavailable_doc;
-  const { data } = req.query.data;
+  const { data } = req.query;
   const { date, time } = JSON.parse(data);
   const dateOnly = date.slice(0, 10);
-  console.log(dateOnly);
 
   // Return list of doctors in an array
   try {
     // Get all doctors
     doctors_list = await User.find({ isDoctor: true });
-    console.log(doctors_list);
     // Get doctor_ids of unavailable doctors (have entries with selected date/time)
     const unavailable_list = await appointmentModel.find({
       date: dateOnly,

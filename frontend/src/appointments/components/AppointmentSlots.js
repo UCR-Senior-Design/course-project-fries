@@ -48,8 +48,6 @@ const AppointmentSlots = (props) => {
   const checkHandler = () => {
     if (time !== "" && date !== "") {
       // filter list
-      console.log(time);
-      console.log(date);
       const queryParams = new URLSearchParams({
         data: JSON.stringify({
           date: date,
@@ -60,7 +58,6 @@ const AppointmentSlots = (props) => {
       fetch(`http://localhost:5001/api/appointments/listdoctors?${queryParams}`)
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
           setData(data.doctors_list);
         })
         .catch((error) => {

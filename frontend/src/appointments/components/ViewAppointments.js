@@ -12,7 +12,7 @@ const ViewAppointments = () => {
   const baseUrl = "http://localhost:5001/api/appointments";
 
   useEffect(() => {
-    fetch(`${baseUrl}/${userId}`)
+    fetch(`${baseUrl}/viewappointments/${userId}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);

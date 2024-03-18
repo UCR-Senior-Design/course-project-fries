@@ -6,7 +6,7 @@ const appointmentController = require("../../backend/controllers/appointment-con
 //const middlewares = require('../../middlewares');
 
 //get all appointments
-router.get("/:uid", appointmentController.findAllAppointments);
+router.get("/viewappointments/:uid", appointmentController.findAllAppointments);
 
 //add appointment
 router.post("/addappointment", appointmentController.addAppointment);
