@@ -12,11 +12,11 @@ import Appointments from "./appointments/pages/Appointments";
 import Forum from "./forum/pages/Forum";
 import Messages from "./messages/pages/Messages";
 import Patient from "./patient/pages/Patient";
-import Chatbot from "./chatbot/pages/Chatbot";
-import Users from "./common/pages/landing";
+// import Chatbot from "./chatbot/pages/Chatbot";
+// import Users from "./common/pages/landing";
 
 import AppointmentForm from "./appointments/components/AppointmentForm";
-import AppointmentSlots from "./appointments/components/AppointmentSlots";
+// import AppointmentSlots from "./appointments/components/AppointmentSlots";
 import LoginForm from "./common/forms/login_form";
 import RegisterForm from "./common/forms/register_form";
 import LandingPage from "./common/pages/landing";
