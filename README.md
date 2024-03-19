@@ -12,6 +12,11 @@
 - Click the green ‘<> Code’ button
 - Download ZIP then unzip.
 
+#### Add `.env` files
+- add .env files in backend and frontend folders
+- backend `.env`: PORT=5001 JWT_SECRET="JWT_SECRET_KEY" OPENAI_API_KEY=""
+- frontend `.env`: OPENAI_API_KEY=""
+
 #### In terminal
 - `cd` into the project folder
 - run `code .`
