@@ -15,8 +15,7 @@ import Patient from "./patient/pages/Patient";
 // import Chatbot from "./chatbot/pages/Chatbot";
 // import Users from "./common/pages/landing";
 
-import AppointmentForm from "./appointments/components/AppointmentForm";
-// import AppointmentSlots from "./appointments/components/AppointmentSlots";
+import AppointmentSlots from "./appointments/components/AppointmentSlots";
 import LoginForm from "./common/forms/login_form";
 import RegisterForm from "./common/forms/register_form";
 import LandingPage from "./common/pages/landing";
@@ -35,7 +34,7 @@ const App = () => {
             <Appointments />
           </Route>
           <Route path="/AppointmentForm" exact={true}>
-            <AppointmentForm />
+            <AppointmentSlots />
           </Route>
           <Route path="/chat" exact={true} component={ChatPage} />
           <Route path="/upload" exact={true} component={UploadPage} />
