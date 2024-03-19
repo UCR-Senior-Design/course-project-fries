@@ -1,7 +1,7 @@
 import React from "react";
-import styles from "./Modal.module.css";
+import styles from "./ForumCreateModal.module.css";
 
-const Modal = (props) => {
+const ForumCreateModal = (props) => {
   return (
     <div
       className={`${styles.modal_formatting} ${styles.backdrop}`}
@@ -17,4 +17,4 @@ const Modal = (props) => {
   );
 };
 
-export default Modal;
+export default ForumCreateModal;

@@ -1,12 +1,23 @@
 import React, { useState } from "react";
-import Modal from "./common/Modal";
+import Modal from "./common/CommentCreateModal";
+import { useAuth } from "../../common/utils/auth";
+import {
+  Switch,
+  Button,
+  Form,
+  Input,
+} from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
+ 
+const { TextArea } = Input;
 
 const CommentForm = (props) => {
-  const [newComment_creator, setNewComment_creator] = useState(""); // Change later for login
+  const { userId, firstname, isDoctor } = useAuth();
   const [newComment_text, setNewComment_text] = useState("");
+  const [newComment_anon, setNewForum_anon] = useState(false);
 
-  const commentCreatorChangeHandler = (event) => {
-    setNewComment_creator(event.target.value);
+  const changeAnonHandler = (checked) => {
+    setNewForum_anon((prevAnon) => !prevAnon);
   };
 
   const commentTextChangeHandler = (event) => {
@@ -21,65 +32,82 @@ const CommentForm = (props) => {
     event.preventDefault();
     props.onCancel();
     // Add if for if not editting?
+    let fid;
+    fid = props.fid;
     let commentData;
     try {
       commentData = {
-        creator: newComment_creator,
-        forum_id: props.fid,
+        user: userId,
+        forumId: fid,
         comment_text: newComment_text,
-      };
-      console.log(`forumData: ${JSON.stringify(commentData)}`);
-      try {
-        const response = await fetch("http://localhost:5001/api/comments", {
-          method: "POST",
-          body: JSON.stringify(commentData),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        if (!response.ok) {
-          throw new Error("Unable to create new forum");
-        }
-        console.log(response);
-
-        props.onCreateComment();
-
-      } catch (err) {
-        console.error(err);
+        firstname: firstname,
+        isDoctor: isDoctor,
+        anon: newComment_anon,
       }
+      const response = await fetch("http://localhost:5001/api/comments", {
+        method: "POST",
+        body: JSON.stringify(commentData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error("Unable to create new comment");
+      }
+      console.log(response);
+
+      props.onCreateComment();
+
     } catch (err) {
       console.error(err);
     }
   };
 
   return (
-    <div>
+    <>
       <Modal>
-        <h2>Add Comment</h2>
-        <form onSubmit={formSubmitHandler}>
-          <div>
-            <label>Creator</label>
-            <input
-              type="text"
-              value={newComment_creator}
-              onChange={commentCreatorChangeHandler}
-            />
-          </div>
-          <div>
-            <label>Comment Text</label>
-            <input
+        <Form
+          labelCol={{
+            span: 4,
+          }}
+          wrapperCol={{
+            span:14,
+          }}
+          layout="horizontal"
+          style={{
+            maxWidth:600,
+          }}
+        >
+          <h2>Add Comment</h2>
+          <Form.Item>
+            <label>comment_text:</label>
+            <TextArea
+            rows={4}
               type="text"
               value={newComment_text}
               onChange={commentTextChangeHandler}
             />
-          </div>
-          <div>
-            <button onSubmit={formSubmitHandler}>Post</button>
-            <button onClick={closeCommentFormHandler}>Cancel</button>
-          </div>
-        </form>
+          </Form.Item>
+          <label>anonymous</label>
+          <Form.Item valuePropName="checked">
+            <Switch onChange={changeAnonHandler}/>
+          </Form.Item>
+          <Form.Item>
+            <Button onClick={formSubmitHandler}>Post</Button>
+          </Form.Item>
+          <Form.Item>
+            <Button danger
+              shape="circle"
+              size="large"
+              icon={<CloseOutlined/>}
+              className="closeButton"
+              onClick={closeCommentFormHandler}
+            />
+          </Form.Item>
+        </Form>
       </Modal>
-    </div>
+    </>
   );
 };
 

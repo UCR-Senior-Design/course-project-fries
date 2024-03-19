@@ -1,13 +1,5 @@
 const slotModel = require('../models/slots');
 
-module.exports = {
-  findAllSlots,
-  findSlotById,
-  addSlot,
-  updateSlot,
-  deleteSlot
-}
-
 function findAllSlots(req, res) {
   const date = req.query.date;
   
@@ -105,4 +97,12 @@ function deleteSlot(req, res) {
       res.status(200).json({ removed: data });    
     }
   })
+}
+
+module.exports = {
+  findAllSlots,
+  findSlotById,
+  addSlot,
+  updateSlot,
+  deleteSlot
 }

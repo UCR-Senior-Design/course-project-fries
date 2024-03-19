@@ -6,7 +6,10 @@
     background-color: #f0f0f0;
     display: flex;
     justify-content: space-between;
-    padding: 0px 6px 0px 6px;
+    padding: 0px 10px 0px 10px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .input_msg_form {
@@ -14,6 +17,7 @@
     justify-content: space-between;
     align-items: center;
 }
+
 .input_msg {
     flex: 1;
     padding: 10px;
