@@ -71,6 +71,7 @@ const ViewAppointments = () => {
         console.log("error with deleteApptHandler");
       }
     });
+    window.location.reload();
   };
 
   return (

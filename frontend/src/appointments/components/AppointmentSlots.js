@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
-import { DatePicker, Switch, Button, Radio, Table, Modal } from "antd";
+import { DatePicker, Switch, Button, Radio, Table, Modal, Layout } from "antd";
 import NavigationBar from "../../common/components/NavBar";
 import styles from "../pages/Appointments.module.css";
 import AppointmentForm from "../components/AppointmentForm";
+const { Content, Footer } = Layout;
 
 const AppointmentSlots = (props) => {
   const [date, setDate] = useState("");
@@ -45,6 +46,13 @@ const AppointmentSlots = (props) => {
     }
   };
 
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   const checkHandler = () => {
     if (time !== "" && date !== "") {
       // filter list
@@ -64,14 +72,9 @@ const AppointmentSlots = (props) => {
           console.error(error);
         });
       setShowTable(true);
+    } else {
+      setIsModalOpen(true);
     }
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-  const handleCancel = () => {
-    setIsModalOpen(false);
   };
 
   // Users must input date and time before selecting a doctor
@@ -105,14 +108,12 @@ const AppointmentSlots = (props) => {
   };
 
   return (
-    <div className={`${styles["appt-form"]} ${styles.AppointmentForm}`}>
-      <header className={styles["App-header"]}>
-        <NavigationBar />
-        <div className={styles.initText}>Let's make your appointment!</div>
-        <div className={styles.text}>
-          Select your preferred appointment time and confirm your date!
-        </div>
-      </header>
+    // <Layout className={`${styles["appt-form"]} ${styles.AppointmentForm}`}>
+    <Layout style={{ minHeight: "100vh" }}>
+      <NavigationBar />
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <h2>Please select preferred appointment date and time.</h2>
+      </div>
 
       <Modal
         title="Error"
@@ -123,73 +124,90 @@ const AppointmentSlots = (props) => {
         <p>Please select date and time of appointment.</p>
       </Modal>
 
-      <Switch
-        checkedChildren="AM"
-        unCheckedChildren="PM"
-        defaultChecked
-        onChange={switchHandler}
-      />
-      {AM ? (
-        <Radio.Group
-          className={styles.radioGroup}
-          name="slotTime"
-          value={time}
-          onChange={timeHandler}
+      <Content style={{ minHeight: "100vh" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "6px",
+            padding: "10px",
+          }}
         >
-          {slotsAM.map((item) => (
-            <Radio key={item} value={`${item} AM`}>{`${item} AM`}</Radio>
-          ))}
-        </Radio.Group>
-      ) : (
-        <Radio.Group
-          className={styles.radioGroup}
-          name="slotTime"
-          value={time}
-          onChange={timeHandler}
-        >
-          {slotsPM.map((item) => (
-            <Radio key={item} value={`${item} PM`}>{`${item} PM`}</Radio>
-          ))}
-        </Radio.Group>
-      )}
-
-      <DatePicker
-        className={styles.datePicker}
-        onChange={dateHandler}
-      ></DatePicker>
-
-      <Button className={styles.button} onClick={checkHandler}>
-        Check Availability
-      </Button>
-      <Button className={styles.button} onClick={Back}>
-        Back
-      </Button>
-
-      {showForm && (
-        <AppointmentForm selectedDoc={selectedDoc} date={date} time={time} />
-      )}
-
-      {showTable && (
-        <div className={styles.text}>
-          <p>
-            Here are the available Doctors for your selected appointment day and
-            time:
-          </p>
-          <Table
-            rowKey={(record) => record.doc_id}
-            columns={columns}
-            dataSource={data}
-            onRow={(record) => ({
-              onClick: () => {
-                selectDoctorHandler(record.doc_id);
-              },
-            })}
+          <Switch
+            checkedChildren="AM"
+            unCheckedChildren="PM"
+            defaultChecked
+            onChange={switchHandler}
           />
-        </div>
-      )}
+          {AM ? (
+            <Radio.Group
+              className={styles.radioGroup}
+              name="slotTime"
+              value={time}
+              onChange={timeHandler}
+            >
+              {slotsAM.map((item) => (
+                <Radio key={item} value={`${item} AM`}>{`${item} AM`}</Radio>
+              ))}
+            </Radio.Group>
+          ) : (
+            <Radio.Group
+              className={styles.radioGroup}
+              name="slotTime"
+              value={time}
+              onChange={timeHandler}
+            >
+              {slotsPM.map((item) => (
+                <Radio key={item} value={`${item} PM`}>{`${item} PM`}</Radio>
+              ))}
+            </Radio.Group>
+          )}
 
-      {error && <div className={styles.error}>{error}</div>}
-    </div>
+          <DatePicker
+            className={styles.datePicker}
+            onChange={dateHandler}
+          ></DatePicker>
+
+          <Button className={styles.button} onClick={checkHandler}>
+            Check Availability
+          </Button>
+          <Button className={styles.button} onClick={Back}>
+            Back
+          </Button>
+        </div>
+        <div>
+          {showForm && (
+            <AppointmentForm
+              selectedDoc={selectedDoc}
+              date={date}
+              time={time}
+            />
+          )}
+
+          {showTable && (
+            <div className={styles.text} style={{ padding: "10px" }}>
+              <p>
+                Here are the available Doctors for your selected appointment day
+                and time:
+              </p>
+              <Table
+                rowKey={(record) => record.doc_id}
+                columns={columns}
+                dataSource={data}
+                onRow={(record) => ({
+                  onClick: () => {
+                    selectDoctorHandler(record.doc_id);
+                  },
+                })}
+              />
+            </div>
+          )}
+        </div>
+
+        {error && <div className={styles.error}>{error}</div>}
+      </Content>
+    </Layout>
   );
 };
 

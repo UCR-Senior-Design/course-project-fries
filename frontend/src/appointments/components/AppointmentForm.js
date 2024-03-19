@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { withRouter } from "react-router-dom";
-import { Form, Input, DatePicker, Switch, Button, Radio } from "antd";
+import { Form, Input, DatePicker, Switch, Button, Radio, Modal } from "antd";
 import NavigationBar from "../../common/components/NavBar";
 import styles from "../pages/Appointments.module.css";
 import { useAuth } from "../../common/utils/auth";
@@ -11,6 +11,7 @@ const AppointmentForm = (props) => {
 
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const baseUrl = "http://localhost:5001/api/appointments";
 
@@ -19,17 +20,16 @@ const AppointmentForm = (props) => {
     setDescription(event.target.value);
   };
 
-  const validateInput = () => {
-    if (description === "") {
-      setError("Description Required.");
-      return false;
-    } else {
-      return true;
-    }
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
   };
 
   const submitHandler = (event) => {
     event.preventDefault();
+
     const appointment_data = JSON.stringify({
       doctor_id: props.selectedDoc,
       patient_id: userId,
@@ -38,7 +38,7 @@ const AppointmentForm = (props) => {
       description: description,
     });
 
-    if (validateInput()) {
+    if (description !== "") {
       fetch("http://localhost:5001/api/appointments/addappointment", {
         method: "POST",
         headers: {
@@ -49,14 +49,26 @@ const AppointmentForm = (props) => {
         .then((response) => response.json())
         .then((data) => {})
         .catch((error) => console.error(error));
+    } else {
+      setIsModalOpen(true);
     }
   };
 
   return (
     <Form
       className={`${styles["appt-form"]} ${styles.AppointmentForm}`}
+      style={{ padding: "10px" }}
       onSubmit={submitHandler}
     >
+      <Modal
+        title="Error"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <p>Please enter description.</p>
+      </Modal>
+
       <div className={styles.text}>Enter the following information:</div>
 
       <Input
