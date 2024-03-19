@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Layout, Button, Select, Input } from "antd";
-import cn from "classnames";
 import styles from "./Compose.module.css";
 import { CloseOutlined } from "@ant-design/icons";
+import { DateTime } from "luxon";
 const { Content, Footer } = Layout;
 
 const Compose = ({ onSentMessage, uid, onExit }) => {
@@ -41,7 +41,8 @@ const Compose = ({ onSentMessage, uid, onExit }) => {
   const msg_submit_handler = async (event) => {
     event.preventDefault();
     // Save conversation to DB
-    if (recipient !== "" && title != "" && enteredMessage != "") {
+    if (recipient !== "" && title != "" && enteredMessage !== "") {
+      const timestamp_ = DateTime.now().toISO();
       fetch("http://localhost:5001/api/messages/createconversation", {
         method: "POST",
         headers: {
@@ -51,6 +52,7 @@ const Compose = ({ onSentMessage, uid, onExit }) => {
           sender: uid,
           recipient: recipient,
           title: title,
+          last_timestamp: timestamp_,
         }),
       })
         .then((response) => response.json())

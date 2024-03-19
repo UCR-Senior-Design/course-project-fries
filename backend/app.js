@@ -15,6 +15,7 @@ const messagesRoutes = require("./routes/messages-routes");
 const usersRoutes = require("./routes/users-routes");
 const queryRoutes = require("./routes/chatbot-routes");
 const uploadRoutes = require("./routes/loader-routes");
+const appointmentRoutes = require("./routes/appointments-routes");
 
 require('dotenv').config();
 
@@ -56,6 +57,7 @@ app.use("/api/comments", commentsRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/chat", queryRoutes);
 app.use("/api/files", uploadRoutes);
+app.use("/api/appointments", appointmentRoutes);
 
 // Handle Unsupported Route error
 app.use((req, res, next) => {

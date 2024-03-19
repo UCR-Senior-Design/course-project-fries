@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import cn from "classnames";
 import styles from "./Compose.module.css";
 import { CloseOutlined } from "@ant-design/icons";
@@ -19,10 +19,12 @@ const Thread = ({
   const [messageHistory, setMessageHistory] = useState([]);
   const [enteredMessage, setEnteredMessage] = useState("");
 
-  const entered_message_handler = (event) => {
-    event.preventDefault();
-    setEnteredMessage(event.target.value);
+  // Scroll messages to bottom of viewport when new messages are sent
+  const messagesEndRef = useRef(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   };
+  useEffect(scrollToBottom, [messageHistory]);
 
   useEffect(() => {
     // Load messages from DB by conversation id
@@ -31,13 +33,12 @@ const Thread = ({
     )
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setMessageHistory(data.message_history);
       })
       .catch((error) => {
         console.error(error);
       });
-  
+
     // Disconnect client from WS Server when page is unloaded (refreshed)
     const unload_handler = (event) => {
       console.log(`Client disconnected: ${uid}`);
@@ -52,7 +53,6 @@ const Thread = ({
     return () => {
       window.removeEventListener("beforeunload", unload_handler);
       // Disconnect client from WS Server when page is unmounted
-      console.log(`Client disconnected: ${uid}`);
       sendJsonMessage({
         type: "disconnect",
         uid: uid,
@@ -67,7 +67,7 @@ const Thread = ({
       console.log("WebSocket connection established.");
       sendJsonMessage({
         type: "uid",
-        content: uid, // TODO: make api to get DBuid
+        content: uid,
       });
     },
   });
@@ -92,6 +92,11 @@ const Thread = ({
   }, [lastMessage]);
 
   // Send messages to server
+  const entered_message_handler = (event) => {
+    event.preventDefault();
+    setEnteredMessage(event.target.value);
+  };
+
   const msg_submit_handler = async (event) => {
     event.preventDefault();
     // Send message to recipient in WS
@@ -157,6 +162,7 @@ const Thread = ({
                 <div>{text}</div>
               </div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
         </div>
       </Content>

@@ -37,11 +37,11 @@ const NavigationBar = () => {
           key: "appointments",
           label: <Link to="/appointments">Appointment</Link>,
         },
-        {key: "spacer", label: "", style: {flexGrow: 1}},
+        {key: "spacer", label: "", style: {flexGrow: 0.99}},
         {key: "logout", label: "Logout", onClick: handleLogout},
       ]
       : [
-        {key: "spacer", label: "", style: {flexGrow: 1}},
+        {key: "spacer", label: "", style: {flexGrow: 0.99}},
         {key: "login", label: <Link to="/login">Login</Link>},
         {key: "register", label: <Link to="/register">Register</Link>},
       ]),
