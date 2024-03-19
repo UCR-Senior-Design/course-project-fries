@@ -22,7 +22,7 @@
     "express": "^4.18.2",
     "express-session": "^1.18.0",
     "express-validator": "^7.0.1",
-    "fastify": "^4.26.0",
+    "fs": "^0.0.1-security",
     "hnswlib-node": "^1.4.2",
     "jsonwebtoken": "^9.0.2",
     "langchain": "^0.1.17",
@@ -34,7 +34,6 @@
     "openai": "^4.28.0",
     "path": "^0.12.7",
     "pdf-parse": "^1.1.1",
-    "pdfjs-dist": "^4.0.379",
     "uuid": "^9.0.1",
     "ws": "^8.14.2"
   },
