@@ -16,7 +16,7 @@ const Inbox = ({ uid, onSetConvoId }) => {
       fetch(`http://localhost:5001/api/messages/listconversations/${uid}`)
         .then((response) => response.json())
         .then((data) => {
-          // console.log(data);
+          console.log(data);
           if (data && data.conversation_list.length === 0) {
             setNoMsg(true);
           }
@@ -29,7 +29,7 @@ const Inbox = ({ uid, onSetConvoId }) => {
 
     fetchData();
 
-    const intervalId = setInterval(fetchData, 60000);
+    const intervalId = setInterval(fetchData, 10000);
 
     return () => clearInterval(intervalId);
   }, []);
