@@ -31,6 +31,12 @@ const ViewAppointments = () => {
       render: (text) => <a>{text}</a>,
     },
     {
+      title: "Patient",
+      dataIndex: "patient_name",
+      key: "patient_name",
+      render: (text) => <a>{text}</a>,
+    },
+    {
       title: "Date",
       dataIndex: "date",
       key: "date",
@@ -57,16 +63,35 @@ const ViewAppointments = () => {
     },
   ];
 
+  const deleteApptHandler = (apt_id) => {
+    fetch(`${baseUrl}/deleteappointment/${apt_id}`, {
+      method: "DELETE",
+    }).then((response) => {
+      if (!response.ok) {
+        console.log("error with deleteApptHandler");
+      }
+    });
+  };
+
   return (
     <Layout className="layout" style={{ height: "100vh" }}>
       <Content style={{ padding: "0 40px" }}>
         {" "}
         <h1>Your Appointments</h1>
-        <Table
-          rowKey={(record) => record._id}
-          columns={columns}
-          dataSource={appt}
-        />
+        {appt.length === 0 ? (
+          <h3>No Appointments Found.</h3>
+        ) : (
+          <Table
+            rowKey={(record) => record._id}
+            columns={columns}
+            dataSource={appt}
+            onRow={(record) => ({
+              onClick: () => {
+                deleteApptHandler(record._id);
+              },
+            })}
+          />
+        )}
       </Content>
     </Layout>
   );

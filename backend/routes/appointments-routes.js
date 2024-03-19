@@ -15,7 +15,10 @@ router.post("/addappointment", appointmentController.addAppointment);
 router.put("/:id", appointmentController.editAppointment);
 
 //delete appointment
-router.delete("/:id", appointmentController.deleteAppointment);
+router.delete(
+  "/deleteappointment/:id",
+  appointmentController.deleteAppointment
+);
 
 // get list of doctors
 router.get("/listdoctors", appointmentController.list_doctors);

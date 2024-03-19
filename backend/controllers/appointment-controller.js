@@ -8,31 +8,35 @@ const findAllAppointments = async (req, res, next) => {
   const uid = req.params.uid;
   let appt_list;
   try {
-    appt_list = await appointmentModel.find({ patient_id: uid });
+    appt_list = await appointmentModel.find({
+      $or: [{ patient_id: uid }, { doctor_id: uid }],
+    });
 
     if (appt_list.length === 0) {
-      const error = new HttpError(
-        "Could not find any existing appointments.",
-        404
-      );
-      return next(error);
+      return res.json({ appt_list: [] });
     }
     const appointmentsWithDoctorNames = await Promise.all(
       appt_list.map(async (appt) => {
-        const { _id, doctor_id, date, time, description } = appt.toObject({
-          getters: true,
-        });
+        const { _id, doctor_id, patient_id, date, time, description } =
+          appt.toObject({
+            getters: true,
+          });
+
         //Get doctor fullname
         const doc = await User.findById(doctor_id); // Wait for the promise to resolve
         if (!doc) return null; // If no doctor found, return null
-        const fullname = doc.firstname + " " + doc.lastname;
+        const pat = await User.findById(patient_id); // Wait for the promise to resolve
+        if (!pat) return null; // If no doctor found, return null
+        const doc_fullname = doc.firstname + " " + doc.lastname;
+        const pat_fullname = pat.firstname + " " + pat.lastname;
         return {
           _id: _id,
           doctor_id: doctor_id,
           date: date,
           time: time,
           description: description,
-          doctor_name: fullname,
+          doctor_name: doc_fullname,
+          patient_name: pat_fullname,
         };
       })
     );
@@ -114,22 +118,19 @@ function editAppointment(req, res) {
   });
 }
 
-function deleteAppointment(req, res) {
+const deleteAppointment = async (req, res, next) => {
   const id = req.params.id;
-
-  appointmentModel.findOneAndRemove({ _id: id }, (error, data) => {
-    if (error) {
-      res.status(500).json({
-        message: "error deleting appointment",
-        error: error,
-      });
-    } else if (!data) {
-      res.status(404).json("no appointment of such id exists");
-    } else {
-      res.status(200).json({ removed: data });
-    }
-  });
-}
+  try {
+    await appointmentModel.deleteOne({ _id: id });
+    res.status(200).json({ message: "Appointment deleted successfully." });
+  } catch (err) {
+    const error = new HttpError(
+      "An error occurred while deleting appointment.",
+      500
+    );
+    return next(error);
+  }
+};
 
 const list_doctors = async (req, res, next) => {
   let doctors_list;
@@ -137,7 +138,8 @@ const list_doctors = async (req, res, next) => {
   const { data } = req.query;
   const { date, time } = JSON.parse(data);
   const dateOnly = date.slice(0, 10);
-
+  console.log(dateOnly);
+  console.log(time);
   // Return list of doctors in an array
   try {
     // Get all doctors
