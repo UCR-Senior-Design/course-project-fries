@@ -12,12 +12,13 @@ import Appointments from "./appointments/pages/Appointments";
 import Forum from "./forum/pages/Forum";
 import Messages from "./messages/pages/Messages";
 import Patient from "./patient/pages/Patient";
-import Chatbot from "./chatbot/pages/Chatbot";
 import AppointmentForm from "./appointments/components/AppointmentForm";
 import AppointmentSlots from "./appointments/components/AppointmentSlots";
 import LoginForm from "./common/forms/login_form";
 import RegisterForm from "./common/forms/register_form";
 import LandingPage from "./common/pages/landing";
+import ChatPage from "./chatbot/pages/Chat";
+import UploadPage from "./chatbot/pages/Upload";
 
 const App = () => {
   return (
@@ -33,12 +34,8 @@ const App = () => {
           <Route path="/AppointmentForm" exact={true}>
             <AppointmentForm />
           </Route>
-          <Route path="/AppointmentSlots" exact={true}>
-            <AppointmentSlots />
-          </Route>
-          <Route path="/chatbot" exact={true}>
-            <Chatbot />
-          </Route>
+          <Route path="/chat" exact={true} component={ChatPage} />
+          <Route path="/upload" exact={true} component={UploadPage} />
           <Route path="/forum" exact={true}>
             <Forum />
           </Route>

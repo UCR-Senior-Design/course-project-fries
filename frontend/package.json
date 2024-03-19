@@ -9,6 +9,7 @@
     "axios": "^1.6.2",
     "classnames": "^2.5.1",
     "dotenv": "^16.4.5",
+    "fs": "^0.0.1-security",
     "luxon": "^3.4.4",
     "moment": "^2.30.1",
     "openai": "^4.28.0",

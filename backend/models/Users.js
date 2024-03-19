@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
   // username: {type: String, required: true, },
   isDoctor: {type: Boolean, required: true, }, // doctor: true, patient: false
   password: {type: String, required: true, minlength: 6, },
+  diagnoses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Diagnosis' }],
 });
 
 userSchema.pre(method = 'save', function (next) {
