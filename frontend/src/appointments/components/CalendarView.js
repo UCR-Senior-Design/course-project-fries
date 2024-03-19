@@ -33,7 +33,7 @@ const CalendarView = () => {
     let data = filterListDate(value);
 
     const goToForm = () => {
-      window.location.href = "/AppointmentSlots";
+      window.location.href = "/AppointmentForm";
     };
 
     return (
