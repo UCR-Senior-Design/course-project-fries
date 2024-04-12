@@ -1,0 +1,66 @@
+.main {
+    padding: 10px;
+}
+
+.header {
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0px 10px 0px 10px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.input_msg_form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.input_msg {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #d9d9d9; 
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.list {
+  --sentColor: #bae0ff;
+  --receiveColor: #e5e5ea;
+  --bg: #fff;
+
+  display: flex;
+  flex-direction: column;
+  max-width: 95%;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+.shared {
+  position: relative; /* Setup a relative container for our psuedo elements */
+  max-width: 50%;
+  margin-bottom: 15px;
+  padding: 10px 20px;
+  line-height: 24px;
+  word-wrap: break-word; /* Make sure the text wraps to multiple lines if long */
+  border-radius: 25px;
+
+}
+
+.sent {
+  align-self: flex-end;
+  color: black;
+  background: var(--sentColor);
+}
+
+.received {
+  align-self: flex-start;
+  color: black;
+  background: var(--receiveColor);
+}
+
+.timestamp {
+  background-color: transparent;
+}
